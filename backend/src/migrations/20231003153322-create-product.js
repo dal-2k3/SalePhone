@@ -9,26 +9,22 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      idCategory: {
+        type: Sequelize.STRING
+      },
       name: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      capacity: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      status: {
         type: Sequelize.STRING
       },
-      price: {
-        type: Sequelize.INTEGER
-      },
-      description: {
+      parameter: {
         type: Sequelize.TEXT
-      },
-      img1: {
-        type: Sequelize.STRING
-      },
-      img2: {
-        type: Sequelize.STRING
-      },
-      img3: {
-        type: Sequelize.STRING
-      },
-      img4: {
-        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,

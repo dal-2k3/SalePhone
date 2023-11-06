@@ -32,18 +32,7 @@ const getUserById = async (id) => {
         console.log(err);
     }
 };
-const getListCustomer = async () => {
-    try {
-        const listUser = await User.findAll({
-            where: {
-                role: "customer"
-            }
-        });
-        return listUser;
-    } catch (err) {
-        console.log(err);
-    }
-};
+
 const getListStaff = async () => {
     try {
         const listUser = await User.findAll({
@@ -56,7 +45,7 @@ const getListStaff = async () => {
         console.log(err);
     }
 };
-const getListUser = async () => {
+const getList = async () => {
     try {
         const listUser = await User.findAll();
         return listUser;
@@ -92,10 +81,9 @@ const updateUser = async (id, data) => {
 module.exports = {
     createUser,
     getUserByEmail,
-    getListCustomer,
     getListStaff,
     getUserById,
-    getListUser,
+    getList,
     deleteUser,
     updateUser,
 };

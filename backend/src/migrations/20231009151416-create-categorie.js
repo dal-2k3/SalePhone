@@ -9,11 +9,17 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      firstName: {
+      name: {
+        type: Sequelize.STRING
+      },
+      logo: {
         type: Sequelize.STRING
       },
       note: {
         type: Sequelize.TEXT
+      },
+      status: {
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,

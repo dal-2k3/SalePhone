@@ -1,13 +1,14 @@
 const express = require("express");
 const userRouter = express.Router();
+const { authenticate, verifyTokenandAdmin } = require("../../middwares/auth");
+
 const {
     createUser,
     getUserByEmail,
-    getListUser,
+    getList,
     getUserById,
     deleteUser,
     updateUser,
-    getListCustomer,
 } = require("../../services/users");
 
 const {
@@ -16,6 +17,8 @@ const {
     genToken,
     genrefreshToken,
 } = require("../../services/auth");
+
+let refreshTokens = [];
 
 userRouter.post('/register', async (req, res) => {
     const { username, email, password } = req.body;
@@ -57,26 +60,84 @@ userRouter.post("/login", async (req, res) => {
             id: user.id,
             username: user.username,
             email: user.email,
+            role: user.role
         });
-        res.status(200).send({ token });
+        const refresh = await genrefreshToken({
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            role: user.role,
+        });
+        res.cookie("refreshToken", refresh, {
+            httpOnly: true,
+            secure: false,
+            path: "/",
+            sameSite: "strict",
+        });
+
+        refreshTokens.push(refresh);
+        const { password, ...others } = user.dataValues;
+        res.status(200).send({ ...others, token });
     }
 });
 
-userRouter.get('/one/:id', async (req, res) => {
+userRouter.post("/refresh", async (req, res) => {
+    const refreshToken = req.cookies.refreshToken;
+
+    if (!refreshToken) {
+        return res.status(401).send("You're not authenticate");
+    }
+
+    if (!refreshTokens.includes(refreshToken)) {
+        return res.status(403).send("Refresh token is not valid");
+    }
+
+    jwt.verify(refreshToken, process.env.JWT_REFRESH_TOKEN, async (err, user) => {
+        if (err) {
+            console.log(err);
+        }
+
+        refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
+        const newAccessToken = await genToken({
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            role: user.role,
+        });
+        const newRefreshToken = await genrefreshToken({
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            role: user.role,
+        });
+
+        refreshTokens.push(newRefreshToken);
+        res.cookie("refreshToken", newRefreshToken, {
+            httpOnly: true,
+            secure: false,
+            path: "/",
+            sameSite: "strict",
+        });
+
+        res.status(200).send({ accessToken: newAccessToken });
+    });
+});
+
+userRouter.post("/logout", [authenticate], (req, res) => {
+    res.clearCookie("refreshToken");
+    refreshTokens = refreshTokens.filter(
+        (token) => token !== req.cookies.refreshToken
+    );
+    res.status(200).send("Log out is successfully");
+});
+
+userRouter.get('get/:id', async (req, res) => {
     const { id } = req.params;
     const getuser = await getUserById(id);
     if (!getuser) {
         return res.status(500).send('User does not exist!');
     }
     res.status(200).send(getuser);
-});
-
-userRouter.get('/allCustomer', async (req, res) => {
-    const listUser = await getListCustomer();
-    if (!listUser) {
-        return res.status(500).send("Can't get list Customer");
-    }
-    res.status(200).send(listUser);
 });
 userRouter.get('/allStaff', async (req, res) => {
     const listUser = await getListStaff();
@@ -87,13 +148,13 @@ userRouter.get('/allStaff', async (req, res) => {
 });
 
 userRouter.get('/all', async (req, res) => {
-    const listUser = await getListUser();
+    const listUser = await getList();
     if (!listUser) {
         return res.status(500).send("Can't get list user");
     }
     res.status(200).send(listUser);
 });
-userRouter.delete('/delete/:id', async (req, res) => {
+userRouter.delete('/:id', async (req, res) => {
     const { id } = req.params;
 
     const idUserExist = await getUserById(id);
@@ -105,9 +166,9 @@ userRouter.delete('/delete/:id', async (req, res) => {
     return res.status(200).send(`User id : ${userDelete} successfully`);
 });
 
-userRouter.put("/update/:id", async (req, res) => {
+userRouter.put("/:id", async (req, res) => {
     const { id } = req.params;
-    const { username, email, password, phone, address } = req.body;
+    const { username, email, password, phone, status, address } = req.body;
 
     const isExistUser = await getUserById(id);
 
@@ -117,7 +178,7 @@ userRouter.put("/update/:id", async (req, res) => {
 
     const hashedPassword = await hashPassword(password);
 
-    const data = { username, email, password: hashedPassword, phone, address };
+    const data = { username, email, password: hashedPassword, phone, status, address };
     await updateUser(id, data);
 
     res.status(200).send(data);
