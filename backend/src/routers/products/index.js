@@ -1,5 +1,5 @@
 const express = require('express');
-const { getProductByName, createProduct, getAllProduct, getProductById, addProductDetail, getProductDetailByIdProduct, getProductByCategory, } = require('../../services/products');
+const { getProductByName, createProduct, getAllProduct, getProductById, addProductDetail, getProductDetailByIdProduct, getProductByCategory, updateProduct, deleteProduct, } = require('../../services/products');
 const { getCategoryById } = require('../../services/categories');
 const multer = require('multer');
 
@@ -20,7 +20,7 @@ productRouter.post('/', upload.array('image', 2), async (req, res) => {
     const files = req.files;
     console.log(req.body)
     const data = JSON.parse(JSON.stringify(req.body));
-    const { idCategory, name, capacity, product_details } = data;
+    const { idCategory, name, capacity, parameter, product_details } = data;
     console.log(data)
     try {
         const checkname = await getProductByName(name);
@@ -36,6 +36,7 @@ productRouter.post('/', upload.array('image', 2), async (req, res) => {
             idCategory,
             name,
             capacity,
+            parameter,
         });
         try {
             product_details.forEach(async (detail, index) => {
@@ -57,7 +58,7 @@ productRouter.post('/', upload.array('image', 2), async (req, res) => {
     }
 
 });
-
+// get product by idCategory
 productRouter.get('/category/:id', async (req, res) => {
     const { id } = req.params;
     const listcategory = await getProductByCategory(id);
@@ -84,13 +85,40 @@ productRouter.get('/:id', async (req, res) => {
     res.status(200).send(product);
 });
 
-
-productRouter.get('/:id', async (req, res) => {
+productRouter.put('/:id', async (req, res) => {
+    const { idCategory, name, capacity, } = req.body;
     const { id } = req.params;
-    const product = await getProductById(id);
-    if (!product) {
+    const idproduct = await getProductById(id);
+    if (!idproduct) {
         res.status(500).send("Product does not exist");
+    }
+    const product = await updateProduct(id, { idCategory, name, capacity });
+    if (!product) {
+        res.status(500).send("can't update  product");
     }
     res.status(200).send(product)
 });
+productRouter.delete('/:id', async (req, res) => {
+    const { id } = req.params;
+    const idproduct = await getProductById(id);
+    if (!idproduct) {
+        res.status(500).send("Product does not exist");
+    }
+    const product = await deleteProduct(id)
+    if (!product) {
+        res.status(500).send("can't update  product");
+    }
+    res.status(200).send(product)
+});
+
+// Product_detail
+productRouter.post('detail', async (req, res) => {
+    const { idProduct } = req.params;
+
+});
+
+productRouter.put('detail/:id', async (req, res) => {
+    const { id } = req.params;
+});
+
 module.exports = productRouter;

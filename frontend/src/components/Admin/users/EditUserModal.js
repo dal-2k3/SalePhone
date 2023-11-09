@@ -30,9 +30,10 @@ const EditUserModal = ({ user, onSave, onCancel }) => {
                                                                dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 px-12"
                 type='text'
                 value={editedUser.username}
-
-                onChange={handleInputChange}
                 name='username'
+                disabled
+                onChange={handleInputChange}
+
                 placeholder='username'
               />
               <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">

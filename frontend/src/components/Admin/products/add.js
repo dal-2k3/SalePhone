@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import { listCategories } from "../../../services/categories/categories";
 import { AddProducts } from "../../../services/products/product";
 
@@ -20,7 +22,7 @@ const AddProduct = () => {
         idCategory: '1',
         name: '',
         capacity: '',
-
+        parameter: '',
         product_details: [{ color: '', quantity: '', price: '', discount: '', image: '' }],
     });
 
@@ -45,6 +47,10 @@ const AddProduct = () => {
             ...product,
             [field]: event.target.value,
         });
+    };
+
+    const handleDescriptionChange = (value) => {
+        setProduct({ ...product, parameter: value });
     };
 
     const handleDetailChange = (index, field, event) => {
@@ -75,6 +81,7 @@ const AddProduct = () => {
         formData.append('idCategory', product.idCategory);
         formData.append('name', product.name);
         formData.append('capacity', product.capacity);
+        formData.append('parameter', product.parameter);
         // Để thêm một mảng JSON vào FormData, bạn không nên sử dụng JSON.stringify, hãy gửi từng phần tử trong mảng một
         // Sử dụng vòng lặp để thêm từng màu sắc vào FormData
         product.product_details.forEach((color, index) => {
@@ -85,7 +92,7 @@ const AddProduct = () => {
             formData.append(`image`, color.image);
         });
         console.log(formData);
-        await AddProducts(formData);
+        // await AddProducts(formData);
 
     };
     return (
@@ -137,6 +144,32 @@ const AddProduct = () => {
                         className="w-full py-2 px-3 border rounded focus:outline-none focus:ring focus:border-blue-400"
                     />
                 </div>
+                <div className="mb-4">
+                    <label className="block text-sm font-semibold mb-2" htmlFor="parameter">
+                        Thống số:
+                    </label>
+                    <ReactQuill
+                        theme="snow"
+                        value={product.parameter}
+                        onChange={handleDescriptionChange}
+                        modules={{
+                            toolbar: [
+                                [{ font: [] }],
+                                [{ header: [1, 2, 3, 4, 5, 6, false] }],
+                                ["bold", "italic", "underline", "strike"],
+                                [{ color: [] }, { background: [] }],
+                                [{ script: "sub" }, { script: "super" }],
+                                ["blockquote", "code-block"],
+                                [{ list: "ordered" }, { list: "bullet" }],
+                                [{ indent: "-1" }, { indent: "+1" }, { align: [] }],
+                                ["link", "image", "video"],
+                                ["clean"],
+                            ],
+                        }}
+                    />
+                </div>
+
+
                 {product.product_details.map((detail, index) => (
                     <div key={index} className="mb-4 p-4 border rounded relative">
                         <button

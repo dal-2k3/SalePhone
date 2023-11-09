@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, Fragment, useRef, useState } from 'react'
 import { AddCategories, listCategories } from '../../../services/categories/categories';
-
-
+import { Dialog, Transition } from '@headlessui/react';
 
 
 export default function ListCategoris() {
     const [categories, setcategories] = useState([0]);
     const [reload, setReload] = useState(false);
-    const [modal, setModal] = useState(false)
+    const [open, setOpen] = useState(false);
+
+    const cancelButtonRef = useRef(null)
 
     const [category, setCategory] = useState({
         name: '',
@@ -40,7 +41,7 @@ export default function ListCategoris() {
                 logo: null,
                 note: '',
             });
-            setModal(false)
+            setOpen(false)
         } catch (error) {
             console.error('Error adding category:', error);
         }
@@ -63,58 +64,206 @@ export default function ListCategoris() {
         <div className="flex flex-col">
             <div className='p-2'>
                 <button
-                    onClick={() => setModal(true)}
+                    onClick={() => setOpen(true)}
                     className=" bg-green-600 text-white py-1 px-2 mr-2 rounded transition duration-150 ease-in-out ..."
                 >Add Category</button>
             </div>
-          
 
-            {modal ? (
-                <div className="max-w-md mx-auto my-8">
-                    <form onSubmit={handleSubmit}>
-                        <label className="block mb-2 text-sm font-bold">Category Name:</label>
-                        <input
-                            type="text"
-                            name="name"
-                            value={category.name}
-                            onChange={handleChange}
-                            className="w-full p-2 mb-4 border rounded"
-                            required
-                        />
+            <Transition.Root show={open} as={Fragment}>
+                <Dialog as="div" className="relative z-50" initialFocus={cancelButtonRef} onClose={setOpen}>
+                    <Transition.Child
+                        as={Fragment}
+                        enter="ease-out duration-300"
+                        enterFrom="opacity-0"
+                        enterTo="opacity-100"
+                        leave="ease-in duration-200"
+                        leaveFrom="opacity-100"
+                        leaveTo="opacity-0"
+                    >
+                        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                    </Transition.Child>
 
-                        <label className="block mb-2 text-sm font-bold">Logo Image:</label>
-                        <input
-                            type="file"
-                            name="logo"
-                            onChange={handleChange}
-                            className="w-full p-2 mb-4 border rounded"
-                            accept="image/*"
-                            required
-                        />
+                    <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+                        <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                            <Transition.Child
+                                as={Fragment}
+                                enter="ease-out duration-300"
+                                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                enterTo="opacity-100 translate-y-0 sm:scale-100"
+                                leave="ease-in duration-200"
+                                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                            >
+                                <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                                    <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                                        <div className="sm:flex sm:items-start">
 
-                        <label className="block mb-2 text-sm font-bold">Note:</label>
-                        <textarea
-                            name="note"
-                            value={category.note}
-                            onChange={handleChange}
-                            className="w-full p-2 mb-4 border rounded"
-                        />
-                        <button
-                            onClick={() => setModal(false)}
-                            className="px-4 py-2 mr-20 text-white bg-gray-500 rounded hover:bg-blue-700"
-                        >
-                            Close
-                        </button>
-                        <button
-                            type="submit"
-                            className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-700"
-                        >
-                            Add Category
-                        </button>
+                                            <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                                                <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-900">
+                                                    Add Category
+                                                </Dialog.Title>
+                                                <div className="mt-2">
+                                                    <form >
+                                                        <label className="block mb-2 text-sm font-bold">Category Name:</label>
+                                                        <input
+                                                            type="text"
+                                                            name="name"
+                                                            value={category.name}
+                                                            onChange={handleChange}
+                                                            className="w-full p-2 mb-4 border rounded"
+                                                            required
+                                                        />
 
-                    </form>
-                </div>
-            ) : null}
+                                                        <label className="block mb-2 text-sm font-bold">Logo Image:</label>
+                                                        <input
+                                                            type="file"
+                                                            name="logo"
+                                                            onChange={handleChange}
+                                                            className="w-full p-2 mb-4 border rounded"
+                                                            accept="image/*"
+                                                            required
+                                                        />
+
+                                                        <label className="block mb-2 text-sm font-bold">Note:</label>
+                                                        <textarea
+                                                            name="note"
+                                                            value={category.note}
+                                                            onChange={handleChange}
+                                                            className="w-full p-2 mb-4 border rounded"
+                                                        />
+
+                                                    </form>
+                                                    {/* <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+                                                        <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+                                                            <h3 className="font-medium text-black dark:text-white">
+                                                                Contact Form
+                                                            </h3>
+                                                        </div>
+                                                        <form action="#">
+                                                            <div className="p-6.5">
+                                                                <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                                                                    <div className="w-full xl:w-1/2">
+                                                                        <label className="mb-2.5 block text-black dark:text-white">
+                                                                            First name
+                                                                        </label>
+                                                                        <input
+                                                                            type="text"
+                                                                            placeholder="Enter your first name"
+                                                                            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                                                                        />
+                                                                    </div>
+
+                                                                    <div className="w-full xl:w-1/2">
+                                                                        <label className="mb-2.5 block text-black dark:text-white">
+                                                                            Last name
+                                                                        </label>
+                                                                        <input
+                                                                            type="text"
+                                                                            placeholder="Enter your last name"
+                                                                            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                                                                        />
+                                                                    </div>
+                                                                </div>
+
+                                                                <div className="mb-4.5">
+                                                                    <label className="mb-2.5 block text-black dark:text-white">
+                                                                        Email <span className="text-meta-1">*</span>
+                                                                    </label>
+                                                                    <input
+                                                                        type="email"
+                                                                        placeholder="Enter your email address"
+                                                                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                                                                    />
+                                                                </div>
+
+                                                                <div className="mb-4.5">
+                                                                    <label className="mb-2.5 block text-black dark:text-white">
+                                                                        Subject
+                                                                    </label>
+                                                                    <input
+                                                                        type="text"
+                                                                        placeholder="Select subject"
+                                                                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                                                                    />
+                                                                </div>
+
+                                                                <div className="mb-4.5">
+                                                                    <label className="mb-2.5 block text-black dark:text-white">
+                                                                        Subject
+                                                                    </label>
+                                                                    <div className="relative z-20 bg-transparent dark:bg-form-input">
+                                                                        <select className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary">
+                                                                            <option value="">Type your subject</option>
+                                                                            <option value="">USA</option>
+                                                                            <option value="">UK</option>
+                                                                            <option value="">Canada</option>
+                                                                        </select>
+                                                                        <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2">
+                                                                            <svg
+                                                                                className="fill-current"
+                                                                                width="24"
+                                                                                height="24"
+                                                                                viewBox="0 0 24 24"
+                                                                                fill="none"
+                                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                            >
+                                                                                <g opacity="0.8">
+                                                                                    <path
+                                                                                        fillRule="evenodd"
+                                                                                        clipRule="evenodd"
+                                                                                        d="M5.29289 8.29289C5.68342 7.90237 6.31658 7.90237 6.70711 8.29289L12 13.5858L17.2929 8.29289C17.6834 7.90237 18.3166 7.90237 18.7071 8.29289C19.0976 8.68342 19.0976 9.31658 18.7071 9.70711L12.7071 15.7071C12.3166 16.0976 11.6834 16.0976 11.2929 15.7071L5.29289 9.70711C4.90237 9.31658 4.90237 8.68342 5.29289 8.29289Z"
+                                                                                        fill=""
+                                                                                    ></path>
+                                                                                </g>
+                                                                            </svg>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div className="mb-6">
+                                                                    <label className="mb-2.5 block text-black dark:text-white">
+                                                                        Message
+                                                                    </label>
+                                                                    <textarea
+                                                                        rows={6}
+                                                                        placeholder="Type your message"
+                                                                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                                                                    ></textarea>
+                                                                </div>
+
+                                                                <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray">
+                                                                    Send Message
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div> */}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                                        <button
+                                            type="button"
+                                            className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
+                                            onSubmit={handleSubmit}
+                                        >
+                                            Add category
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                                            onClick={() => setOpen(false)}
+                                            ref={cancelButtonRef}
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </Dialog.Panel>
+                            </Transition.Child>
+                        </div>
+                    </div>
+                </Dialog>
+            </Transition.Root>
 
             <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
                 <div className="max-w-full overflow-x-auto">

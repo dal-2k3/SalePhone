@@ -1,7 +1,7 @@
-
+const { Categorie } = require("..//..//models");
 const { Product_detail } = require("..//..//models");
 const { Product } = require("..//..//models");
-const { Image } = require("..//..//models");
+
 
 const createProduct = async (product) => {
     try {
@@ -19,6 +19,10 @@ const getAllProduct = async () => {
                     model: Product_detail,
                     as: 'product_detail',
                     limit: 1, // Giới hạn để chỉ lấy một phần tử đầu tiên
+                },
+                {
+                    model: Categorie,
+                    attributes: ['name']
                 },
             ],
 

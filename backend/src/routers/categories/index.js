@@ -66,8 +66,8 @@ categoriesRouter.put('/:id', async (req, res) => {
     const data = { name, note, logo, status };
     const category = await updateCategory(id, data);
     if (!category) {
-        return res.status(500).send("can't create category");
+        return res.status(500).send("can't update category");
     }
-    res.status(200).send(data);
+    res.status(200).send(category);
 });
 module.exports = categoriesRouter;
