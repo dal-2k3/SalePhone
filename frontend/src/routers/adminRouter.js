@@ -3,6 +3,7 @@ import ListCategoris from "../components/Admin/categories/listCategoris";
 import HomeAdmin from "../components/Admin/homeAdmin";
 import AddProduct from "../components/Admin/products/add";
 import ListProducts from "../components/Admin/products/listProducts";
+import ProductDetail from "../components/Admin/products/productDetail";
 import ListUsers from "../components/Admin/users/listUsers";
 
 const adminRouter = [
@@ -26,6 +27,10 @@ const adminRouter = [
     {
         path: "/products/list",
         component: ListProducts
+    },
+    {
+        path: "/products/product_detail",
+        component: ProductDetail
     },
 
 ]
