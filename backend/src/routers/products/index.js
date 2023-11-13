@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 const productRouter = express.Router();
 
-productRouter.post('/', upload.array('image', 2), async (req, res) => {
+productRouter.post('/', upload.array('image', 10), async (req, res) => {
     const files = req.files;
     console.log(req.body)
     const data = JSON.parse(JSON.stringify(req.body));
