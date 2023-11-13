@@ -55,16 +55,20 @@ categoriesRouter.delete('/:id', async (req, res) => {
     res.status(200).send(`Category id : ${id} successfully`);
 });
 
-categoriesRouter.put('/:id', async (req, res) => {
+categoriesRouter.put('/:id', upload.single('logo'), async (req, res) => {
     const { id } = req.params;
-    const { name, note, logo, status } = req.body;
-
+    const { name, note, status } = req.body;
+    const logo = req.file.filename;
     const idcategoryUpdate = await getCategoryById(id);
     if (!idcategoryUpdate) {
-        return res.status(500).send(`Category ${id} is not update in db`);
+        return res.status(404).send(`Category ${id} is not update in db`);
     }
-    const data = { name, note, logo, status };
-    const category = await updateCategory(id, data);
+    const checkname = await getCategoryByName(name);
+    if (checkname) {
+        return res.status(404).send(" category name already exists!!!");
+    }
+
+    const category = await updateCategory(id, { name, note, logo, status });
     if (!category) {
         return res.status(500).send("can't update category");
     }

@@ -12,6 +12,9 @@ module.exports = {
       idProduct: {
         type: Sequelize.STRING
       },
+      image: {
+        type: Sequelize.STRING
+      },
       gift: {
         type: Sequelize.STRING
       },

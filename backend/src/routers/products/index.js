@@ -1,5 +1,5 @@
 const express = require('express');
-const { getProductByName, createProduct, getAllProduct, getProductById, addProductDetail, getProductDetailByIdProduct, getProductByCategory, updateProduct, deleteProduct, } = require('../../services/products');
+const { getProductByName, createProduct, getAllProduct, getProductById, addProductDetail, getProductDetailByIdProduct, getProductByCategory, updateProduct, deleteProduct, addPromotion, } = require('../../services/products');
 const { getCategoryById } = require('../../services/categories');
 const multer = require('multer');
 
@@ -15,12 +15,11 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 const productRouter = express.Router();
 
-
 productRouter.post('/', upload.array('image', 2), async (req, res) => {
     const files = req.files;
     console.log(req.body)
     const data = JSON.parse(JSON.stringify(req.body));
-    const { idCategory, name, capacity, parameter, product_details } = data;
+    const { idCategory, name, capacity, parameter, product_details, promotions } = data;
     console.log(data)
     try {
         const checkname = await getProductByName(name);
@@ -49,9 +48,19 @@ productRouter.post('/', upload.array('image', 2), async (req, res) => {
                     image: files[index].path,
                 });
             });
+            // addPromotion
+            promotions.forEach(async (promotion, index) => {
+                await addPromotion({
+                    idProduct: createdProduct.id,
+                    gift: promotion.gift,
+                    image: files[index].path
+                })
+            });
         } catch (error) {
             console.log(error)
         }
+
+
         res.status(200).json({ message: 'Product and details added successfully' });
     } catch (error) {
         res.status(500).json({ message: 'Error adding product and details', error });
@@ -114,11 +123,27 @@ productRouter.delete('/:id', async (req, res) => {
 // Product_detail
 productRouter.post('detail', async (req, res) => {
     const { idProduct } = req.params;
-
+    const {color,discount,price,quantity,image} =req.body;
+    const checkId = getProductById(idProduct);
+    if (!checkId) {
+        res.status(500).send("Product does not exist");
+    }
+    const productDetail = addProductDetail({idProduct,color,discount,price,quantity,image});
+    if (!productDetail) {
+        res.status(500).send("can't create product detail");
+    }
+   res.status(200).send(productDetail);
 });
-
 productRouter.put('detail/:id', async (req, res) => {
     const { id } = req.params;
+    const {color,discount,price,quantity,image,status} = req.body;
+    const checkId = getProductById(id);
+    if (!checkId) {
+        res.status(500).send("Product does not exist");
+    }
+
+
+
 });
 
 module.exports = productRouter;

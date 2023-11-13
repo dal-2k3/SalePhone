@@ -1,6 +1,7 @@
 const { Categorie } = require("..//..//models");
 const { Product_detail } = require("..//..//models");
 const { Product } = require("..//..//models");
+const { Promotion } = require("..//..//models");
 
 
 const createProduct = async (product) => {
@@ -14,6 +15,7 @@ const createProduct = async (product) => {
 const getAllProduct = async () => {
     try {
         const listProduct = await Product.findAll({
+            order: [['createdAt', 'DESC']],
             include: [
                 {
                     model: Product_detail,
@@ -23,6 +25,10 @@ const getAllProduct = async () => {
                 {
                     model: Categorie,
                     attributes: ['name']
+                },
+                {
+                    model: Promotion,
+                    as: "product_promotion",
                 },
             ],
 
@@ -68,7 +74,15 @@ const getProductByCategory = async (idCategory) => {
                     model: Product_detail,
                     as: "product_detail",
                     limit: 1,
-                }
+                },
+                {
+                    model: Categorie,
+                    attributes: ['name']
+                },
+                {
+                    model: Promotion,
+                    as: "product_promotion",
+                },
             ],
         });
         return Category;
@@ -116,7 +130,7 @@ const addProductDetail = async (data) => {
 
 const getProductDetailByIdProduct = async (id) => {
     try {
-        const idproduct = await Product.findAll({
+        const productDetail = await Product.findAll({
             where: {
                 id,
             },
@@ -124,12 +138,103 @@ const getProductDetailByIdProduct = async (id) => {
                 {
                     model: Product_detail,
                     as: "product_detail",
-                }
+                },
+                {
+                    model: Promotion,
+                    as: "product_promotion",
+                },
             ],
         });
-        return idproduct;
+        return productDetail;
     } catch (err) {
         console.log(err);
+    }
+};
+
+const getProductDetailById = async (id) => {
+    try {
+        const productDetail = await Product_detail.findOne({
+            where: {
+                id,
+            }
+        });
+        return productDetail;
+    } catch (error) {
+        console.log(error);
+    }
+};
+const updateProductDetail = async (id, data) => {
+    try {
+        const productDetail = await Product_detail.update(data,
+            {
+                where: {
+                    id,
+                }
+            });
+        return productDetail;
+    } catch (error) {
+        console.log(error);
+    }
+};
+const deleteProductDetail = async (id) => {
+    try {
+        const productDetail = await Product_detail.destroy(
+            {
+                where: {
+                    id,
+                }
+            });
+        return productDetail;
+    } catch (error) {
+        console.log(error);
+    }
+};
+//addPromotion
+const addPromotion = async (data) => {
+    try {
+        const newPromotion = await Promotion.create(data);
+        return newPromotion;
+    } catch (error) {
+        console.log(error)
+    }
+};
+const getPromotionById = async (id) => {
+    try {
+        const promotion = await Promotion.findOne(
+            {
+                where: {
+                    id,
+                }
+            });
+        return promotion;
+    } catch (error) {
+        console.log(error)
+    }
+};
+const updatePromotion = async (id, data) => {
+    try {
+        const promotion = await Promotion.update(data,
+            {
+                where: {
+                    id,
+                }
+            });
+        return promotion;
+    } catch (error) {
+        console.log(error)
+    }
+};
+const deletePromotion = async (id) => {
+    try {
+        const promotion = await Promotion.update(
+            {
+                where: {
+                    id,
+                }
+            });
+        return promotion;
+    } catch (error) {
+        console.log(error)
     }
 };
 module.exports = {
@@ -142,5 +247,13 @@ module.exports = {
     getProductByCategory,
     // product detail
     addProductDetail,
-    getProductDetailByIdProduct
-}
+    getProductDetailByIdProduct,
+    getProductDetailById,
+    updateProductDetail,
+    deleteProductDetail,
+    // promotions
+    addPromotion,
+    getPromotionById,
+    updatePromotion,
+    deletePromotion,
+};

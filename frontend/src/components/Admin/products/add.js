@@ -2,29 +2,30 @@ import React, { useState, useEffect } from "react";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { listCategories } from "../../../services/categories/categories";
-import { AddProducts } from "../../../services/products/product";
-
+import { AddProducts } from "../../../services/products/product"; // Đổi tên hàm gọi API để tuân thủ quy tắc đặt tên
 
 const AddProduct = () => {
-    const [categories, setcategories] = useState([0]);
-    useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                const categoriesData = await listCategories();
-                setcategories(categoriesData);
-            } catch (error) {
-                // Xử lý lỗi nếu cần
-            }
-        };
-        fetchUsers();
-    }, []);
+    const [categories, setCategories] = useState([]);
     const [product, setProduct] = useState({
         idCategory: '1',
         name: '',
         capacity: '',
         parameter: '',
         product_details: [{ color: '', quantity: '', price: '', discount: '', image: '' }],
+        promotions: [{ gift: '', image: '' }]
     });
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const categoriesData = await listCategories();
+                setCategories(categoriesData);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchCategories();
+    }, []);
 
     const addDetail = () => {
         setProduct({
@@ -54,18 +55,11 @@ const AddProduct = () => {
     };
 
     const handleDetailChange = (index, field, event) => {
-
         const newDetails = [...product.product_details];
-
         if (field === 'image') {
             const imageFile = event.target.files[0];
-
             if (imageFile) {
-                // Lưu đối tượng File vào state
                 newDetails[index][field] = imageFile;
-
-                // Nếu bạn muốn lấy tên file, bạn có thể sử dụng imageFile.name
-                console.log('Tên ảnh:', imageFile.name);
             }
         } else {
             newDetails[index][field] = event.target.value;
@@ -76,25 +70,68 @@ const AddProduct = () => {
         });
     };
 
-    const handleSave = async () => {
-        const formData = new FormData();
-        formData.append('idCategory', product.idCategory);
-        formData.append('name', product.name);
-        formData.append('capacity', product.capacity);
-        formData.append('parameter', product.parameter);
-        // Để thêm một mảng JSON vào FormData, bạn không nên sử dụng JSON.stringify, hãy gửi từng phần tử trong mảng một
-        // Sử dụng vòng lặp để thêm từng màu sắc vào FormData
-        product.product_details.forEach((color, index) => {
-            formData.append(`product_details[${index}][color]`, color.color);
-            formData.append(`product_details[${index}][quantity]`, color.quantity);
-            formData.append(`product_details[${index}][price]`, color.price);
-            formData.append(`product_details[${index}][discount]`, color.discount);
-            formData.append(`image`, color.image);
+    const addPromotion = () => {
+        setProduct({
+            ...product,
+            promotions: [...product.promotions, { gift: '', image: '' }],
         });
-        console.log(formData);
-        // await AddProducts(formData);
-
     };
+
+    const removePromotion = (index) => {
+        const newPromotions = [...product.promotions];
+        newPromotions.splice(index, 1);
+        setProduct({
+            ...product,
+            promotions: newPromotions,
+        });
+    };
+
+    const handlePromotionChange = (index, field, event) => {
+        const newPromotions = [...product.promotions];
+        if (field === 'image') {
+            const imageFile = event.target.files[0];
+            if (imageFile) {
+                newPromotions[index][field] = imageFile;
+            }
+        } else {
+            newPromotions[index][field] = event.target.value;
+        }
+        setProduct({
+            ...product,
+            promotions: newPromotions,
+        });
+    };
+
+    const handleSave = async () => {
+        try {
+            const formData = new FormData();
+            formData.append('idCategory', product.idCategory);
+            formData.append('name', product.name);
+            formData.append('capacity', product.capacity);
+            formData.append('parameter', product.parameter);
+
+            product.product_details.forEach((detail, index) => {
+                formData.append(`product_details[${index}][color]`, detail.color);
+                formData.append(`product_details[${index}][quantity]`, detail.quantity);
+                formData.append(`product_details[${index}][price]`, detail.price);
+                formData.append(`product_details[${index}][discount]`, detail.discount);
+                formData.append(`image`, detail.image);
+            });
+
+            if (product.promotions.length > 0) {
+                product.promotions.forEach((promotion, index) => {
+                    formData.append(`promotions[${index}][gift]`, promotion.gift);
+                    formData.append(`image`, promotion.image);
+                });
+            }
+
+            await AddProducts(formData);
+
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     return (
         <div className="max-w-md mx-auto p-4">
             <h1 className="text-2xl font-bold mb-4">Thêm Sản Phẩm</h1>
@@ -149,6 +186,8 @@ const AddProduct = () => {
                         Thống số:
                     </label>
                     <ReactQuill
+                        name="parameter"
+                        id="parameter"
                         theme="snow"
                         value={product.parameter}
                         onChange={handleDescriptionChange}
@@ -168,9 +207,57 @@ const AddProduct = () => {
                         }}
                     />
                 </div>
+                <label className="block text-lg font-normal mb-2 text-orange-500">ADD PROMOTION</label>
+                {product.promotions.map((promotion, index) => (
+                    <div key={index} className="mb-4 p-4 border rounded relative">
+                        <button
+                            type="button"
+                            onClick={() => removePromotion(index)}
+                            className="bg-red-500 text-white py-1 px-2 rounded absolute top-0 right-0 m-2"
+                        >
+                            X
+                        </button>
+                        <label className="block text-sm font-semibold mb-2" htmlFor={`gift-${index}`}>
+                            Quà tặng:
+                        </label>
+                        <select
+                            name="gift"
+                            id={`gift-${index}`}
+                            value={promotion.gift}
+                            onChange={(event) => handlePromotionChange(index, 'gift', event)}
+                            required
+                            className="w-full py-2 px-3 border rounded focus:outline-none focus:ring focus:border-blue-400"
+                        >
+                            <option value="tai nghe">Tai nghe</option>
+                            <option value="sạc dự phòng">Sạc dự phòng</option>
+                        </select>
+                        <label className="block text-sm font-semibold mb-2" htmlFor={`image-${index}`}>
+                            Hình ảnh:
+                        </label>
+                        <input
+                            type="file"
+                            name="image"
+                            id={`image-${index}`}
+                            onChange={(event) => handlePromotionChange(index, 'image', event)}
+                            required
+                            className="w-full py-2 px-3 border rounded focus:outline-none focus:ring focus:border-blue-400"
+                        />
+                    </div>
+                ))}
+                <button
+                    type="button"
+                    onClick={addPromotion}
+                    className="bg-blue-500 text-white py-2 px-4 rounded mr-2"
+                >
+                    +
+                </button>
 
+
+
+                <label className="block text-lg font-normal mb-2 text-orange-500 "> ADD PRODUCT DETAIL</label >
 
                 {product.product_details.map((detail, index) => (
+
                     <div key={index} className="mb-4 p-4 border rounded relative">
                         <button
                             type="button"

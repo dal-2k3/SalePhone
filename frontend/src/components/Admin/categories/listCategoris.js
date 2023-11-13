@@ -1,12 +1,13 @@
 import React, { useEffect, Fragment, useRef, useState } from 'react'
-import { AddCategories, listCategories } from '../../../services/categories/categories';
+import { AddCategories, listCategories, updateCategory } from '../../../services/categories/categories';
 import { Dialog, Transition } from '@headlessui/react';
-
+import EditCategory from './EditCategory'
 
 export default function ListCategoris() {
     const [categories, setcategories] = useState([0]);
     const [reload, setReload] = useState(false);
-    const [open, setOpen] = useState(false);
+    const [openAdd, setOpenAdd] = useState(false);
+    const [editingCategory, seteditingCategory] = useState(null);
 
     const cancelButtonRef = useRef(null)
 
@@ -41,12 +42,36 @@ export default function ListCategoris() {
                 logo: null,
                 note: '',
             });
-            setOpen(false)
+            setOpenAdd(false)
         } catch (error) {
             console.error('Error adding category:', error);
         }
     };
-    //  get list categories
+
+    const handleEdit = (category) => {
+        seteditingCategory(category);
+    };
+    const handleCancelEdit = () => {
+        seteditingCategory(null);
+    };
+    const handleSave = async (editedCategory) => {
+        try {
+            // Gọi API để cập nhật thông tin người dùng
+            const updatedCategory = await updateCategory(editingCategory.id, editedCategory);
+
+            // Cập nhật danh sách người dùng
+            const updatedCategories = categories.map((category) =>
+                category.id === updatedCategory.id ? updatedCategory : category
+            );
+            setReload(!reload);
+            setcategories(updatedCategories);
+
+            seteditingCategory(null);
+        } catch (error) {
+            console.error('Error updating user:', error);
+        }
+    };
+
     useEffect(() => {
         const fetchUsers = async () => {
             try {
@@ -64,13 +89,13 @@ export default function ListCategoris() {
         <div className="flex flex-col">
             <div className='p-2'>
                 <button
-                    onClick={() => setOpen(true)}
+                    onClick={() => setOpenAdd(true)}
                     className=" bg-green-600 text-white py-1 px-2 mr-2 rounded transition duration-150 ease-in-out ..."
                 >Add Category</button>
             </div>
 
-            <Transition.Root show={open} as={Fragment}>
-                <Dialog as="div" className="relative z-50" initialFocus={cancelButtonRef} onClose={setOpen}>
+            <Transition.Root show={openAdd} as={Fragment}>
+                <Dialog as="div" className="relative z-50" initialFocus={cancelButtonRef} onClose={setOpenAdd}>
                     <Transition.Child
                         as={Fragment}
                         enter="ease-out duration-300"
@@ -103,8 +128,8 @@ export default function ListCategoris() {
                                                     Add Category
                                                 </Dialog.Title>
                                                 <div className="mt-2">
-                                                    <form >
-                                                        <label className="block mb-2 text-sm font-bold">Category Name:</label>
+                                                    <form onSubmit={handleSubmit}>
+                                                        <label className="block mb-4 text-sm font-bold">Category Name:</label>
                                                         <input
                                                             type="text"
                                                             name="name"
@@ -131,133 +156,30 @@ export default function ListCategoris() {
                                                             onChange={handleChange}
                                                             className="w-full p-2 mb-4 border rounded"
                                                         />
+                                                        <button
+                                                            onClick={() => setOpenAdd(false)}
+                                                            ref={cancelButtonRef}
+                                                            className="mt-3 inline-flex w-full justify-center rounded-md
+                                                             bg-white px-3 py-2 text-sm font-semibold text-gray-900 
+                                                             shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 
+                                                             sm:mt-0 sm:w-auto"
+
+                                                        >
+                                                            Close
+                                                        </button>
+                                                        <button
+                                                            type="submit"
+                                                            className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
+                                                        >
+                                                            Add Category
+                                                        </button>
 
                                                     </form>
-                                                    {/* <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-                                                        <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-                                                            <h3 className="font-medium text-black dark:text-white">
-                                                                Contact Form
-                                                            </h3>
-                                                        </div>
-                                                        <form action="#">
-                                                            <div className="p-6.5">
-                                                                <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                                                                    <div className="w-full xl:w-1/2">
-                                                                        <label className="mb-2.5 block text-black dark:text-white">
-                                                                            First name
-                                                                        </label>
-                                                                        <input
-                                                                            type="text"
-                                                                            placeholder="Enter your first name"
-                                                                            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                                                                        />
-                                                                    </div>
-
-                                                                    <div className="w-full xl:w-1/2">
-                                                                        <label className="mb-2.5 block text-black dark:text-white">
-                                                                            Last name
-                                                                        </label>
-                                                                        <input
-                                                                            type="text"
-                                                                            placeholder="Enter your last name"
-                                                                            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                                                                        />
-                                                                    </div>
-                                                                </div>
-
-                                                                <div className="mb-4.5">
-                                                                    <label className="mb-2.5 block text-black dark:text-white">
-                                                                        Email <span className="text-meta-1">*</span>
-                                                                    </label>
-                                                                    <input
-                                                                        type="email"
-                                                                        placeholder="Enter your email address"
-                                                                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                                                                    />
-                                                                </div>
-
-                                                                <div className="mb-4.5">
-                                                                    <label className="mb-2.5 block text-black dark:text-white">
-                                                                        Subject
-                                                                    </label>
-                                                                    <input
-                                                                        type="text"
-                                                                        placeholder="Select subject"
-                                                                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                                                                    />
-                                                                </div>
-
-                                                                <div className="mb-4.5">
-                                                                    <label className="mb-2.5 block text-black dark:text-white">
-                                                                        Subject
-                                                                    </label>
-                                                                    <div className="relative z-20 bg-transparent dark:bg-form-input">
-                                                                        <select className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary">
-                                                                            <option value="">Type your subject</option>
-                                                                            <option value="">USA</option>
-                                                                            <option value="">UK</option>
-                                                                            <option value="">Canada</option>
-                                                                        </select>
-                                                                        <span className="absolute top-1/2 right-4 z-30 -translate-y-1/2">
-                                                                            <svg
-                                                                                className="fill-current"
-                                                                                width="24"
-                                                                                height="24"
-                                                                                viewBox="0 0 24 24"
-                                                                                fill="none"
-                                                                                xmlns="http://www.w3.org/2000/svg"
-                                                                            >
-                                                                                <g opacity="0.8">
-                                                                                    <path
-                                                                                        fillRule="evenodd"
-                                                                                        clipRule="evenodd"
-                                                                                        d="M5.29289 8.29289C5.68342 7.90237 6.31658 7.90237 6.70711 8.29289L12 13.5858L17.2929 8.29289C17.6834 7.90237 18.3166 7.90237 18.7071 8.29289C19.0976 8.68342 19.0976 9.31658 18.7071 9.70711L12.7071 15.7071C12.3166 16.0976 11.6834 16.0976 11.2929 15.7071L5.29289 9.70711C4.90237 9.31658 4.90237 8.68342 5.29289 8.29289Z"
-                                                                                        fill=""
-                                                                                    ></path>
-                                                                                </g>
-                                                                            </svg>
-                                                                        </span>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div className="mb-6">
-                                                                    <label className="mb-2.5 block text-black dark:text-white">
-                                                                        Message
-                                                                    </label>
-                                                                    <textarea
-                                                                        rows={6}
-                                                                        placeholder="Type your message"
-                                                                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                                                                    ></textarea>
-                                                                </div>
-
-                                                                <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray">
-                                                                    Send Message
-                                                                </button>
-                                                            </div>
-                                                        </form>
-                                                    </div> */}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                                        <button
-                                            type="button"
-                                            className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
-                                            onSubmit={handleSubmit}
-                                        >
-                                            Add category
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                                            onClick={() => setOpen(false)}
-                                            ref={cancelButtonRef}
-                                        >
-                                            Cancel
-                                        </button>
-                                    </div>
+
                                 </Dialog.Panel>
                             </Transition.Child>
                         </div>
@@ -285,35 +207,37 @@ export default function ListCategoris() {
                             </tr>
                         </thead>
                         <tbody>
-                            {categories.map((category) => (
+                            {categories.map((item) => (
 
-                                <tr key={category.id}>
+                                <tr key={item.id}>
                                     <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
                                         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                                             <div className="h-12 w-12 rounded-md">
                                                 <img
                                                     className="max-w-full"
-                                                    src={`http://localhost:8000/uploads/${category.logo}`}
+                                                    src={`http://localhost:8000/uploads/${item.logo}`}
                                                     alt="Product"
                                                 />
                                             </div>
                                             <b className="text-xs text-black dark:text-white">
-                                                {category.name}
+                                                {item.name}
                                             </b>
                                         </div>
                                     </td>
                                     <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                                        <p className="text-black dark:text-white">{category.note}</p>
+                                        <p className="text-black dark:text-white">{item.note}</p>
                                     </td>
                                     <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                                         <p className="inline-flex rounded-full bg-success bg-opacity-10 py-1 px-3 text-sm font-medium text-success">
-                                            {category.status}
+                                            {item.status}
 
                                         </p>
                                     </td>
                                     <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                                         <div className="flex items-center space-x-3.5">
-                                            <button className="hover:text-primary">
+                                            <button className="hover:text-primary"
+                                                onClick={() => handleEdit(item)}
+                                            >
                                                 <svg
                                                     className="fill-current"
                                                     width="18"
@@ -381,7 +305,9 @@ export default function ListCategoris() {
                                         </div>
                                     </td>
                                 </tr>))}
-
+                            {editingCategory && (
+                                <EditCategory category={editingCategory} onSave={handleSave} onCancel={handleCancelEdit} />
+                            )}
                         </tbody>
                     </table>
                 </div>

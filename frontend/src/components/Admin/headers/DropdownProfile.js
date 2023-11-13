@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Transition from '../../../utils/transition';
 
-// import UserAvatar from '../images/user-avatar-32.png';
+// import UserAvatar from '';
 
 function DropdownProfile({
     align
@@ -43,7 +43,7 @@ function DropdownProfile({
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 aria-expanded={dropdownOpen}
             >
-                <img className="w-8 h-8 rounded-full" src='' width="32" height="32" alt="User" />
+                <img className="w-8 h-8 rounded-full" src="https://icons-for-free.com/iconfiles/png/512/business+costume+male+man+office+user+icon-1320196264882354682.png" width="32" height="32" alt="User" />
                 <div className="flex items-center truncate">
                     <span className="truncate ml-2 text-sm font-medium dark:text-slate-300 group-hover:text-slate-800 dark:group-hover:text-slate-200">Acme Inc.</span>
                     <svg className="w-3 h-3 shrink-0 ml-1 fill-current text-slate-400" viewBox="0 0 12 12">

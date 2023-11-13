@@ -1,9 +1,12 @@
 import axios from 'axios';
-const apiUrl = 'http://localhost:8000/api/v1/products/'; // Thay thế bằng API của bạn
+import { DOMAIN } from '../../utils/settings/config';
+
+
+// Thay thế bằng API của bạn
 
 export const listProducts = async () => {
     try {
-        const response = await axios.get(`${apiUrl}all`);
+        const response = await axios.get(`${DOMAIN}/api/v1/products/`);
         return response.data;
     } catch (error) {
         console.error('Error fetching users:', error);
@@ -12,7 +15,7 @@ export const listProducts = async () => {
 };
 export const AddProducts = async (product) => {
     try {
-        const response = await axios.post(`${apiUrl}`, product, {
+        const response = await axios.post(`${DOMAIN}/api/v1/products/`, product, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
@@ -25,20 +28,10 @@ export const AddProducts = async (product) => {
 };
 
 // image
-
-export const AddImages = async (idProduct, images) => {
-    try {
-        const response = await axios.post(`${apiUrl}upload/`, idProduct, images);
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching users:', error);
-        throw error;
-    }
-};
 // product detail
-export const AddProductDetail = async (productdetail) => {
+export const getProductDetail = async (id) => {
     try {
-        const response = await axios.post(`${apiUrl}detail/`, productdetail);
+        const response = await axios.get(`${DOMAIN}/api/v1/products/detail/`, id);
         return response.data;
     } catch (error) {
         console.error('Error fetching users:', error);

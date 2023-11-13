@@ -14,9 +14,22 @@ export const AddCategories = async (category) => {
     try {
         const response = await axios.post(`${apiUrl}`, category, {
             headers: {
-              'Content-Type': 'multipart/form-data',
+                'Content-Type': 'multipart/form-data',
             },
-          });
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        throw error;
+    }
+};
+export const updateCategory = async (id, category) => {
+    try {
+        const response = await axios.put(`${apiUrl}/${id}`, category, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
         return response.data;
     } catch (error) {
         console.error('Error fetching users:', error);

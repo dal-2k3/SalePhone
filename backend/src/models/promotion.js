@@ -17,7 +17,8 @@ module.exports = (sequelize, DataTypes) => {
   }
   Promotion.init({
     idProduct: DataTypes.STRING,
-    gift: DataTypes.STRING
+    gift: DataTypes.STRING,
+    image: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'Promotion',
