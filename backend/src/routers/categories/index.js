@@ -12,7 +12,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-
 categoriesRouter.post('/', upload.single('logo'), async (req, res) => {
     const { name, note } = req.body;
     const logo = req.file.filename;

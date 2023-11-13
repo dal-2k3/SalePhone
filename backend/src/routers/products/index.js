@@ -1,8 +1,7 @@
 const express = require('express');
-const { getProductByName, createProduct, getAllProduct, getProductById, addProductDetail, getProductDetailByIdProduct, getProductByCategory, updateProduct, deleteProduct, addPromotion, } = require('../../services/products');
+const { getProductByName, createProduct, getAllProduct, getProductById, addProductDetail, getProductDetailByIdProduct, getProductByCategory, updateProduct, deleteProduct, addPromotion, getProductDetailById, updateProductDetail, deleteProductDetail, } = require('../../services/products');
 const { getCategoryById } = require('../../services/categories');
 const multer = require('multer');
-
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -15,7 +14,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 const productRouter = express.Router();
 
-productRouter.post('/', upload.array('image', 2), async (req, res) => {
+productRouter.post('/', upload.array('image', 10), async (req, res) => {
     const files = req.files;
     console.log(req.body)
     const data = JSON.parse(JSON.stringify(req.body));
@@ -35,7 +34,7 @@ productRouter.post('/', upload.array('image', 2), async (req, res) => {
             idCategory,
             name,
             capacity,
-            parameter,
+            parameter
         });
         try {
             product_details.forEach(async (detail, index) => {
@@ -119,31 +118,43 @@ productRouter.delete('/:id', async (req, res) => {
     }
     res.status(200).send(product)
 });
-
 // Product_detail
 productRouter.post('detail', async (req, res) => {
     const { idProduct } = req.params;
-    const {color,discount,price,quantity,image} =req.body;
+    const { color, discount, price, quantity, image } = req.body;
     const checkId = getProductById(idProduct);
     if (!checkId) {
         res.status(500).send("Product does not exist");
     }
-    const productDetail = addProductDetail({idProduct,color,discount,price,quantity,image});
+    const productDetail = addProductDetail({ idProduct, color, discount, price, quantity, image });
     if (!productDetail) {
         res.status(500).send("can't create product detail");
     }
-   res.status(200).send(productDetail);
+    res.status(200).send(productDetail);
 });
 productRouter.put('detail/:id', async (req, res) => {
     const { id } = req.params;
-    const {color,discount,price,quantity,image,status} = req.body;
-    const checkId = getProductById(id);
+    const { color, discount, price, quantity, image, status } = req.body;
+    const checkId = getProductDetailById(id);
     if (!checkId) {
-        res.status(500).send("Product does not exist");
+        res.status(500).send("Product detail does not exist");
+    };
+    const productDetail = await updateProductDetail(id, { color, discount, price, quantity, image, status });
+    if (!productDetail) {
+        res.status(500).send("can't update product detail");
     }
-
-
-
+    res.status(200).send(productDetail);
 });
-
+productRouter.delete('detail/:id', async (req, res) => {
+    const { id } = req.params;
+    const checkId = getProductDetailById(id);
+    if (!checkId) {
+        res.status(500).send("Product detail does not exist");
+    };
+    const productDetail = await deleteProductDetail(id);
+    if (!productDetail) {
+     res.status(500).send("can't delete product detail");
+    }
+    res.status(200).send(productDetail);
+});
 module.exports = productRouter;
