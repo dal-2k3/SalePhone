@@ -14,7 +14,9 @@ const AddProduct = () => {
     product_details: [
       { color: "", quantity: "", price: "", discount: "", image: "" },
     ],
-    promotions: [{ gift: "", image: "" }],
+    promotions: [
+      { gift: "", image: "" },
+    ],
   });
 
   useEffect(() => {
