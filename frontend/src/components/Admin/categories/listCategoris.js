@@ -1,11 +1,13 @@
 import React, { useEffect, Fragment, useRef, useState } from "react";
 import {
   AddCategories,
+  deleteCategory,
   listCategories,
   updateCategory,
 } from "../../../services/categories/categories";
 import { Dialog, Transition } from "@headlessui/react";
 import EditCategory from "./EditCategory";
+import { DOMAIN } from "../../../utils/settings/config";
 
 export default function ListCategoris() {
   const [categories, setcategories] = useState([0]);
@@ -31,7 +33,6 @@ export default function ListCategoris() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const formData = new FormData();
       formData.append("name", category.name);
@@ -65,6 +66,7 @@ export default function ListCategoris() {
         editingCategory.id,
         editedCategory
       );
+      console.log(editedCategory);
 
       // Cập nhật danh sách người dùng
       const updatedCategories = categories.map((category) =>
@@ -78,6 +80,13 @@ export default function ListCategoris() {
       console.error("Error updating user:", error);
     }
   };
+
+  // delete
+  const handleDelete = async (id) => {
+    console.log(id);
+    await deleteCategory(id);
+    setReload(!reload);
+  }
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -96,7 +105,7 @@ export default function ListCategoris() {
       <div className="p-2">
         <button
           onClick={() => setOpenAdd(true)}
-          className=" bg-green-600 text-white py-1 px-2 mr-2 rounded transition duration-150 ease-in-out ..."
+          className=" bg-yellow-600 text-white py-1 px-2 mr-2 rounded transition duration-150 ease-in-out ..."
         >
           Add Category
         </button>
@@ -134,16 +143,16 @@ export default function ListCategoris() {
               >
                 <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                   <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-                    <div className="sm:flex sm:items-start">
-                      <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                    <div className="sm: flex sm:items-start ">
+                      <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full">
                         <Dialog.Title
-                          as="h3"
-                          className="text-base font-semibold leading-6 text-gray-900"
+                          as="h1"
+                          className=" text-center font-semibold leading-6 text-2xl p-7 text-cyan-900"
                         >
                           Add Category
                         </Dialog.Title>
-                        <div className="mt-2">
-                          <form onSubmit={handleSubmit}>
+                        <div className=" ">
+                          <form className="w-full" onSubmit={handleSubmit}>
                             <label className="block mb-4 text-sm font-bold">
                               Category Name:
                             </label>
@@ -232,7 +241,7 @@ export default function ListCategoris() {
                       <div className=" w-12 rounded-md">
                         <img
                           className="max-w-full"
-                          src={`http://localhost:8000/uploads/${item.logo}`}
+                          src={`${DOMAIN}${item.logo}`}
                           alt="Product"
                         />
                       </div>
@@ -245,7 +254,7 @@ export default function ListCategoris() {
                     <p className="text-black dark:text-white">{item.note}</p>
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                    <p className="inline-flex rounded-full bg-success bg-opacity-10 py-1 px-3 text-sm font-medium text-success">
+                    <p className="inline-flex rounded-full bg-green-200 bg-opacity-30 py-1 px-5 text-sm font-medium text-emerald-700">
                       {item.status}
                     </p>
                   </td>
@@ -255,27 +264,20 @@ export default function ListCategoris() {
                         className="hover:text-primary"
                         onClick={() => handleEdit(item)}
                       >
-                        <svg
-                          className="fill-current"
+
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                          className="fill-current text-green-600"
                           width="18"
                           height="18"
-                          viewBox="0 0 18 18"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M8.99981 14.8219C3.43106 14.8219 0.674805 9.50624 0.562305 9.28124C0.47793 9.11249 0.47793 8.88749 0.562305 8.71874C0.674805 8.49374 3.43106 3.20624 8.99981 3.20624C14.5686 3.20624 17.3248 8.49374 17.4373 8.71874C17.5217 8.88749 17.5217 9.11249 17.4373 9.28124C17.3248 9.50624 14.5686 14.8219 8.99981 14.8219ZM1.85605 8.99999C2.4748 10.0406 4.89356 13.5562 8.99981 13.5562C13.1061 13.5562 15.5248 10.0406 16.1436 8.99999C15.5248 7.95936 13.1061 4.44374 8.99981 4.44374C4.89356 4.44374 2.4748 7.95936 1.85605 8.99999Z"
-                            fill=""
-                          />
-                          <path
-                            d="M9 11.3906C7.67812 11.3906 6.60938 10.3219 6.60938 9C6.60938 7.67813 7.67812 6.60938 9 6.60938C10.3219 6.60938 11.3906 7.67813 11.3906 9C11.3906 10.3219 10.3219 11.3906 9 11.3906ZM9 7.875C8.38125 7.875 7.875 8.38125 7.875 9C7.875 9.61875 8.38125 10.125 9 10.125C9.61875 10.125 10.125 9.61875 10.125 9C10.125 8.38125 9.61875 7.875 9 7.875Z"
-                            fill=""
-                          />
-                        </svg>
+                          enable-background="new 0 0 32 32"
+                          viewBox="0 0 32 32"
+                          id="update">
+                          <path d="M23.7207 8.1641c-3.7872-3.7316-9.6125-4.1499-13.8605-1.2914L9.8483 5.2317c-.002-.2762-.2276-.4985-.5039-.4963L8.3445 4.7432C8.0684 4.7453 7.8464 4.9708 7.8484 5.2468L7.876 8.9893c.0039.5498.4512.9922 1 .9922.002 0 .0049 0 .0078 0l3.743-.0276c.2762-.002.4984-.2277.4963-.5039l-.0078-1.0001c-.0021-.2761-.2276-.4981-.5036-.4961l-.6362.0046c3.3478-1.6712 7.5305-1.1391 10.341 1.6295 2.6972 2.6588 3.4342 6.6558 1.9015 10.0831-.1091.244-.0197.5283.2183.65l.8925.456c.2529.1292.5727.0251.6901-.2334C27.9255 16.3433 27.0319 11.4282 23.7207 8.1641zM23.124 22.0186c-.002 0-.0049 0-.0078 0l-3.743.0275c-.2762.0021-.4984.2277-.4963.5039l.0078 1.0001c.0021.276.2276.498.5036.4961l.6356-.0046c-3.348 1.6708-7.53 1.1382-10.3404-1.6295-2.6972-2.6588-3.4342-6.6559-1.9015-10.0831.1091-.244.0197-.5283-.2183-.65l-.8925-.456c-.2529-.1292-.5727-.0251-.6901.2334-1.9068 4.2002-1.0131 9.1153 2.298 12.3795 2.1396 2.1084 4.9307 3.1592 7.7197 3.1592 2.1475 0 4.2929-.6252 6.1407-1.869l.0119 1.6421c.002.2762.2276.4985.5039.4964l.9999-.0078c.2761-.0022.4981-.2277.4961-.5037l-.0276-3.7424C24.1201 22.4609 23.6729 22.0186 23.124 22.0186z"></path></svg>
                       </button>
-                      <button className="hover:text-primary">
+                      <button className="hover:text-primary"
+                        onClick={() => handleDelete(item.id)}>
                         <svg
-                          className="fill-current"
+                          className="fill-current text-red-600"
                           width="18"
                           height="18"
                           viewBox="0 0 18 18"
@@ -300,25 +302,7 @@ export default function ListCategoris() {
                           />
                         </svg>
                       </button>
-                      <button className="hover:text-primary">
-                        <svg
-                          className="fill-current"
-                          width="18"
-                          height="18"
-                          viewBox="0 0 18 18"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M16.8754 11.6719C16.5379 11.6719 16.2285 11.9531 16.2285 12.3187V14.8219C16.2285 15.075 16.0316 15.2719 15.7785 15.2719H2.22227C1.96914 15.2719 1.77227 15.075 1.77227 14.8219V12.3187C1.77227 11.9812 1.49102 11.6719 1.12539 11.6719C0.759766 11.6719 0.478516 11.9531 0.478516 12.3187V14.8219C0.478516 15.7781 1.23789 16.5375 2.19414 16.5375H15.7785C16.7348 16.5375 17.4941 15.7781 17.4941 14.8219V12.3187C17.5223 11.9531 17.2129 11.6719 16.8754 11.6719Z"
-                            fill=""
-                          />
-                          <path
-                            d="M8.55074 12.3469C8.66324 12.4594 8.83199 12.5156 9.00074 12.5156C9.16949 12.5156 9.31012 12.4594 9.45074 12.3469L13.4726 8.43752C13.7257 8.1844 13.7257 7.79065 13.5007 7.53752C13.2476 7.2844 12.8539 7.2844 12.6007 7.5094L9.64762 10.4063V2.1094C9.64762 1.7719 9.36637 1.46252 9.00074 1.46252C8.66324 1.46252 8.35387 1.74377 8.35387 2.1094V10.4063L5.40074 7.53752C5.14762 7.2844 4.75387 7.31252 4.50074 7.53752C4.24762 7.79065 4.27574 8.1844 4.50074 8.43752L8.55074 12.3469Z"
-                            fill=""
-                          />
-                        </svg>
-                      </button>
+
                     </div>
                   </td>
                 </tr>
