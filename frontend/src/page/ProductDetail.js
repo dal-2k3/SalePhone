@@ -21,6 +21,9 @@ export default function ProductDetail() {
     setRating(value);
     // Ở đây bạn có thể gửi giá trị rating lên server hoặc xử lý nó theo ý muốn
   };
+  const handleReviewSubmit =  () => {
+    console.log(rating);
+  }
   const handleSelectOption = (capacity) => {
     setSelectedOption(capacity);
   };
@@ -51,6 +54,7 @@ export default function ProductDetail() {
 
   const handleSelectColor = (colorValue) => {
     setSelectedColor(colorValue);
+
   };
   const [currentImage, setCurrentImage] = useState(0);
   const images = [
@@ -338,7 +342,7 @@ export default function ProductDetail() {
                         </div>
                         <button
                           type="button"
-                          onClick=""
+                          onClick={handleReviewSubmit}
                           className="bg-green-500 rounded-md  text-white py-2 px-4 w-full mb-4 mt-4"
                         >
                           Gửi đánh giá
