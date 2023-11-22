@@ -2,6 +2,7 @@ const { Categorie } = require("..//..//models");
 const { Product_detail } = require("..//..//models");
 const { Product } = require("..//..//models");
 const { Promotion } = require("..//..//models");
+const { Comment } = require("..//..//models");
 
 
 const createProduct = async (product) => {
@@ -127,7 +128,6 @@ const addProductDetail = async (data) => {
     }
 };
 
-
 const getProductDetailByIdProduct = async (id) => {
     try {
         const productDetail = await Product.findAll({
@@ -142,6 +142,17 @@ const getProductDetailByIdProduct = async (id) => {
                 {
                     model: Promotion,
                     as: "product_promotion",
+                },
+                {
+                    model: Categorie,
+                    attributes: ['name']
+                },
+                {
+                    model: Comment,
+                    as: "comments",
+                    // where: {
+                    //     status: "public"
+                    // }
                 },
             ],
         });

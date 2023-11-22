@@ -1,15 +1,20 @@
 import React, { Fragment, useEffect, useRef, useState } from "react";
-import { AddProducts, listProducts } from "../../../services/products/product";
+import { NavLink } from "react-router-dom";
+import { AddProducts, listProducts, updateProducts } from "../../../services/products/product";
 import { Dialog, Transition } from "@headlessui/react";
 import ReactQuill from "react-quill";
+import 'react-quill/dist/quill.snow.css';
+import { DOMAIN } from "../../../utils/settings/config";
 import { listCategories } from "../../../services/categories/categories";
+import EditProduct from "./EditProduct";
 
 export default function ListProducts() {
-  
-  
+
+
   const [products, setProducts] = useState([0]);
   const [reload, setReload] = useState(false);
   const [openAdd, setOpenAdd] = useState(false);
+  const [editingProduct, setEditingProduct] = useState(null);
   const cancelButtonRef = useRef(null);
   const [categories, setCategories] = useState([]);
   const [product, setProduct] = useState({
@@ -20,7 +25,7 @@ export default function ListProducts() {
     product_details: [
       { color: "", quantity: "", price: "", discount: "", image: "" },
     ],
-    promotions: [{ gift: "", image: "" }],
+    promotions: [{ gift: "", giftImage: "" }],
   });
   useEffect(() => {
     const fetchCategories = async () => {
@@ -82,7 +87,7 @@ export default function ListProducts() {
   const addPromotion = () => {
     setProduct({
       ...product,
-      promotions: [...product.promotions, { gift: "", image: "" }],
+      promotions: [...product.promotions, { gift: "", giftImage: "" }],
     });
   };
 
@@ -97,7 +102,7 @@ export default function ListProducts() {
 
   const handlePromotionChange = (index, field, event) => {
     const newPromotions = [...product.promotions];
-    if (field === "image") {
+    if (field === "giftImage") {
       const imageFile = event.target.files[0];
       if (imageFile) {
         newPromotions[index][field] = imageFile;
@@ -110,7 +115,8 @@ export default function ListProducts() {
       promotions: newPromotions,
     });
   };
-  const handleSave = async () => {
+  const handleSave = async (e) => {
+    e.preventDefault();
     try {
       const formData = new FormData();
       formData.append("idCategory", product.idCategory);
@@ -118,25 +124,69 @@ export default function ListProducts() {
       formData.append("capacity", product.capacity);
       formData.append("parameter", product.parameter);
 
-      product.product_details.forEach((detail, index) => {
-        formData.append(`product_details[${index}][color]`, detail.color);
-        formData.append(`product_details[${index}][quantity]`, detail.quantity);
-        formData.append(`product_details[${index}][price]`, detail.price);
-        formData.append(`product_details[${index}][discount]`, detail.discount);
-        formData.append(`image`, detail.image);
-      });
+      if (product.product_details.length > 0) {
+        product.product_details.forEach((detail, index) => {
+          formData.append(`product_details[${index}][color]`, detail.color);
+          formData.append(`product_details[${index}][quantity]`, detail.quantity);
+          formData.append(`product_details[${index}][price]`, detail.price);
+          formData.append(`product_details[${index}][discount]`, detail.discount);
+          formData.append(`image`, detail.image);
+        });
+      }
 
       if (product.promotions.length > 0) {
         product.promotions.forEach((promotion, index) => {
           formData.append(`promotions[${index}][gift]`, promotion.gift);
-          formData.append(`image`, promotion.image);
+          formData.append(`giftImage`, promotion.giftImage);
         });
       }
 
       await AddProducts(formData);
       setOpenAdd(false);
+      setReload((prevReload) => !prevReload);
+      setProduct(
+        {
+          idCategory: "1",
+          name: "",
+          capacity: "",
+          parameter: "",
+          product_details: [
+            { color: "", quantity: "", price: "", discount: "", image: "" },
+          ],
+          promotions: [{ gift: "", giftImage: "" }],
+        }
+      )
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  // edit product
+
+  const handleEdit = (product) => {
+    setEditingProduct(product);
+  };
+  const handleCancelEdit = () => {
+    setEditingProduct(null);
+  };
+  const handleSaveEdit = async (editedProduct) => {
+    try {
+      // Gọi API để cập nhật thông tin product
+      const updatedProduct = await updateProducts(
+        editingProduct.id,
+        editedProduct
+      );
+      // Cập nhật danh sách product
+      const updatedProducts = products.map((product) =>
+        product.id === updatedProduct.id ? updatedProduct : product
+      );
+      console.log(editedProduct);
+      setReload(!reload);
+      setProducts(updatedProducts);
+
+      setEditingProduct(null);
+    } catch (error) {
+      console.error("Error updating Product:", error);
     }
   };
   //  get list Products
@@ -170,7 +220,7 @@ export default function ListProducts() {
           <Transition.Root show={openAdd} as={Fragment}>
             <Dialog
               as="div"
-              className="relative z-50"
+              className=" relative z-50"
               initialFocus={cancelButtonRef}
               onClose={setOpenAdd}
             >
@@ -182,6 +232,7 @@ export default function ListProducts() {
                 leave="ease-in duration-200"
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
+
               >
                 <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
               </Transition.Child>
@@ -202,20 +253,16 @@ export default function ListProducts() {
                         type="button"
                         onClick={() => setOpenAdd(false)}
                         ref={cancelButtonRef}
-                        className="absolute top-0 right-0 m-4 p-2 bg-red-500 text-white rounded"
+                        className="absolute top-0 right-0 m-4 p-2 py-0.5 bg-red-500 text-white rounded"
                       >
                         X
                       </button>{" "}
                       <form>
-                        <div className="w-4/5  mx-auto p-8 bg-white ">
-                          <div className="flex  sm:items-center">
-                            <img
-                              src="https://cdn.iconscout.com/icon/premium/png-256-thumb/product-development-5785359-4839159.png"
-                              alt=""
-                              className="w-[50px] h-[50px] "
-                            />
-                            <h1 className="text-2xl font-bold pl-2">
-                              Thêm Sản Phẩm
+                        <div className="w-5/5  mx-auto p-8 bg-white ">
+                          <div className="flex sm:items-center">
+
+                            <h1 className="  text-teal-700 text-2xl font-bold pl-5">
+                              Add product
                             </h1>
                           </div>
                           <hr className=" border-solid border-[1.5px] my-5" />
@@ -228,7 +275,7 @@ export default function ListProducts() {
                                   className="block text-lg font-bold mb-2 "
                                   htmlFor="category"
                                 >
-                                  Danh mục
+                                  Category:
                                 </label>
                                 <select
                                   id="idCategory"
@@ -254,7 +301,7 @@ export default function ListProducts() {
                                   className="block text-lg font-semibold mb-2"
                                   htmlFor="name"
                                 >
-                                  Tên sản phẩm:
+                                  Product name:
                                 </label>
                                 <input
                                   type="text"
@@ -274,7 +321,7 @@ export default function ListProducts() {
                                   className="block text-lg font-semibold mb-2"
                                   htmlFor="capacity"
                                 >
-                                  Dung lượng:
+                                  Capacity:
                                 </label>
                                 <input
                                   type="text"
@@ -292,7 +339,7 @@ export default function ListProducts() {
                                   className="block text-lg font-semibold mb-2"
                                   htmlFor="parameter"
                                 >
-                                  Thống số:
+                                  Parameter:
                                 </label>
                                 <ReactQuill
                                   name="parameter"
@@ -325,7 +372,7 @@ export default function ListProducts() {
                             {/* Cột 2 */}
                             <div className="col-span-1">
                               {/* Nội dung cột 2 */}
-                              <label className="block text-2xl font-bold mb-2 text-cyan-400">
+                              <label className="block text-2xl font-bold mb-2 text-sky-600">
                                 Thêm quà tặng
                               </label>
                               {product.promotions.map((promotion, index) => (
@@ -335,8 +382,8 @@ export default function ListProducts() {
                                 >
                                   <button
                                     type="button"
-                                      onClick={() => removePromotion(index)}
-                                    className="bg-red-500 text-white py-1 px-2 rounded absolute top-0 right-0 m-2 "
+                                    onClick={() => removePromotion(index)}
+                                    className="bg-red-500 text-white py-0.5 px-2 rounded absolute top-0 right-0 m-2 "
                                   >
                                     X
                                   </button>
@@ -350,9 +397,9 @@ export default function ListProducts() {
                                     name="gift"
                                     id={`gift-${index}`}
                                     value={promotion.gift}
-                                      onChange={(event) =>
-                                        handlePromotionChange(index, "gift", event)
-                                      }
+                                    onChange={(event) =>
+                                      handlePromotionChange(index, "gift", event)
+                                    }
                                     required
                                     className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
                                   >
@@ -371,17 +418,17 @@ export default function ListProducts() {
                                   </select>
                                   <label
                                     className="block text-lg font-semibold mb-2"
-                                    htmlFor={`image-${index}`}
+                                    htmlFor={`giftImage-${index}`}
                                   >
                                     Hình ảnh:
                                   </label>
                                   <input
                                     type="file"
-                                    name="image"
-                                    id={`image-${index}`}
-                                      onChange={(event) =>
-                                        handlePromotionChange(index, "image", event)
-                                      }
+                                    name="giftImage"
+                                    id={`giftImage-${index}`}
+                                    onChange={(event) =>
+                                      handlePromotionChange(index, "giftImage", event)
+                                    }
                                     required
                                     className="w-full py-2 px-3 border rounded focus:outline-none focus:ring focus:border-blue-400"
                                   />
@@ -389,7 +436,7 @@ export default function ListProducts() {
                               ))}
                               <button
                                 type="button"
-                                  onClick={addPromotion}
+                                onClick={addPromotion}
                                 className="border rounded-md border-dotted text-black py-2 px-4 mr-2 w-full mb-4"
                               >
                                 <div className="flex justify-center items-center">
@@ -410,7 +457,7 @@ export default function ListProducts() {
                             {/* Cột 3 */}
                             <div className="col-span-1">
                               {/* Nội dung cột 3 */}
-                              <label className="block text-2xl font-bold mb-2 text-cyan-400">
+                              <label className="block text-2xl font-bold mb-2 text-sky-600">
                                 Thêm chi tiết sản phẩm
                               </label>
                               {product.product_details.map((detail, index) => (
@@ -420,8 +467,8 @@ export default function ListProducts() {
                                 >
                                   <button
                                     type="button"
-                                      onClick={() => removeDetail(index)}
-                                    className="bg-red-500 text-white py-1 px-2 rounded absolute top-0 right-0 m-2"
+                                    onClick={() => removeDetail(index)}
+                                    className="bg-red-500 text-white py-0.5 px-2 rounded absolute top-0 right-0 m-2"
                                   >
                                     X
                                   </button>
@@ -436,9 +483,9 @@ export default function ListProducts() {
                                     name="color"
                                     id={`color-${index}`}
                                     value={detail.color}
-                                      onChange={(event) =>
-                                        handleDetailChange(index, "color", event)
-                                      }
+                                    onChange={(event) =>
+                                      handleDetailChange(index, "color", event)
+                                    }
                                     required
                                     className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
                                   />
@@ -453,9 +500,9 @@ export default function ListProducts() {
                                     name="quantity"
                                     id={`quantity-${index}`}
                                     value={detail.quantity}
-                                      onChange={(event) =>
-                                        handleDetailChange(index, "quantity", event)
-                                      }
+                                    onChange={(event) =>
+                                      handleDetailChange(index, "quantity", event)
+                                    }
                                     required
                                     className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
                                   />
@@ -470,9 +517,9 @@ export default function ListProducts() {
                                     name="price"
                                     id={`price-${index}`}
                                     value={detail.price}
-                                      onChange={(event) =>
-                                        handleDetailChange(index, "price", event)
-                                      }
+                                    onChange={(event) =>
+                                      handleDetailChange(index, "price", event)
+                                    }
                                     required
                                     className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
                                   />
@@ -487,9 +534,9 @@ export default function ListProducts() {
                                     name="discount"
                                     id={`discount-${index}`}
                                     value={detail.discount}
-                                      onChange={(event) =>
-                                        handleDetailChange(index, "discount", event)
-                                      }
+                                    onChange={(event) =>
+                                      handleDetailChange(index, "discount", event)
+                                    }
                                     required
                                     className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
                                   />
@@ -513,7 +560,7 @@ export default function ListProducts() {
                               ))}
                               <button
                                 type="button"
-                                  onClick={addDetail}
+                                onClick={addDetail}
                                 className="border rounded-md border-dotted text-black py-2 px-4 mr-2 w-full mb-4"
                               >
                                 <div className="flex justify-center items-center">
@@ -533,10 +580,10 @@ export default function ListProducts() {
                           </div>
                           <button
                             type="button"
-                              onClick={handleSave}
-                            className="bg-green-500 rounded-md  text-white py-2 px-4 w-full mb-4"
+                            onClick={handleSave}
+                            className="bg-green-400 rounded-md  text-white py-2 px-4 w-full mb-4"
                           >
-                            Lưu
+                            Add product
                           </button>
                         </div>
                       </form>
@@ -560,6 +607,9 @@ export default function ListProducts() {
                 <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
                   Capacity
                 </th>
+                <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+                  Promotion
+                </th>
                 <th className="py-4 px-4 font-medium text-black dark:text-white">
                   Status
                 </th>
@@ -581,13 +631,13 @@ export default function ListProducts() {
                           <div className="w-12 rounded-md">
                             <img
                               className="max-w-full"
-                              src={`http://localhost:8000/${detail.image}`}
+                              src={`${DOMAIN}${detail.image}`}
                               alt=""
                             />
                           </div>
 
                           <b className="text-xs text-black dark:text-white">
-                            {item.name}
+                            {item.name} {item.capacity}
                           </b>
                         </div>
                       </td>
@@ -598,7 +648,7 @@ export default function ListProducts() {
                       key={item.Categorie.id}
                       className="border-b border-[#eee] py-5 px-4 dark:border-strokedark"
                     >
-                      <p className="inline-flex rounded-full bg-slate-400 bg-opacity-50 py-1 px-3 text-sm font-medium text-black">
+                      <p style={{ transition: "1s" }} className="inline-flex rounded-full bg-amber-200 bg-opacity-50 hover:bg-slate-100 py-1 px-3 text-sm font-medium text-black">
                         {item.Categorie.name}
                       </p>
                     </td>
@@ -609,35 +659,74 @@ export default function ListProducts() {
                       {item.capacity}
                     </p>
                   </td>
+
+                  {(!item.product_promotion || item.product_promotion.length === 0) ? (
+                    <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
+                      <p className="inline-flex rounded-full bg-red-300 bg-opacity-0 py-1 px-3 text-sm font-medium text-orange-600">
+                        Không có quà tặng nha..
+                      </p>
+                    </td>
+                  ) : (
+                    item.product_promotion.map((promotion, index) => (
+                      <div className="">
+                        <td
+                          key={index}
+                          className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11"
+                        >
+
+                          <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                            <div className="w-12 rounded-md">
+                              <img
+                                className="max-w-full"
+                                src={`${DOMAIN}${promotion.image}`}
+                                alt=""
+                              />
+                            </div>
+
+                            <b className="text-xs text-black dark:text-white">
+                              {promotion.gift}
+                            </b>
+                          </div>
+                        </td>
+                      </div>
+                    ))
+                  )}
+
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <p className="inline-flex rounded-full bg-green-200 bg-opacity-50 py-1 px-3 text-sm font-medium text-green-600">
                       {item.status}
                     </p>
                   </td>
+
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <div className="flex items-center space-x-3.5">
+                      <NavLink
+                        to={`/products/detail/${item.id}`}
+                      >
+                        <button className="hover:text-primary">
+                          <svg
+                            className="fill-current text-indigo-600"
+                            width="20"
+                            height="20"
+                            viewBox="0 -3 18 18"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M8.99981 14.8219C3.43106 14.8219 0.674805 9.50624 0.562305 9.28124C0.47793 9.11249 0.47793 8.88749 0.562305 8.71874C0.674805 8.49374 3.43106 3.20624 8.99981 3.20624C14.5686 3.20624 17.3248 8.49374 17.4373 8.71874C17.5217 8.88749 17.5217 9.11249 17.4373 9.28124C17.3248 9.50624 14.5686 14.8219 8.99981 14.8219ZM1.85605 8.99999C2.4748 10.0406 4.89356 13.5562 8.99981 13.5562C13.1061 13.5562 15.5248 10.0406 16.1436 8.99999C15.5248 7.95936 13.1061 4.44374 8.99981 4.44374C4.89356 4.44374 2.4748 7.95936 1.85605 8.99999Z"
+                              fill=""
+                            />
+                            <path
+                              d="M9 11.3906C7.67812 11.3906 6.60938 10.3219 6.60938 9C6.60938 7.67813 7.67812 6.60938 9 6.60938C10.3219 6.60938 11.3906 7.67813 11.3906 9C11.3906 10.3219 10.3219 11.3906 9 11.3906ZM9 7.875C8.38125 7.875 7.875 8.38125 7.875 9C7.875 9.61875 8.38125 10.125 9 10.125C9.61875 10.125 10.125 9.61875 10.125 9C10.125 8.38125 9.61875 7.875 9 7.875Z"
+                              fill=""
+                            />
+                          </svg>
+                        </button>
+                      </NavLink>
+
                       <button className="hover:text-primary">
                         <svg
-                          className="fill-current"
-                          width="18"
-                          height="18"
-                          viewBox="0 0 18 18"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M8.99981 14.8219C3.43106 14.8219 0.674805 9.50624 0.562305 9.28124C0.47793 9.11249 0.47793 8.88749 0.562305 8.71874C0.674805 8.49374 3.43106 3.20624 8.99981 3.20624C14.5686 3.20624 17.3248 8.49374 17.4373 8.71874C17.5217 8.88749 17.5217 9.11249 17.4373 9.28124C17.3248 9.50624 14.5686 14.8219 8.99981 14.8219ZM1.85605 8.99999C2.4748 10.0406 4.89356 13.5562 8.99981 13.5562C13.1061 13.5562 15.5248 10.0406 16.1436 8.99999C15.5248 7.95936 13.1061 4.44374 8.99981 4.44374C4.89356 4.44374 2.4748 7.95936 1.85605 8.99999Z"
-                            fill=""
-                          />
-                          <path
-                            d="M9 11.3906C7.67812 11.3906 6.60938 10.3219 6.60938 9C6.60938 7.67813 7.67812 6.60938 9 6.60938C10.3219 6.60938 11.3906 7.67813 11.3906 9C11.3906 10.3219 10.3219 11.3906 9 11.3906ZM9 7.875C8.38125 7.875 7.875 8.38125 7.875 9C7.875 9.61875 8.38125 10.125 9 10.125C9.61875 10.125 10.125 9.61875 10.125 9C10.125 8.38125 9.61875 7.875 9 7.875Z"
-                            fill=""
-                          />
-                        </svg>
-                      </button>
-                      <button className="hover:text-primary">
-                        <svg
-                          className="fill-current"
+                          className="fill-current text-red-500"
                           width="18"
                           height="18"
                           viewBox="0 0 18 18"
@@ -662,29 +751,30 @@ export default function ListProducts() {
                           />
                         </svg>
                       </button>
-                      <button className="hover:text-primary">
-                        <svg
-                          className="fill-current"
+                      <button className="hover:text-primary"
+                        onClick={() => handleEdit(item)}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                          className="fill-current text-green-600"
                           width="18"
                           height="18"
-                          viewBox="0 0 18 18"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M16.8754 11.6719C16.5379 11.6719 16.2285 11.9531 16.2285 12.3187V14.8219C16.2285 15.075 16.0316 15.2719 15.7785 15.2719H2.22227C1.96914 15.2719 1.77227 15.075 1.77227 14.8219V12.3187C1.77227 11.9812 1.49102 11.6719 1.12539 11.6719C0.759766 11.6719 0.478516 11.9531 0.478516 12.3187V14.8219C0.478516 15.7781 1.23789 16.5375 2.19414 16.5375H15.7785C16.7348 16.5375 17.4941 15.7781 17.4941 14.8219V12.3187C17.5223 11.9531 17.2129 11.6719 16.8754 11.6719Z"
-                            fill=""
-                          />
-                          <path
-                            d="M8.55074 12.3469C8.66324 12.4594 8.83199 12.5156 9.00074 12.5156C9.16949 12.5156 9.31012 12.4594 9.45074 12.3469L13.4726 8.43752C13.7257 8.1844 13.7257 7.79065 13.5007 7.53752C13.2476 7.2844 12.8539 7.2844 12.6007 7.5094L9.64762 10.4063V2.1094C9.64762 1.7719 9.36637 1.46252 9.00074 1.46252C8.66324 1.46252 8.35387 1.74377 8.35387 2.1094V10.4063L5.40074 7.53752C5.14762 7.2844 4.75387 7.31252 4.50074 7.53752C4.24762 7.79065 4.27574 8.1844 4.50074 8.43752L8.55074 12.3469Z"
-                            fill=""
-                          />
-                        </svg>
+                          enable-background="new 0 0 32 32"
+                          viewBox="0 0 32 32"
+                          id="update">
+                          <path d="M23.7207 8.1641c-3.7872-3.7316-9.6125-4.1499-13.8605-1.2914L9.8483 5.2317c-.002-.2762-.2276-.4985-.5039-.4963L8.3445 4.7432C8.0684 4.7453 7.8464 4.9708 7.8484 5.2468L7.876 8.9893c.0039.5498.4512.9922 1 .9922.002 0 .0049 0 .0078 0l3.743-.0276c.2762-.002.4984-.2277.4963-.5039l-.0078-1.0001c-.0021-.2761-.2276-.4981-.5036-.4961l-.6362.0046c3.3478-1.6712 7.5305-1.1391 10.341 1.6295 2.6972 2.6588 3.4342 6.6558 1.9015 10.0831-.1091.244-.0197.5283.2183.65l.8925.456c.2529.1292.5727.0251.6901-.2334C27.9255 16.3433 27.0319 11.4282 23.7207 8.1641zM23.124 22.0186c-.002 0-.0049 0-.0078 0l-3.743.0275c-.2762.0021-.4984.2277-.4963.5039l.0078 1.0001c.0021.276.2276.498.5036.4961l.6356-.0046c-3.348 1.6708-7.53 1.1382-10.3404-1.6295-2.6972-2.6588-3.4342-6.6559-1.9015-10.0831.1091-.244.0197-.5283-.2183-.65l-.8925-.456c-.2529-.1292-.5727-.0251-.6901.2334-1.9068 4.2002-1.0131 9.1153 2.298 12.3795 2.1396 2.1084 4.9307 3.1592 7.7197 3.1592 2.1475 0 4.2929-.6252 6.1407-1.869l.0119 1.6421c.002.2762.2276.4985.5039.4964l.9999-.0078c.2761-.0022.4981-.2277.4961-.5037l-.0276-3.7424C24.1201 22.4609 23.6729 22.0186 23.124 22.0186z"></path></svg>
                       </button>
                     </div>
                   </td>
                 </tr>
               ))}
+              {editingProduct && (
+                <EditProduct
+                  product={editingProduct}
+                  categories={categories}
+                  onSave={handleSaveEdit}
+                  onCancel={handleCancelEdit}
+                />
+              )}
             </tbody>
           </table>
         </div>

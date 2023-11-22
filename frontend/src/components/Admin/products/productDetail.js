@@ -1,828 +1,687 @@
 import React, { Fragment, useEffect, useRef, useState } from "react";
-import { AddProducts, listProducts } from "../../../services/products/product";
+import { useParams } from "react-router-dom";
+import { DOMAIN } from "../../../utils/settings/config";
 import { Dialog, Transition } from "@headlessui/react";
-import { listCategories } from "../../../services/categories/categories";
-import ReactQuill from "react-quill";
+import { addProductDetail, addProductPromotion, getProductDetail, updateProductDetail, updateProductPromotion } from "../../../services/products/product";
+import EditDetail from "./EditDetail";
+import EditPromotion from "./EditPromotion";
 
 export default function ProductDetail() {
-  const [products, setProducts] = useState([0]);
+  const [product, setProduct] = useState([0]);
+  const { id } = useParams();
   const [reload, setReload] = useState(false);
   const [openAdd, setOpenAdd] = useState(false);
-
+  const [openAddPromotion, setOpenAddPromotion] = useState(false);
   const cancelButtonRef = useRef(null);
-  const [categories, setCategories] = useState([]);
-  const [product, setProduct] = useState({
-    idCategory: "1",
-    name: "",
-    capacity: "",
-    parameter: "",
-    product_details: [
-      { color: "", quantity: "", price: "", discount: "", image: "" },
-    ],
-    promotions: [{ gift: "", image: "" }],
+  const [editingDetail, seteditingDetail] = useState(null);
+  const [editingPromotion, seteditingPromotion] = useState(null);
+  const [productDetail, setProductDetail] = useState({
+    idProduct: "",
+    color: "",
+    quantity: "",
+    price: "",
+    discount: "",
+    image: null,
   });
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const categoriesData = await listCategories();
-        setCategories(categoriesData);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchCategories();
-  }, []);
-  const addDetail = () => {
-    setProduct({
-      ...product,
-      product_details: [
-        ...product.product_details,
-        { color: "", quantity: "", price: "", discount: "", image: "" },
-      ],
-    });
+
+  const [productPromotion, setProductPromotion] = useState({
+    idProduct: "",
+    gift: "",
+    image: null,
+  });
+  // add product detail
+  const handleChangeDetail = (e) => {
+    const { name, value, files } = e.target;
+    setProductDetail((prevCategory) => ({
+      ...prevCategory,
+      [name]: name === "image" ? files[0] : value,
+    }));
   };
 
-  const removeDetail = (index) => {
-    const newDetails = [...product.product_details];
-    newDetails.splice(index, 1);
-    setProduct({
-      ...product,
-      product_details: newDetails,
-    });
-  };
-
-  const handleChange = (field, event) => {
-    setProduct({
-      ...product,
-      [field]: event.target.value,
-    });
-  };
-
-  const handleDescriptionChange = (value) => {
-    setProduct({ ...product, parameter: value });
-  };
-
-  const handleDetailChange = (index, field, event) => {
-    const newDetails = [...product.product_details];
-    if (field === "image") {
-      const imageFile = event.target.files[0];
-      if (imageFile) {
-        newDetails[index][field] = imageFile;
-      }
-    } else {
-      newDetails[index][field] = event.target.value;
-    }
-    setProduct({
-      ...product,
-      product_details: newDetails,
-    });
-  };
-
-  const addPromotion = () => {
-    setProduct({
-      ...product,
-      promotions: [...product.promotions, { gift: "", image: "" }],
-    });
-  };
-
-  const removePromotion = (index) => {
-    const newPromotions = [...product.promotions];
-    newPromotions.splice(index, 1);
-    setProduct({
-      ...product,
-      promotions: newPromotions,
-    });
-  };
-
-  const handlePromotionChange = (index, field, event) => {
-    const newPromotions = [...product.promotions];
-    if (field === "image") {
-      const imageFile = event.target.files[0];
-      if (imageFile) {
-        newPromotions[index][field] = imageFile;
-      }
-    } else {
-      newPromotions[index][field] = event.target.value;
-    }
-    setProduct({
-      ...product,
-      promotions: newPromotions,
-    });
-  };
-  const handleSave = async () => {
+  const handleSubmitDetail = async (e) => {
+    e.preventDefault();
     try {
       const formData = new FormData();
-      formData.append("idCategory", product.idCategory);
-      formData.append("name", product.name);
-      formData.append("capacity", product.capacity);
-      formData.append("parameter", product.parameter);
-
-      product.product_details.forEach((detail, index) => {
-        formData.append(`product_details[${index}][color]`, detail.color);
-        formData.append(`product_details[${index}][quantity]`, detail.quantity);
-        formData.append(`product_details[${index}][price]`, detail.price);
-        formData.append(`product_details[${index}][discount]`, detail.discount);
-        formData.append(`image`, detail.image);
-      });
-
-      if (product.promotions.length > 0) {
-        product.promotions.forEach((promotion, index) => {
-          formData.append(`promotions[${index}][gift]`, promotion.gift);
-          formData.append(`image`, promotion.image);
-        });
-      }
-
-      await AddProducts(formData);
+      formData.append("idProduct", id);
+      formData.append("color", productDetail.color);
+      formData.append("quantity", productDetail.quantity);
+      formData.append("price", productDetail.price);
+      formData.append("discount", productDetail.discount);
+      formData.append("image", productDetail.image);
+      // console.log(productDetail.idProduct);
+      await addProductDetail(formData);
+      setReload((prevReload) => !prevReload);
+      setProductDetail({
+        idProduct: "",
+        color: "",
+        quantity: "",
+        price: "",
+        discount: "",
+        image: null,
+      })
       setOpenAdd(false);
     } catch (error) {
       console.log(error);
     }
   };
-  //  get list Products
+
+  // add promotion
+  const handleChangePromotion = (e) => {
+    const { name, value, files } = e.target;
+    setProductPromotion((prevCategory) => ({
+      ...prevCategory,
+      [name]: name === "image" ? files[0] : value,
+    }));
+  };
+  const handleSubmitPromotion = async (e) => {
+    e.preventDefault();
+    try {
+      const formData = new FormData();
+      formData.append("idProduct", id);
+      formData.append("gift", productPromotion.gift);
+      formData.append("image", productPromotion.image);
+
+      await addProductPromotion(formData);
+      setReload((prevReload) => !prevReload);
+      setProductPromotion({
+        idProduct: "",
+        gift: "",
+        image: null,
+      })
+      setOpenAddPromotion(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
+  // edit product detail
+
+  const handleEditDetal = (productdetail) => {
+    seteditingDetail(productdetail);
+  };
+  const handleCancelEditDetail = () => {
+    seteditingDetail(null);
+  };
+
+  const handleSaveDetail = async (editedDetail) => {
+    try {
+      // // Gọi API để cập nhật thông tin 
+      const updatedDetail = await updateProductDetail(
+        editingDetail.id,
+        editedDetail
+      );
+      console.log(editedDetail);
+
+      // Cập nhật lại danh sách 
+      const updatedProductDetails = product.map((Detail) =>
+        Detail.id === updatedDetail.id ? updatedDetail : Detail
+      );
+      setReload(!reload);
+      setProduct(updatedProductDetails);
+
+      seteditingDetail(null);
+    } catch (error) {
+      console.error("Error updating user:", error);
+    }
+  };
+  // edit promotion
+
+  const handleEditPromotion = (promotion) => {
+    seteditingPromotion(promotion);
+  };
+  const handleCancelEditPromotion = () => {
+    seteditingPromotion(null);
+  };
+
+  const handleSavePromotion = async (editedPromotion) => {
+    try {
+      // // Gọi API để cập nhật thông tin 
+      const updatedPromotion = await updateProductPromotion(
+        editingPromotion.id,
+        editedPromotion
+      );
+      console.log(editedPromotion);
+      // Cập nhật lại danh sách 
+      const updatedProductPromotion = product.map((Detail) =>
+        Detail.id === updatedPromotion.id ? updatedPromotion : Detail
+      );
+      setReload(!reload);
+      setProduct(updatedProductPromotion);
+
+      seteditingPromotion(null);
+    } catch (error) {
+      console.error("Error updating user:", error);
+    }
+  };
+  //  get list Products details
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchProductsDetails = async () => {
       try {
-        const productsData = await listProducts();
-        console.log(productsData);
-        setProducts(productsData);
+        const productsDetailsData = await getProductDetail(id);
+        console.log(productsDetailsData);
+        setProduct(productsDetailsData);
       } catch (error) {
-        // Xử lý lỗi nếu cần
         console.log(error);
       }
     };
-    fetchProducts();
+    fetchProductsDetails();
   }, [reload]);
   return (
+
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
-      <div className="max-w-full overflow-x-auto">
-        <div className="mb-20">
-          <div className="flex justify-between items-center mb-3">
-            <div className="text-xl font-bold">Iphone 15 Pro 128G</div>
-            <button
-              onClick={() => setOpenAdd(true)}
-              className=" bg-green-600 text-white py-1 px-2 mr-2 rounded transition duration-150 ease-in-out ..."
-            >
-              Add Product Detail
-            </button>
-          </div>
-          <hr className="border-1 border-solid mb-4" />
-          <Transition.Root show={openAdd} as={Fragment}>
-            <Dialog
-              as="div"
-              className="relative z-50"
-              initialFocus={cancelButtonRef}
-              onClose={setOpenAdd}
-            >
-              <Transition.Child
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0"
-                enterTo="opacity-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100"
-                leaveTo="opacity-0"
+      {product.map((item) => (
+        <div key={item.id} className="max-w-full overflow-x-auto">
+          <div className="mb-20">
+            <div className="flex justify-between items-center mb-3">
+              <div className="text-xl font-bold">{item.name} {item.capacity}</div>
+            </div>
+            <hr className="border-1 border-solid mb-4" />
+            <div className="flex justify-between items-center mb-3">
+              <div className="text-xl font-bold">DETAIL</div>
+              <button
+                onClick={() => setOpenAdd(true)}
+                className=" bg-green-600 text-white py-1 px-2 mr-2 rounded transition duration-150 ease-in-out ..."
               >
-                <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-              </Transition.Child>
+                Add Product Detail
+              </button>
+            </div>
 
-              <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-                <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0 ">
-                  <Transition.Child
-                    as={Fragment}
-                    enter="ease-out duration-300"
-                    enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                    enterTo="opacity-100 translate-y-0 sm:scale-100"
-                    leave="ease-in duration-200"
-                    leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                    leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                  >
-                    <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-screen-xl ">
-                      <button
-                        type="button"
-                        onClick={() => setOpenAdd(false)}
-                        ref={cancelButtonRef}
-                        className="absolute top-0 right-0 m-4 p-2 bg-red-500 text-white rounded"
-                      >
-                        X
-                      </button>{" "}
-                      <form>
-                        <div className="w-4/5  mx-auto p-8 bg-white ">
-                          <div className="flex  sm:items-center">
-                            <img
-                              src="https://cdn.iconscout.com/icon/premium/png-256-thumb/product-development-5785359-4839159.png"
-                              alt=""
-                              className="w-[50px] h-[50px] "
-                            />
-                            <h1 className="text-2xl font-bold pl-2">
-                              Thêm Sản Phẩm
-                            </h1>
-                          </div>
-                          <hr className=" border-solid border-[1.5px] my-5" />
-                          <div className="grid grid-cols-1 md:grid-cols-3   gap-8">
-                            {/* Cột 1 */}
+            <Transition.Root show={openAdd} as={Fragment}>
+              <Dialog
+                as="div"
+                className="relative z-50"
+                initialFocus={cancelButtonRef}
+                onClose={setOpenAdd}
+              >
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0"
+                  enterTo="opacity-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100"
+                  leaveTo="opacity-0"
+                >
+                  <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                </Transition.Child>
 
-                            <div className="col-span-1">
-                              <div className="mb-4">
-                                <label
-                                  className="block text-lg font-bold mb-2 "
-                                  htmlFor="category"
-                                >
-                                  Danh mục
-                                </label>
-                                <select
-                                  id="idCategory"
-                                  name="idCategory"
-                                  value={product.idCategory}
-                                  onChange={(event) =>
-                                    handleChange("idCategory", event)
-                                  }
-                                  className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
-                                >
-                                  {categories.map((category) => (
-                                    <option
-                                      key={category.id}
-                                      value={category.id}
-                                    >
-                                      {category.name}
-                                    </option>
-                                  ))}
-                                </select>
-                              </div>
-                              <div className="mb-4">
-                                <label
-                                  className="block text-lg font-semibold mb-2"
-                                  htmlFor="name"
-                                >
-                                  Tên sản phẩm:
-                                </label>
-                                <input
-                                  type="text"
-                                  id="name"
-                                  name="name"
-                                  value={product.name}
-                                  onChange={(event) =>
-                                    handleChange("name", event)
-                                  }
-                                  required
-                                  placeholder="Type here..."
-                                  className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
-                                />
-                              </div>
-                              <div className="mb-4">
-                                <label
-                                  className="block text-lg font-semibold mb-2"
-                                  htmlFor="capacity"
-                                >
-                                  Dung lượng:
-                                </label>
-                                <input
-                                  type="text"
-                                  id="capacity"
-                                  name="capacity"
-                                  value={product.capacity}
-                                  onChange={(event) =>
-                                    handleChange("capacity", event)
-                                  }
-                                  className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
-                                />
-                              </div>
-                              <div className="mb-4">
-                                <label
-                                  className="block text-lg font-semibold mb-2"
-                                  htmlFor="parameter"
-                                >
-                                  Thống số:
-                                </label>
-                                <ReactQuill
-                                  name="parameter"
-                                  id="parameter"
-                                  theme="snow"
-                                  value={product.parameter}
-                                  onChange={handleDescriptionChange}
-                                  modules={{
-                                    toolbar: [
-                                      [{ font: [] }],
-                                      [{ header: [1, 2, 3, 4, 5, 6, false] }],
-                                      ["bold", "italic", "underline", "strike"],
-                                      [{ color: [] }, { background: [] }],
-                                      [{ script: "sub" }, { script: "super" }],
-                                      ["blockquote", "code-block"],
-                                      [{ list: "ordered" }, { list: "bullet" }],
-                                      [
-                                        { indent: "-1" },
-                                        { indent: "+1" },
-                                        { align: [] },
-                                      ],
-                                      ["link", "image", "video"],
-                                      ["clean"],
-                                    ],
-                                  }}
-                                />
-                              </div>
-                            </div>
-
-                            {/* Cột 2 */}
-                            <div className="col-span-1">
-                              {/* Nội dung cột 2 */}
-                              <label className="block text-2xl font-bold mb-2 text-cyan-400">
-                                Thêm quà tặng
-                              </label>
-                              {product.promotions.map((promotion, index) => (
-                                <div
-                                  key={index}
-                                  className="mb-4 p-4 border rounded relative"
-                                >
-                                  <button
-                                    type="button"
-                                    onClick={() => removePromotion(index)}
-                                    className="bg-red-500 text-white py-1 px-2 rounded absolute top-0 right-0 m-2 "
-                                  >
-                                    X
-                                  </button>
-                                  <label
-                                    className="block text-lg font-semibold mb-2"
-                                    htmlFor={`gift-${index}`}
-                                  >
-                                    Quà tặng:
-                                  </label>
-                                  <select
-                                    name="gift"
-                                    id={`gift-${index}`}
-                                    value={promotion.gift}
-                                    onChange={(event) =>
-                                      handlePromotionChange(
-                                        index,
-                                        "gift",
-                                        event
-                                      )
-                                    }
-                                    required
-                                    className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
-                                  >
-                                    <option
-                                      className="bg-gray-100"
-                                      value="tai nghe"
-                                    >
-                                      Tai nghe
-                                    </option>
-                                    <option
-                                      className="bg-gray-100"
-                                      value="sạc dự phòng"
-                                    >
-                                      Sạc dự phòng
-                                    </option>
-                                  </select>
-                                  <label
-                                    className="block text-lg font-semibold mb-2"
-                                    htmlFor={`image-${index}`}
-                                  >
-                                    Hình ảnh:
-                                  </label>
-                                  <input
-                                    type="file"
-                                    name="image"
-                                    id={`image-${index}`}
-                                    onChange={(event) =>
-                                      handlePromotionChange(
-                                        index,
-                                        "image",
-                                        event
-                                      )
-                                    }
-                                    required
-                                    className="w-full py-2 px-3 border rounded focus:outline-none focus:ring focus:border-blue-400"
-                                  />
-                                </div>
-                              ))}
-                              <button
-                                type="button"
-                                onClick={addPromotion}
-                                className="border rounded-md border-dotted text-black py-2 px-4 mr-2 w-full mb-4"
+                <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+                  <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                    <Transition.Child
+                      as={Fragment}
+                      enter="ease-out duration-300"
+                      enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                      enterTo="opacity-100 translate-y-0 sm:scale-100"
+                      leave="ease-in duration-200"
+                      leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                      leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                    >
+                      <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                        <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                          <div className="sm: flex sm:items-start ">
+                            <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full">
+                              <Dialog.Title
+                                as="h1"
+                                className=" text-center font-semibold leading-6 text-2xl p-7 text-cyan-900"
                               >
-                                <div className="flex justify-center items-center">
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    width="24"
-                                    height="24"
+                                Add Product Detail
+                              </Dialog.Title>
+                              <div className=" ">
+                                <form className="w-full" onSubmit={handleSubmitDetail}>
+                                  <div
+                                    className="mb-4 p-4 border rounded relative"
                                   >
-                                    <path d="M0 0h24v24H0z" fill="none" />
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v4h4v2h-4v4h-2v-4H7v-2h4z" />
-                                  </svg>
-                                  <p className="pl-1">Add New Field</p>
-                                </div>
-                              </button>
-                            </div>
+                                    <label
+                                      className="block text-lg font-semibold mb-2"
+                                      htmlFor={`color-`}
+                                    >
+                                      Màu sắc:
+                                    </label>
+                                    <input
 
-                            {/* Cột 3 */}
-                            <div className="col-span-1">
-                              {/* Nội dung cột 3 */}
-                              <label className="block text-2xl font-bold mb-2 text-cyan-400">
-                                Thêm chi tiết sản phẩm
-                              </label>
-                              {product.product_details.map((detail, index) => (
-                                <div
-                                  key={index}
-                                  className="mb-4 p-4 border rounded relative"
-                                >
+                                      type="text"
+                                      name="color"
+                                      value={productDetail.color}
+                                      onChange={handleChangeDetail}
+                                      required
+                                      className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
+                                    />
+                                    <label
+                                      className="block text-lg font-semibold mb-2"
+                                      htmlFor={`quantity-`}
+                                    >
+                                      Số lượng:
+                                    </label>
+                                    <input
+                                      type="number"
+                                      name="quantity"
+                                      value={productDetail.quantity}
+                                      onChange={handleChangeDetail}
+                                      required
+                                      className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
+                                    />
+                                    <label
+                                      className="block text-lg font-semibold mb-2"
+                                      htmlFor={`price-`}
+                                    >
+                                      Giá:
+                                    </label>
+                                    <input
+                                      type="number"
+                                      name="price"
+                                      value={productDetail.price}
+                                      onChange={handleChangeDetail}
+                                      required
+                                      className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
+                                    />
+                                    <label
+                                      className="block text-lg font-semibold mb-2"
+                                      htmlFor={`discount`}
+                                    >
+                                      Giảm Giá:
+                                    </label>
+                                    <input
+                                      type="number"
+                                      name="discount"
+                                      value={productDetail.discount}
+                                      onChange={handleChangeDetail}
+                                      required
+                                      className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
+                                    />
+                                    <label
+                                      className="block text-lg font-semibold mb-2"
+                                      htmlFor={`image`}
+                                    >
+                                      Hình ảnh:
+                                    </label>
+                                    <input
+                                      type="file"
+                                      name="image"
+                                      onChange={handleChangeDetail}
+                                      required
+                                      className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
+                                    />
+                                  </div>
                                   <button
-                                    type="button"
-                                    onClick={() => removeDetail(index)}
-                                    className="bg-red-500 text-white py-1 px-2 rounded absolute top-0 right-0 m-2"
+                                    onClick={() => setOpenAdd(false)}
+                                    ref={cancelButtonRef}
+                                    className="mt-3 inline-flex w-full justify-center rounded-md
+                                                             bg-white px-3 py-2 text-sm font-semibold text-gray-900 
+                                                             shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 
+                                                             sm:mt-0 sm:w-auto"
                                   >
-                                    X
+                                    Close
                                   </button>
-                                  <label
-                                    className="block text-lg font-semibold mb-2"
-                                    htmlFor={`color-${index}`}
+                                  <button
+                                    type="submit"
+                                    className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
                                   >
-                                    Màu sắc:
-                                  </label>
-                                  <input
-                                    type="text"
-                                    name="color"
-                                    id={`color-${index}`}
-                                    value={detail.color}
-                                    onChange={(event) =>
-                                      handleDetailChange(index, "color", event)
-                                    }
-                                    required
-                                    className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
-                                  />
-                                  <label
-                                    className="block text-lg font-semibold mb-2"
-                                    htmlFor={`quantity-${index}`}
-                                  >
-                                    Số lượng:
-                                  </label>
-                                  <input
-                                    type="number"
-                                    name="quantity"
-                                    id={`quantity-${index}`}
-                                    value={detail.quantity}
-                                    onChange={(event) =>
-                                      handleDetailChange(
-                                        index,
-                                        "quantity",
-                                        event
-                                      )
-                                    }
-                                    required
-                                    className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
-                                  />
-                                  <label
-                                    className="block text-lg font-semibold mb-2"
-                                    htmlFor={`price-${index}`}
-                                  >
-                                    Giá:
-                                  </label>
-                                  <input
-                                    type="number"
-                                    name="price"
-                                    id={`price-${index}`}
-                                    value={detail.price}
-                                    onChange={(event) =>
-                                      handleDetailChange(index, "price", event)
-                                    }
-                                    required
-                                    className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
-                                  />
-                                  <label
-                                    className="block text-lg font-semibold mb-2"
-                                    htmlFor={`discount-${index}`}
-                                  >
-                                    Giảm Giá:
-                                  </label>
-                                  <input
-                                    type="number"
-                                    name="discount"
-                                    id={`discount-${index}`}
-                                    value={detail.discount}
-                                    onChange={(event) =>
-                                      handleDetailChange(
-                                        index,
-                                        "discount",
-                                        event
-                                      )
-                                    }
-                                    required
-                                    className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
-                                  />
-                                  <label
-                                    className="block text-lg font-semibold mb-2"
-                                    htmlFor={`image-${index}`}
-                                  >
-                                    Hình ảnh:
-                                  </label>
-                                  <input
-                                    type="file"
-                                    name="image"
-                                    id={`image-${index}`}
-                                    onChange={(event) =>
-                                      handleDetailChange(index, "image", event)
-                                    }
-                                    required
-                                    className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
-                                  />
-                                </div>
-                              ))}
-                              <button
-                                type="button"
-                                onClick={addDetail}
-                                className="border rounded-md border-dotted text-black py-2 px-4 mr-2 w-full mb-4"
-                              >
-                                <div className="flex justify-center items-center">
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    width="24"
-                                    height="24"
-                                  >
-                                    <path d="M0 0h24v24H0z" fill="none" />
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v4h4v2h-4v4h-2v-4H7v-2h4z" />
-                                  </svg>
-                                  <p className="pl-1">Add New Field</p>
-                                </div>
-                              </button>
+                                    Add Category
+                                  </button>
+                                </form>
+                              </div>
                             </div>
                           </div>
-                          <button
-                            type="button"
-                            onClick={handleSave}
-                            className="bg-green-500 rounded-md  text-white py-2 px-4 w-full mb-4"
-                          >
-                            Lưu
-                          </button>
                         </div>
-                      </form>
-                    </Dialog.Panel>
-                  </Transition.Child>
+                      </Dialog.Panel>
+                    </Transition.Child>
+                  </div>
                 </div>
-              </div>
-            </Dialog>
-          </Transition.Root>
-          <table className="w-full table-auto">
-            <thead>
-              <tr className="bg-gray-100 text-left dark:bg-meta-4">
-                <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                  Image
-                </th>
-                <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
-                  Color
-                </th>
-                <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
-                  Price
-                </th>
-                <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
-                  Quantity
-                </th>
-                <th className="py-4 px-4 font-medium text-black dark:text-white">
-                  Discount
-                </th>
-                <th className="py-4 px-4 font-medium text-black dark:text-white">
-                  Status
-                </th>
-                <th className="py-4 px-4 font-medium text-black dark:text-white">
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((item) => (
-                <tr key={item.id}>
-                  {item.product_detail &&
-                    item.product_detail.map((detail, index) => (
-                      <td
-                        key={index}
-                        className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11"
-                      >
-                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                          <div className="h-12 w-12 rounded-md">
-                            <img
-                              className="max-w-full"
-                              src="https://cdn.hoanghamobile.com/i/preview/Uploads/2022/09/08/2222.png"
-                              alt=""
-                            />
-                          </div>
-                        </div>
-                      </td>
-                    ))}
+              </Dialog>
+            </Transition.Root>
 
-                  {item.Categorie && typeof item.Categorie === "object" && (
+            <hr className="border-1 border-solid mb-4" />
+
+            <table className="w-full table-auto">
+              <thead>
+                <tr className="bg-gray-100 text-left dark:bg-meta-4">
+                  <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                    Image
+                  </th>
+                  <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+                    Color
+                  </th>
+                  <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+                    Price
+                  </th>
+                  <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+                    Quantity
+                  </th>
+                  <th className="py-4 px-4 font-medium text-black dark:text-white">
+                    Discount
+                  </th>
+                  <th className="py-4 px-4 font-medium text-black dark:text-white">
+                    Status
+                  </th>
+                  <th className="py-4 px-4 font-medium text-black dark:text-white">
+                    Action
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {item.product_detail && item.product_detail.map((detail, index) => (
+                  <tr key={index}>
                     <td
-                      key={item.Categorie.id}
-                      className="border-b border-[#eee] py-5 px-4 dark:border-strokedark"
+                      className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11"
                     >
-                      <p className="inline-flex rounded-full bg-slate-400 bg-opacity-50 py-1 px-3 text-sm font-medium text-black">
-                        {item.Categorie.name}
+                      <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                        <div className="h-12 w-12 rounded-md">
+                          <img
+                            className="max-w-full"
+                            src={`${DOMAIN}${detail.image}`}
+                            alt=""
+                          />
+                        </div>
+                      </div>
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark"
+                    >
+                      <p className="inline-flex rounded-full bg-red-300 bg-opacity-10 py-1 px-3 text-lg font-medium text-black">
+                        {detail.color}
                       </p>
                     </td>
-                  )}
 
-                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                    <p className="inline-flex rounded-full bg-red-300 bg-opacity-50 py-1 px-3 text-sm font-medium text-orange-600">
-                      {item.capacity}
-                    </p>
-                  </td>
-                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                    <p className="inline-flex rounded-full bg-green-200 bg-opacity-50 py-1 px-3 text-sm font-medium text-green-600">
-                      {item.status}
-                    </p>
-                  </td>
-                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                    <p className="inline-flex rounded-full bg-green-200 bg-opacity-50 py-1 px-3 text-sm font-medium text-green-600">
-                      {item.status}
-                    </p>
-                  </td>
-                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                    <p className="inline-flex rounded-full bg-green-200 bg-opacity-50 py-1 px-3 text-sm font-medium text-green-600">
-                      {item.status}
-                    </p>
-                  </td>
-                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                    <div className="flex items-center space-x-3.5">
-                      <button className="hover:text-primary">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          width="24"
-                          height="24"
+
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      <p className="inline-flex rounded-full bg-red-300 bg-opacity-0 py-1 px-3 text-lg font-light text-black">
+                        {detail.price}
+                      </p>
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      <p className="inline-flex rounded-full bg-green-200 bg-opacity-0 py-1 px-3 text-lg font-light text-black">
+                        {detail.quantity}
+                      </p>
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      <p className="inline-flex rounded-full bg-green-200 bg-opacity-0 py-1 px-3 text-lg font-light  text-black">
+                        {detail.discount}
+                      </p>
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      <p className="inline-flex rounded-full bg-green-200 bg-opacity-50 py-1 px-3 text-sm font-medium text-green-600">
+                        {detail.status}
+                      </p>
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      <div className="flex items-center space-x-3.5">
+                        <button className="hover:text-primary"
+                          onClick={() => handleEditDetal(detail)}
                         >
-                          <path d="M0 0h24v24H0z" fill="none" />
-                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v4h4v2h-4v4h-2v-4H7v-2h4z" />
-                        </svg>
-                      </button>
-                      <button className="hover:text-primary">
-                        <svg
-                          className="fill-current"
-                          width="18"
-                          height="18"
-                          viewBox="0 0 18 18"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M13.7535 2.47502H11.5879V1.9969C11.5879 1.15315 10.9129 0.478149 10.0691 0.478149H7.90352C7.05977 0.478149 6.38477 1.15315 6.38477 1.9969V2.47502H4.21914C3.40352 2.47502 2.72852 3.15002 2.72852 3.96565V4.8094C2.72852 5.42815 3.09414 5.9344 3.62852 6.1594L4.07852 15.4688C4.13477 16.6219 5.09102 17.5219 6.24414 17.5219H11.7004C12.8535 17.5219 13.8098 16.6219 13.866 15.4688L14.3441 6.13127C14.8785 5.90627 15.2441 5.3719 15.2441 4.78127V3.93752C15.2441 3.15002 14.5691 2.47502 13.7535 2.47502ZM7.67852 1.9969C7.67852 1.85627 7.79102 1.74377 7.93164 1.74377H10.0973C10.2379 1.74377 10.3504 1.85627 10.3504 1.9969V2.47502H7.70664V1.9969H7.67852ZM4.02227 3.96565C4.02227 3.85315 4.10664 3.74065 4.24727 3.74065H13.7535C13.866 3.74065 13.9785 3.82502 13.9785 3.96565V4.8094C13.9785 4.9219 13.8941 5.0344 13.7535 5.0344H4.24727C4.13477 5.0344 4.02227 4.95002 4.02227 4.8094V3.96565ZM11.7285 16.2563H6.27227C5.79414 16.2563 5.40039 15.8906 5.37227 15.3844L4.95039 6.2719H13.0785L12.6566 15.3844C12.6004 15.8625 12.2066 16.2563 11.7285 16.2563Z"
-                            fill=""
-                          />
-                          <path
-                            d="M9.00039 9.11255C8.66289 9.11255 8.35352 9.3938 8.35352 9.75942V13.3313C8.35352 13.6688 8.63477 13.9782 9.00039 13.9782C9.33789 13.9782 9.64727 13.6969 9.64727 13.3313V9.75942C9.64727 9.3938 9.33789 9.11255 9.00039 9.11255Z"
-                            fill=""
-                          />
-                          <path
-                            d="M11.2502 9.67504C10.8846 9.64692 10.6033 9.90004 10.5752 10.2657L10.4064 12.7407C10.3783 13.0782 10.6314 13.3875 10.9971 13.4157C11.0252 13.4157 11.0252 13.4157 11.0533 13.4157C11.3908 13.4157 11.6721 13.1625 11.6721 12.825L11.8408 10.35C11.8408 9.98442 11.5877 9.70317 11.2502 9.67504Z"
-                            fill=""
-                          />
-                          <path
-                            d="M6.72245 9.67504C6.38495 9.70317 6.1037 10.0125 6.13182 10.35L6.3287 12.825C6.35683 13.1625 6.63808 13.4157 6.94745 13.4157C6.97558 13.4157 6.97558 13.4157 7.0037 13.4157C7.3412 13.3875 7.62245 13.0782 7.59433 12.7407L7.39745 10.2657C7.39745 9.90004 7.08808 9.64692 6.72245 9.67504Z"
-                            fill=""
-                          />
-                        </svg>
-                      </button>
-                      <button className="hover:text-primary">
-                        <svg
-                          className="fill-current"
-                          width="18"
-                          height="18"
-                          viewBox="0 0 18 18"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M16.8754 11.6719C16.5379 11.6719 16.2285 11.9531 16.2285 12.3187V14.8219C16.2285 15.075 16.0316 15.2719 15.7785 15.2719H2.22227C1.96914 15.2719 1.77227 15.075 1.77227 14.8219V12.3187C1.77227 11.9812 1.49102 11.6719 1.12539 11.6719C0.759766 11.6719 0.478516 11.9531 0.478516 12.3187V14.8219C0.478516 15.7781 1.23789 16.5375 2.19414 16.5375H15.7785C16.7348 16.5375 17.4941 15.7781 17.4941 14.8219V12.3187C17.5223 11.9531 17.2129 11.6719 16.8754 11.6719Z"
-                            fill=""
-                          />
-                          <path
-                            d="M8.55074 12.3469C8.66324 12.4594 8.83199 12.5156 9.00074 12.5156C9.16949 12.5156 9.31012 12.4594 9.45074 12.3469L13.4726 8.43752C13.7257 8.1844 13.7257 7.79065 13.5007 7.53752C13.2476 7.2844 12.8539 7.2844 12.6007 7.5094L9.64762 10.4063V2.1094C9.64762 1.7719 9.36637 1.46252 9.00074 1.46252C8.66324 1.46252 8.35387 1.74377 8.35387 2.1094V10.4063L5.40074 7.53752C5.14762 7.2844 4.75387 7.31252 4.50074 7.53752C4.24762 7.79065 4.27574 8.1844 4.50074 8.43752L8.55074 12.3469Z"
-                            fill=""
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <div className="mb-10">
-          <div className="flex justify-between items-center mb-3">
-            <div className="text-xl font-bold">PROMOTIONS</div>
+                          <svg xmlns="http://www.w3.org/2000/svg"
+                            className="fill-current text-green-600"
+                            width="18"
+                            height="18"
+                            enable-background="new 0 0 32 32"
+                            viewBox="0 0 32 32"
+                            id="update">
+                            <path d="M23.7207 8.1641c-3.7872-3.7316-9.6125-4.1499-13.8605-1.2914L9.8483 5.2317c-.002-.2762-.2276-.4985-.5039-.4963L8.3445 4.7432C8.0684 4.7453 7.8464 4.9708 7.8484 5.2468L7.876 8.9893c.0039.5498.4512.9922 1 .9922.002 0 .0049 0 .0078 0l3.743-.0276c.2762-.002.4984-.2277.4963-.5039l-.0078-1.0001c-.0021-.2761-.2276-.4981-.5036-.4961l-.6362.0046c3.3478-1.6712 7.5305-1.1391 10.341 1.6295 2.6972 2.6588 3.4342 6.6558 1.9015 10.0831-.1091.244-.0197.5283.2183.65l.8925.456c.2529.1292.5727.0251.6901-.2334C27.9255 16.3433 27.0319 11.4282 23.7207 8.1641zM23.124 22.0186c-.002 0-.0049 0-.0078 0l-3.743.0275c-.2762.0021-.4984.2277-.4963.5039l.0078 1.0001c.0021.276.2276.498.5036.4961l.6356-.0046c-3.348 1.6708-7.53 1.1382-10.3404-1.6295-2.6972-2.6588-3.4342-6.6559-1.9015-10.0831.1091-.244.0197-.5283-.2183-.65l-.8925-.456c-.2529-.1292-.5727-.0251-.6901.2334-1.9068 4.2002-1.0131 9.1153 2.298 12.3795 2.1396 2.1084 4.9307 3.1592 7.7197 3.1592 2.1475 0 4.2929-.6252 6.1407-1.869l.0119 1.6421c.002.2762.2276.4985.5039.4964l.9999-.0078c.2761-.0022.4981-.2277.4961-.5037l-.0276-3.7424C24.1201 22.4609 23.6729 22.0186 23.124 22.0186z"></path></svg>
+                        </button>
+                        <button className="hover:text-primary">
+                          <svg
+                            className="fill-current text-red-500"
+                            width="18"
+                            height="18"
+                            viewBox="0 0 18 18"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M13.7535 2.47502H11.5879V1.9969C11.5879 1.15315 10.9129 0.478149 10.0691 0.478149H7.90352C7.05977 0.478149 6.38477 1.15315 6.38477 1.9969V2.47502H4.21914C3.40352 2.47502 2.72852 3.15002 2.72852 3.96565V4.8094C2.72852 5.42815 3.09414 5.9344 3.62852 6.1594L4.07852 15.4688C4.13477 16.6219 5.09102 17.5219 6.24414 17.5219H11.7004C12.8535 17.5219 13.8098 16.6219 13.866 15.4688L14.3441 6.13127C14.8785 5.90627 15.2441 5.3719 15.2441 4.78127V3.93752C15.2441 3.15002 14.5691 2.47502 13.7535 2.47502ZM7.67852 1.9969C7.67852 1.85627 7.79102 1.74377 7.93164 1.74377H10.0973C10.2379 1.74377 10.3504 1.85627 10.3504 1.9969V2.47502H7.70664V1.9969H7.67852ZM4.02227 3.96565C4.02227 3.85315 4.10664 3.74065 4.24727 3.74065H13.7535C13.866 3.74065 13.9785 3.82502 13.9785 3.96565V4.8094C13.9785 4.9219 13.8941 5.0344 13.7535 5.0344H4.24727C4.13477 5.0344 4.02227 4.95002 4.02227 4.8094V3.96565ZM11.7285 16.2563H6.27227C5.79414 16.2563 5.40039 15.8906 5.37227 15.3844L4.95039 6.2719H13.0785L12.6566 15.3844C12.6004 15.8625 12.2066 16.2563 11.7285 16.2563Z"
+                              fill=""
+                            />
+                            <path
+                              d="M9.00039 9.11255C8.66289 9.11255 8.35352 9.3938 8.35352 9.75942V13.3313C8.35352 13.6688 8.63477 13.9782 9.00039 13.9782C9.33789 13.9782 9.64727 13.6969 9.64727 13.3313V9.75942C9.64727 9.3938 9.33789 9.11255 9.00039 9.11255Z"
+                              fill=""
+                            />
+                            <path
+                              d="M11.2502 9.67504C10.8846 9.64692 10.6033 9.90004 10.5752 10.2657L10.4064 12.7407C10.3783 13.0782 10.6314 13.3875 10.9971 13.4157C11.0252 13.4157 11.0252 13.4157 11.0533 13.4157C11.3908 13.4157 11.6721 13.1625 11.6721 12.825L11.8408 10.35C11.8408 9.98442 11.5877 9.70317 11.2502 9.67504Z"
+                              fill=""
+                            />
+                            <path
+                              d="M6.72245 9.67504C6.38495 9.70317 6.1037 10.0125 6.13182 10.35L6.3287 12.825C6.35683 13.1625 6.63808 13.4157 6.94745 13.4157C6.97558 13.4157 6.97558 13.4157 7.0037 13.4157C7.3412 13.3875 7.62245 13.0782 7.59433 12.7407L7.39745 10.2657C7.39745 9.90004 7.08808 9.64692 6.72245 9.67504Z"
+                              fill=""
+                            />
+                          </svg>
+                        </button>
+
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-          <hr className="border-1 border-solid mb-4" />
-          <table className="w-full table-auto">
-            <thead>
-              <tr className="bg-gray-100 text-left dark:bg-meta-4">
-                <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                  Image
-                </th>
-                <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
-                  Qua tang
-                </th>
-                <th className="py-4 px-4 font-medium text-black dark:text-white">
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((item) => (
-                <tr key={item.id}>
-                  {item.product_detail &&
-                    item.product_detail.map((detail, index) => (
-                      <td
-                        key={index}
-                        className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11"
-                      >
-                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                          <div className="h-12 w-12 rounded-md">
-                            <img
-                              className="max-w-full"
-                              src="https://cdn.hoanghamobile.com/i/preview/Uploads/2022/09/08/2222.png"
-                              alt=""
-                            />
+          <div className="mb-10">
+            <div className="flex justify-between items-center mb-3">
+              <div className="text-xl font-bold">PROMOTIONS</div>
+              <button
+                onClick={() => setOpenAddPromotion(true)}
+                className=" bg-green-600 text-white py-1 px-2 mr-2 rounded transition duration-150 ease-in-out ..."
+              >
+                Add Promotion
+              </button>
+            </div>
+            <Transition.Root show={openAddPromotion} as={Fragment}>
+              <Dialog
+                as="div"
+                className="relative z-50"
+                initialFocus={cancelButtonRef}
+                onClose={setOpenAddPromotion}
+              >
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0"
+                  enterTo="opacity-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100"
+                  leaveTo="opacity-0"
+                >
+                  <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                </Transition.Child>
+
+                <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+                  <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                    <Transition.Child
+                      as={Fragment}
+                      enter="ease-out duration-300"
+                      enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                      enterTo="opacity-100 translate-y-0 sm:scale-100"
+                      leave="ease-in duration-200"
+                      leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                      leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                    >
+                      <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                        <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                          <div className="sm: flex sm:items-start ">
+                            <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full">
+                              <Dialog.Title
+                                as="h1"
+                                className=" text-center font-semibold leading-6 text-2xl p-7 text-cyan-900"
+                              >
+                                Add Promotion
+                              </Dialog.Title>
+                              <div className=" ">
+                                <form className="w-full" onSubmit={handleSubmitPromotion}>
+                                  <div
+                                    className="mb-4 p-4 border rounded relative"
+                                  >
+                                    <label
+                                      className="block text-lg font-semibold mb-2"
+                                      htmlFor={`gift`}
+                                    >
+                                      gift:
+                                    </label>
+                                    <select
+                                      name="gift"
+                                      id="gift"
+                                      value={productPromotion.gift}
+                                      onChange={handleChangePromotion}
+                                      required
+                                      className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
+                                    >
+                                      <option
+                                        className="bg-gray-100"
+                                        value="tai nghe"
+                                      >
+                                        Tai nghe
+                                      </option>
+                                      <option
+                                        className="bg-gray-100"
+                                        value="sạc dự phòng"
+                                      >
+                                        Sạc dự phòng
+                                      </option>
+                                    </select>
+
+                                    <label
+                                      className="block text-lg font-semibold mb-2"
+                                      htmlFor={`image`}
+                                    >
+                                      Hình ảnh:
+                                    </label>
+                                    <input
+                                      type="file"
+                                      name="image"
+                                      onChange={handleChangePromotion}
+                                      required
+                                      className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
+                                    />
+                                  </div>
+                                  <button
+                                    onClick={() => setOpenAddPromotion(false)}
+                                    ref={cancelButtonRef}
+                                    className="mt-3 inline-flex w-full justify-center rounded-md
+                                                             bg-white px-3 py-2 text-sm font-semibold text-gray-900 
+                                                             shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 
+                                                             sm:mt-0 sm:w-auto"
+                                  >
+                                    Close
+                                  </button>
+                                  <button
+                                    type="submit"
+                                    className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
+                                  >
+                                    Add Category
+                                  </button>
+                                </form>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </td>
-                    ))}
+                      </Dialog.Panel>
+                    </Transition.Child>
+                  </div>
+                </div>
+              </Dialog>
+            </Transition.Root>
 
-                  {item.Categorie && typeof item.Categorie === "object" && (
+            <hr className="border-1 border-solid mb-4" />
+            <table className="w-full table-auto">
+              <thead>
+                <tr className="bg-gray-100 text-left dark:bg-meta-4">
+                  <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
+                    Image
+                  </th>
+                  <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
+                    gift
+                  </th>
+                  <th className="py-4 px-4 font-medium text-black dark:text-white">
+                    Action
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {item.product_promotion && item.product_promotion.map((promotion, index) => (
+                  <tr key={index}>
+
                     <td
-                      key={item.Categorie.id}
+                      className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11"
+                    >
+                      <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                        <div className="h-20 w-20 rounded-md">
+                          <img
+                            className="max-w-full"
+                            src={`${DOMAIN}${promotion.image}`}
+                            alt=""
+                          />
+                        </div>
+                      </div>
+                    </td>
+
+                    <td
                       className="border-b border-[#eee] py-5 px-4 dark:border-strokedark"
                     >
-                      <p className="inline-flex rounded-full bg-slate-400 bg-opacity-50 py-1 px-3 text-sm font-medium text-black">
-                        {item.Categorie.name}
+                      <p className="inline-flex rounded-full bg-orange-300 bg-opacity-30 py-1 px-3 text-lg font-light text-black">
+                        {promotion.gift}
                       </p>
                     </td>
-                  )}
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      <div className="flex items-center space-x-3.5">
+                        <button className="hover:text-primary"
+                          onClick={() => handleEditPromotion(promotion)}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg"
+                            className="fill-current text-green-600"
+                            width="18"
+                            height="18"
+                            enable-background="new 0 0 32 32"
+                            viewBox="0 0 32 32"
+                            id="update">
+                            <path d="M23.7207 8.1641c-3.7872-3.7316-9.6125-4.1499-13.8605-1.2914L9.8483 5.2317c-.002-.2762-.2276-.4985-.5039-.4963L8.3445 4.7432C8.0684 4.7453 7.8464 4.9708 7.8484 5.2468L7.876 8.9893c.0039.5498.4512.9922 1 .9922.002 0 .0049 0 .0078 0l3.743-.0276c.2762-.002.4984-.2277.4963-.5039l-.0078-1.0001c-.0021-.2761-.2276-.4981-.5036-.4961l-.6362.0046c3.3478-1.6712 7.5305-1.1391 10.341 1.6295 2.6972 2.6588 3.4342 6.6558 1.9015 10.0831-.1091.244-.0197.5283.2183.65l.8925.456c.2529.1292.5727.0251.6901-.2334C27.9255 16.3433 27.0319 11.4282 23.7207 8.1641zM23.124 22.0186c-.002 0-.0049 0-.0078 0l-3.743.0275c-.2762.0021-.4984.2277-.4963.5039l.0078 1.0001c.0021.276.2276.498.5036.4961l.6356-.0046c-3.348 1.6708-7.53 1.1382-10.3404-1.6295-2.6972-2.6588-3.4342-6.6559-1.9015-10.0831.1091-.244.0197-.5283-.2183-.65l-.8925-.456c-.2529-.1292-.5727-.0251-.6901.2334-1.9068 4.2002-1.0131 9.1153 2.298 12.3795 2.1396 2.1084 4.9307 3.1592 7.7197 3.1592 2.1475 0 4.2929-.6252 6.1407-1.869l.0119 1.6421c.002.2762.2276.4985.5039.4964l.9999-.0078c.2761-.0022.4981-.2277.4961-.5037l-.0276-3.7424C24.1201 22.4609 23.6729 22.0186 23.124 22.0186z"></path></svg>
+                        </button>
+                        <button className="hover:text-primary">
+                          <svg
+                            className="fill-current text-red-500"
+                            width="18"
+                            height="18"
+                            viewBox="0 0 18 18"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M13.7535 2.47502H11.5879V1.9969C11.5879 1.15315 10.9129 0.478149 10.0691 0.478149H7.90352C7.05977 0.478149 6.38477 1.15315 6.38477 1.9969V2.47502H4.21914C3.40352 2.47502 2.72852 3.15002 2.72852 3.96565V4.8094C2.72852 5.42815 3.09414 5.9344 3.62852 6.1594L4.07852 15.4688C4.13477 16.6219 5.09102 17.5219 6.24414 17.5219H11.7004C12.8535 17.5219 13.8098 16.6219 13.866 15.4688L14.3441 6.13127C14.8785 5.90627 15.2441 5.3719 15.2441 4.78127V3.93752C15.2441 3.15002 14.5691 2.47502 13.7535 2.47502ZM7.67852 1.9969C7.67852 1.85627 7.79102 1.74377 7.93164 1.74377H10.0973C10.2379 1.74377 10.3504 1.85627 10.3504 1.9969V2.47502H7.70664V1.9969H7.67852ZM4.02227 3.96565C4.02227 3.85315 4.10664 3.74065 4.24727 3.74065H13.7535C13.866 3.74065 13.9785 3.82502 13.9785 3.96565V4.8094C13.9785 4.9219 13.8941 5.0344 13.7535 5.0344H4.24727C4.13477 5.0344 4.02227 4.95002 4.02227 4.8094V3.96565ZM11.7285 16.2563H6.27227C5.79414 16.2563 5.40039 15.8906 5.37227 15.3844L4.95039 6.2719H13.0785L12.6566 15.3844C12.6004 15.8625 12.2066 16.2563 11.7285 16.2563Z"
+                              fill=""
+                            />
+                            <path
+                              d="M9.00039 9.11255C8.66289 9.11255 8.35352 9.3938 8.35352 9.75942V13.3313C8.35352 13.6688 8.63477 13.9782 9.00039 13.9782C9.33789 13.9782 9.64727 13.6969 9.64727 13.3313V9.75942C9.64727 9.3938 9.33789 9.11255 9.00039 9.11255Z"
+                              fill=""
+                            />
+                            <path
+                              d="M11.2502 9.67504C10.8846 9.64692 10.6033 9.90004 10.5752 10.2657L10.4064 12.7407C10.3783 13.0782 10.6314 13.3875 10.9971 13.4157C11.0252 13.4157 11.0252 13.4157 11.0533 13.4157C11.3908 13.4157 11.6721 13.1625 11.6721 12.825L11.8408 10.35C11.8408 9.98442 11.5877 9.70317 11.2502 9.67504Z"
+                              fill=""
+                            />
+                            <path
+                              d="M6.72245 9.67504C6.38495 9.70317 6.1037 10.0125 6.13182 10.35L6.3287 12.825C6.35683 13.1625 6.63808 13.4157 6.94745 13.4157C6.97558 13.4157 6.97558 13.4157 7.0037 13.4157C7.3412 13.3875 7.62245 13.0782 7.59433 12.7407L7.39745 10.2657C7.39745 9.90004 7.08808 9.64692 6.72245 9.67504Z"
+                              fill=""
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {editingDetail && (
+            <EditDetail
+              productdetail={editingDetail}
+              onSave={handleSaveDetail}
+              onCancel={handleCancelEditDetail}
+            />
+          )}
 
-                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                    <div className="flex items-center space-x-3.5">
-                      <button className="hover:text-primary">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          width="24"
-                          height="24"
-                        >
-                          <path d="M0 0h24v24H0z" fill="none" />
-                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v4h4v2h-4v4h-2v-4H7v-2h4z" />
-                        </svg>
-                      </button>
-                      <button className="hover:text-primary">
-                        <svg
-                          className="fill-current"
-                          width="18"
-                          height="18"
-                          viewBox="0 0 18 18"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M13.7535 2.47502H11.5879V1.9969C11.5879 1.15315 10.9129 0.478149 10.0691 0.478149H7.90352C7.05977 0.478149 6.38477 1.15315 6.38477 1.9969V2.47502H4.21914C3.40352 2.47502 2.72852 3.15002 2.72852 3.96565V4.8094C2.72852 5.42815 3.09414 5.9344 3.62852 6.1594L4.07852 15.4688C4.13477 16.6219 5.09102 17.5219 6.24414 17.5219H11.7004C12.8535 17.5219 13.8098 16.6219 13.866 15.4688L14.3441 6.13127C14.8785 5.90627 15.2441 5.3719 15.2441 4.78127V3.93752C15.2441 3.15002 14.5691 2.47502 13.7535 2.47502ZM7.67852 1.9969C7.67852 1.85627 7.79102 1.74377 7.93164 1.74377H10.0973C10.2379 1.74377 10.3504 1.85627 10.3504 1.9969V2.47502H7.70664V1.9969H7.67852ZM4.02227 3.96565C4.02227 3.85315 4.10664 3.74065 4.24727 3.74065H13.7535C13.866 3.74065 13.9785 3.82502 13.9785 3.96565V4.8094C13.9785 4.9219 13.8941 5.0344 13.7535 5.0344H4.24727C4.13477 5.0344 4.02227 4.95002 4.02227 4.8094V3.96565ZM11.7285 16.2563H6.27227C5.79414 16.2563 5.40039 15.8906 5.37227 15.3844L4.95039 6.2719H13.0785L12.6566 15.3844C12.6004 15.8625 12.2066 16.2563 11.7285 16.2563Z"
-                            fill=""
-                          />
-                          <path
-                            d="M9.00039 9.11255C8.66289 9.11255 8.35352 9.3938 8.35352 9.75942V13.3313C8.35352 13.6688 8.63477 13.9782 9.00039 13.9782C9.33789 13.9782 9.64727 13.6969 9.64727 13.3313V9.75942C9.64727 9.3938 9.33789 9.11255 9.00039 9.11255Z"
-                            fill=""
-                          />
-                          <path
-                            d="M11.2502 9.67504C10.8846 9.64692 10.6033 9.90004 10.5752 10.2657L10.4064 12.7407C10.3783 13.0782 10.6314 13.3875 10.9971 13.4157C11.0252 13.4157 11.0252 13.4157 11.0533 13.4157C11.3908 13.4157 11.6721 13.1625 11.6721 12.825L11.8408 10.35C11.8408 9.98442 11.5877 9.70317 11.2502 9.67504Z"
-                            fill=""
-                          />
-                          <path
-                            d="M6.72245 9.67504C6.38495 9.70317 6.1037 10.0125 6.13182 10.35L6.3287 12.825C6.35683 13.1625 6.63808 13.4157 6.94745 13.4157C6.97558 13.4157 6.97558 13.4157 7.0037 13.4157C7.3412 13.3875 7.62245 13.0782 7.59433 12.7407L7.39745 10.2657C7.39745 9.90004 7.08808 9.64692 6.72245 9.67504Z"
-                            fill=""
-                          />
-                        </svg>
-                      </button>
-                      <button className="hover:text-primary">
-                        <svg
-                          className="fill-current"
-                          width="18"
-                          height="18"
-                          viewBox="0 0 18 18"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M16.8754 11.6719C16.5379 11.6719 16.2285 11.9531 16.2285 12.3187V14.8219C16.2285 15.075 16.0316 15.2719 15.7785 15.2719H2.22227C1.96914 15.2719 1.77227 15.075 1.77227 14.8219V12.3187C1.77227 11.9812 1.49102 11.6719 1.12539 11.6719C0.759766 11.6719 0.478516 11.9531 0.478516 12.3187V14.8219C0.478516 15.7781 1.23789 16.5375 2.19414 16.5375H15.7785C16.7348 16.5375 17.4941 15.7781 17.4941 14.8219V12.3187C17.5223 11.9531 17.2129 11.6719 16.8754 11.6719Z"
-                            fill=""
-                          />
-                          <path
-                            d="M8.55074 12.3469C8.66324 12.4594 8.83199 12.5156 9.00074 12.5156C9.16949 12.5156 9.31012 12.4594 9.45074 12.3469L13.4726 8.43752C13.7257 8.1844 13.7257 7.79065 13.5007 7.53752C13.2476 7.2844 12.8539 7.2844 12.6007 7.5094L9.64762 10.4063V2.1094C9.64762 1.7719 9.36637 1.46252 9.00074 1.46252C8.66324 1.46252 8.35387 1.74377 8.35387 2.1094V10.4063L5.40074 7.53752C5.14762 7.2844 4.75387 7.31252 4.50074 7.53752C4.24762 7.79065 4.27574 8.1844 4.50074 8.43752L8.55074 12.3469Z"
-                            fill=""
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+          {editingPromotion && (
+            <EditPromotion
+              promotion={editingPromotion}
+              onSave={handleSavePromotion}
+              onCancel={handleCancelEditPromotion}
+            />
+          )}
+        </div>))}
+
     </div>
   );
 }
