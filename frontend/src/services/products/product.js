@@ -1,12 +1,18 @@
 import axios from 'axios';
 import { DOMAIN } from '../../utils/settings/config';
 
-
-// Thay thế bằng API của bạn
-
 export const listProducts = async () => {
     try {
         const response = await axios.get(`${DOMAIN}api/v1/products/`);
+        return response.data;
+    } catch (error) {
+        console.error('Error get products:', error);
+        throw error;
+    }
+};
+export const getProductsByCategory = async (id) => {
+    try {
+        const response = await axios.get(`${DOMAIN}api/v1/products/category/${id}`);
         return response.data;
     } catch (error) {
         console.error('Error get products:', error);

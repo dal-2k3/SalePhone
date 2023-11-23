@@ -1,8 +1,5 @@
 // import Swiper JS
 import { useEffect, useState } from "react";
-
-import Swiper from "swiper";
-import { Navigation, Pagination } from "swiper/modules";
 // import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
@@ -13,6 +10,9 @@ import "swiper/css/pagination";
 
 // });
 import "swiper/swiper-bundle.css";
+import { listCategories } from "../services/categories/categories";
+import { DOMAIN } from "../utils/settings/config";
+import { NavLink } from "react-router-dom";
 export default function Home() {
   const products = [
     {
@@ -106,32 +106,24 @@ export default function Home() {
         "https://cdn1.viettelstore.vn/images/Product/ProductImage/medium/15-Pro-3.jpg",
     },
   ];
-  // const [startIndex, setStartIndex] = useState(0);
 
-  // const getProductsToShow = () => {
-  //   const endIndex = (startIndex + 3) % products.length;
-  //   if (endIndex >= startIndex) {
-  //     return products.slice(startIndex, endIndex);
-  //   } else {
-  //     return [
-  //       ...products.slice(startIndex, products.length),
-  //       ...products.slice(0, endIndex),
-  //     ];
-  //   }
-  // };
+  const [reload, setReload] = useState(false);
 
-  // const productsToShow = getProductsToShow();
-
-  // const nextSlide = () => {
-  //   setStartIndex((startIndex + 1) % products.length);
-  // };
-
-  // const prevSlide = () => {
-  //   const newStartIndex = (startIndex - 1 + products.length) % products.length;
-  //   setStartIndex(newStartIndex);
-  // };
   const [startIndex, setStartIndex] = useState(0);
   const [productsToShow, setProductsToShow] = useState([]);
+  const [categories, setcategories] = useState([0]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const categoriesData = await listCategories();
+        setcategories(categoriesData);
+      } catch (error) {
+        // Xử lý lỗi nếu cần
+      }
+    };
+    fetchCategories();
+  }, [reload]);
 
   useEffect(() => {
     const getProductsToShow = () => {
@@ -278,6 +270,22 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {categories.map((item) => (
+        <NavLink to={`/listproducts/${item.id}`}>
+          <button
+            key={item.id}
+            className="w-[100%] bg-gray-50 px-4 flex items-center justify-between mt-5 py-1 rounded-xl mb-3"
+          >
+            <span className="mr-2 font-medium text-lg">{item.name}</span>
+            <img
+              src={`${DOMAIN}${item.logo}`}
+              alt=""
+              className="w-[70px] h-[50px]"
+            />
+          </button>
+        </NavLink>
+      ))}
       {/* samsung */}
       <div className=" grid max-w-[95%]  pt-20  mx-auto lg:gap-8  lg:py-0 lg:pt-10">
         <div className="relative">
@@ -628,155 +636,6 @@ export default function Home() {
         <h1 className="text-3xl leading-4 font-bold	text-center mt-10">
           Có thể bạn sẽ thích
         </h1>
-        {/* <div className="grid  px-4  mx-auto lg:gap-8  lg:py-16 lg:pt  mt-5">
-          <div class="grid grid-cols-4 gap-4 xl:px-[150px]  ">
-            <div class="row-span-1  border border-solid rounded-3xl bg-white shadow-xl">
-              <div className="py-8 flex flex-col items-center">
-                <div className="mb-4 xl:w-[200px] ">
-                  <img
-                    src="https://cdn1.viettelstore.vn/images/Product/ProductImage/medium/15-Pro-3.jpg"
-                    alt=""
-                  />
-                </div>
-                <div className="text-center">
-                  <div className="mb-2">
-                    <a href="" className="font-bold">
-                      Iphone 15 Pro 128G
-                    </a>
-                  </div>
-                  <div className="">
-                    <span className="font-medium text-orange-500 text-lg">
-                      31.000.000đ
-                    </span>
-                  </div>
-                  <div className="mb-4">
-                    <span className="line-through text-gray-400 ">10.000đ</span>
-                    <span className="ml-2 px-1 bg-orange-300 text-red-600 rounded-md font-normal">
-                      -20%
-                    </span>
-                  </div>
-                  <div>
-                    <button
-                      type="button"
-                      className="py-2.5 px-5 text-sm font-medium text-white focus:outline-none bg-blue-400 rounded-full border border-gray-200  focus:z-10 focus:ring-4  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                    >
-                      Mua ngay
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row-span-1  border border-solid rounded-3xl bg-white shadow-xl">
-              <div className="py-8 flex flex-col items-center">
-                <div className="mb-4 xl:w-[200px] ">
-                  <img
-                    src="https://cdn1.viettelstore.vn/images/Product/ProductImage/medium/15-Pro-3.jpg"
-                    alt=""
-                  />
-                </div>
-                <div className="text-center">
-                  <div className="mb-2">
-                    <a href="" className="font-bold">
-                      Iphone 15 Pro 128G
-                    </a>
-                  </div>
-                  <div className="">
-                    <span className="font-medium text-orange-500 text-lg">
-                      31.000.000đ
-                    </span>
-                  </div>
-                  <div className="mb-4">
-                    <span className="line-through text-gray-400 ">10.000đ</span>
-                    <span className="ml-2 px-1 bg-orange-300 text-red-600 rounded-md font-normal">
-                      -20%
-                    </span>
-                  </div>
-                  <div>
-                    <button
-                      type="button"
-                      className="py-2.5 px-5 text-sm font-medium text-white focus:outline-none bg-blue-400 rounded-full border border-gray-200  focus:z-10 focus:ring-4  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                    >
-                      Mua ngay
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row-span-1  border border-solid rounded-3xl bg-white shadow-xl">
-              <div className="py-8 flex flex-col items-center">
-                <div className="mb-4 xl:w-[200px] ">
-                  <img
-                    src="https://cdn1.viettelstore.vn/images/Product/ProductImage/medium/15-Pro-3.jpg"
-                    alt=""
-                  />
-                </div>
-                <div className="text-center">
-                  <div className="mb-2">
-                    <a href="" className="font-bold">
-                      Iphone 15 Pro 128G
-                    </a>
-                  </div>
-                  <div className="">
-                    <span className="font-medium text-orange-500 text-lg">
-                      31.000.000đ
-                    </span>
-                  </div>
-                  <div className="mb-4">
-                    <span className="line-through text-gray-400 ">10.000đ</span>
-                    <span className="ml-2 px-1 bg-orange-300 text-red-600 rounded-md font-normal">
-                      -20%
-                    </span>
-                  </div>
-                  <div>
-                    <button
-                      type="button"
-                      className="py-2.5 px-5 text-sm font-medium text-white focus:outline-none bg-blue-400 rounded-full border border-gray-200  focus:z-10 focus:ring-4  dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                    >
-                      Mua ngay
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="row-span-1 flex justify-center items-center">
-              <div className="mx-3 w-12 h-12 text-center rounded-full border border-gray-300 text-gray-700 text-lg cursor-pointer flex items-center justify-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
-              </div>
-              <div className="mx-3 w-12 h-12 text-center rounded-full border border-gray-300 text-gray-700 text-lg cursor-pointer flex items-center justify-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </div>
-            </div>
-
-           
-          </div>
-        </div> */}
-
         <div className="flex flex-row overflow-hidden  duration-300 max-w-[80%] mx-auto lg:gap-8 lg:py-16 lg:pt mt-5 relative">
           <button
             className="absolute left-[0px] top-1/2 transform -translate-y-1/2 "
@@ -839,26 +698,25 @@ export default function Home() {
             </div>
           ))}
           <button
-          className="absolute right-[0px] top-1/2 transform -translate-y-1/2 "
-          onClick={nextSlide}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            className="w-8 h-8"
+            className="absolute right-[0px] top-1/2 transform -translate-y-1/2 "
+            onClick={nextSlide}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
-        </button>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              className="w-8 h-8"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </button>
         </div>
-        
       </div>
 
       <div>

@@ -1,9 +1,6 @@
 // import { Dialog } from "@headlessui/react";
 import { Fragment, useRef, useState } from "react";
-
-// import { useState } from "react";
 import { NavLink } from "react-router-dom";
-// import { Transition } from "react-transition-group";
 import { Dialog, Transition } from "@headlessui/react";
 export default function ProductDetail() {
   const [openAdd, setOpenAdd] = useState(false);
@@ -212,7 +209,11 @@ export default function ProductDetail() {
                           <div>
                             <div className="grid grid-cols-2 gap-4">
                               <div>
+<<<<<<< HEAD:frontend/src/page/ProductDetail.js
                               <label htmlFor="" className="font-normal">Họ tên:</label>
+=======
+                                <label htmlFor="" className="font-normal">Họ tên:</label>
+>>>>>>> 3962105afafc6fb36ccdda051b7bd79ba9e7ed3b:frontend/src/components/ProductDetail.js
                                 <input
                                   name="username"
                                   value={review.username}
@@ -223,7 +224,11 @@ export default function ProductDetail() {
                                 />
                               </div>
                               <div>
+<<<<<<< HEAD:frontend/src/page/ProductDetail.js
                               <label htmlFor="" className="font-normal">Số điện thoại:</label>
+=======
+                                <label htmlFor="" className="font-normal">Số điện thoại:</label>
+>>>>>>> 3962105afafc6fb36ccdda051b7bd79ba9e7ed3b:frontend/src/components/ProductDetail.js
                                 <input
                                   name="phone"
                                   value={review.phone}
@@ -233,7 +238,11 @@ export default function ProductDetail() {
                                   placeholder="Nhập số điện thoại"
                                 />
                               </div>
+<<<<<<< HEAD:frontend/src/page/ProductDetail.js
                              
+=======
+
+>>>>>>> 3962105afafc6fb36ccdda051b7bd79ba9e7ed3b:frontend/src/components/ProductDetail.js
                             </div>
                           </div>
                         </div>
@@ -308,9 +317,8 @@ export default function ProductDetail() {
                   key={index}
                   src={image}
                   alt={`Thumbnail ${index + 1}`}
-                  className={`w-12 h-12 rounded-md cursor-pointer ${
-                    index === currentImage ? "border-2 border-blue-500" : ""
-                  }`}
+                  className={`w-12 h-12 rounded-md cursor-pointer ${index === currentImage ? "border-2 border-blue-500" : ""
+                    }`}
                   onClick={() => setCurrentImage(index)}
                 />
               ))}
@@ -342,9 +350,8 @@ export default function ProductDetail() {
                   <NavLink
                     key={product.id}
                     to="#"
-                    className={`flex-1 px-5 hover:bg-gray-300 rounded-sm ${
-                      selectedOption === product.capacity ? "bg-gray-300" : ""
-                    }`}
+                    className={`flex-1 px-5 hover:bg-gray-300 rounded-sm ${selectedOption === product.capacity ? "bg-gray-300" : ""
+                      }`}
                     onClick={() => handleSelectOption(product.capacity)}
                   >
                     <div className="">
@@ -373,11 +380,10 @@ export default function ProductDetail() {
                   <div
                     key={color.id}
                     onClick={() => handleSelectColor(color.value)}
-                    className={`items-center mx-4 cursor-pointer p-1 ${
-                      selectedColor === color.value
+                    className={`items-center mx-4 cursor-pointer p-1 ${selectedColor === color.value
                         ? "border-2 border-red-300"
                         : "border"
-                    }`}
+                      }`}
                   >
                     <div
                       className={`w-12 h-12 rounded-full `}
@@ -410,17 +416,15 @@ export default function ProductDetail() {
         <div>
           <div className="flex mt-20   justify-center ">
             <button
-              className={`py-2 px-4 font-bold text-2xl ${
-                activeTab === 1 ? "text-cyan-600" : "text-black"
-              }`}
+              className={`py-2 px-4 font-bold text-2xl ${activeTab === 1 ? "text-cyan-600" : "text-black"
+                }`}
               onClick={() => changeTab(1)}
             >
               Thông tin sản phẩm
             </button>
             <button
-              className={`py-2 px-4  font-bold text-2xl ${
-                activeTab === 2 ? "text-cyan-600 " : "text-black"
-              }`}
+              className={`py-2 px-4  font-bold text-2xl ${activeTab === 2 ? "text-cyan-600 " : "text-black"
+                }`}
               onClick={() => changeTab(2)}
             >
               Đánh giá sản phẩm
