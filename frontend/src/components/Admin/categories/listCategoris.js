@@ -87,9 +87,9 @@ export default function ListCategoris() {
     await deleteCategory(id);
     setReload(!reload);
   }
-
+// get list
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchCategories = async () => {
       try {
         const categoriesData = await listCategories();
         setcategories(categoriesData);
@@ -97,7 +97,7 @@ export default function ListCategoris() {
         // Xử lý lỗi nếu cần
       }
     };
-    fetchUsers();
+    fetchCategories();
   }, [reload]);
 
   return (

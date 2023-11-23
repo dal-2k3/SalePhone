@@ -1,8 +1,5 @@
 // import Swiper JS
 import { useEffect, useState } from "react";
-
-import Swiper from "swiper";
-import { Navigation, Pagination } from "swiper/modules";
 // import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
@@ -13,6 +10,9 @@ import "swiper/css/pagination";
 
 // });
 import "swiper/swiper-bundle.css";
+import { listCategories } from "../services/categories/categories";
+import { DOMAIN } from "../utils/settings/config";
+import { NavLink } from "react-router-dom";
 export default function Home() {
   const products = [
     {
@@ -107,8 +107,23 @@ export default function Home() {
     },
   ];
 
+  const [reload, setReload] = useState(false);
+
   const [startIndex, setStartIndex] = useState(0);
   const [productsToShow, setProductsToShow] = useState([]);
+  const [categories, setcategories] = useState([0]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const categoriesData = await listCategories();
+        setcategories(categoriesData);
+      } catch (error) {
+        // Xử lý lỗi nếu cần
+      }
+    };
+    fetchCategories();
+  }, [reload]);
 
   useEffect(() => {
     const getProductsToShow = () => {
@@ -255,6 +270,22 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {categories.map((item) => (
+        <NavLink to={`/listproducts/${item.id}`}>
+          <button
+            key={item.id}
+            className="w-[100%] bg-gray-50 px-4 flex items-center justify-between mt-5 py-1 rounded-xl mb-3"
+          >
+            <span className="mr-2 font-medium text-lg">{item.name}</span>
+            <img
+              src={`${DOMAIN}${item.logo}`}
+              alt=""
+              className="w-[70px] h-[50px]"
+            />
+          </button>
+        </NavLink>
+      ))}
       {/* samsung */}
       <div className=" grid max-w-[95%]  pt-20  mx-auto lg:gap-8  lg:py-0 lg:pt-10">
         <div className="relative">
@@ -667,26 +698,25 @@ export default function Home() {
             </div>
           ))}
           <button
-          className="absolute right-[0px] top-1/2 transform -translate-y-1/2 "
-          onClick={nextSlide}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            className="w-8 h-8"
+            className="absolute right-[0px] top-1/2 transform -translate-y-1/2 "
+            onClick={nextSlide}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
-        </button>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              className="w-8 h-8"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </button>
         </div>
-        
       </div>
 
       <div>

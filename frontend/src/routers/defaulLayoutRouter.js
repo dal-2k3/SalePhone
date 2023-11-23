@@ -1,6 +1,5 @@
-import ListProducts from "../page/ListProducts";
-import ProductDetail from "../page/ProductDetail";
-import Slide from "../page/Slide";
+import ListProducts from "../components/ListProducts";
+import ProductDetail from "../components/ProductDetail";
 
 const { default: Home } = require("../page/Home");
 
@@ -10,18 +9,14 @@ const publicRoutes = [
         component: Home
     },
     {
-        path: "/listproducts",
+        path: "/listproducts/:id",
         component: ListProducts
     },
     {
-        path: "/product_detail",
+        path: "/product_detail/:id",
         component: ProductDetail
     },
-    {
-        path: "slide",
-        component: Slide
-    },
 
-    
+
 ]
 export default publicRoutes;
