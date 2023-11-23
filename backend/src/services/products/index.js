@@ -39,18 +39,7 @@ const getAllProduct = async () => {
         console.log(error);
     }
 };
-const getProductByName = async (name) => {
-    try {
-        const product = await Product.findOne({
-            where: {
-                name,
-            }
-        });
-        return product;
-    } catch (error) {
-        console.log(error);
-    }
-};
+
 const getProductById = async (id) => {
     try {
         const idproduct = await Product.findOne({
@@ -251,7 +240,6 @@ const deletePromotion = async (id) => {
 module.exports = {
     createProduct,
     getAllProduct,
-    getProductByName,
     getProductById,
     updateProduct,
     deleteProduct,

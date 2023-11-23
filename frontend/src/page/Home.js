@@ -1,8 +1,5 @@
 // import Swiper JS
 import { useEffect, useState } from "react";
-
-import Swiper from "swiper";
-import { Navigation, Pagination } from "swiper/modules";
 // import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
@@ -13,6 +10,9 @@ import "swiper/css/pagination";
 
 // });
 import "swiper/swiper-bundle.css";
+import { listCategories } from "../services/categories/categories";
+import { DOMAIN } from "../utils/settings/config";
+import { NavLink } from "react-router-dom";
 export default function Home() {
   const products = [
     {
@@ -61,32 +61,23 @@ export default function Home() {
         "https://cdn1.viettelstore.vn/images/Product/ProductImage/medium/15-Pro-3.jpg",
     },
   ];
-  // const [startIndex, setStartIndex] = useState(0);
 
-  // const getProductsToShow = () => {
-  //   const endIndex = (startIndex + 3) % products.length;
-  //   if (endIndex >= startIndex) {
-  //     return products.slice(startIndex, endIndex);
-  //   } else {
-  //     return [
-  //       ...products.slice(startIndex, products.length),
-  //       ...products.slice(0, endIndex),
-  //     ];
-  //   }
-  // };
-
-  // const productsToShow = getProductsToShow();
-
-  // const nextSlide = () => {
-  //   setStartIndex((startIndex + 1) % products.length);
-  // };
-
-  // const prevSlide = () => {
-  //   const newStartIndex = (startIndex - 1 + products.length) % products.length;
-  //   setStartIndex(newStartIndex);
-  // };
+  const [reload, setReload] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
   const [productsToShow, setProductsToShow] = useState([]);
+  const [categories, setcategories] = useState([0]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const categoriesData = await listCategories();
+        setcategories(categoriesData);
+      } catch (error) {
+        // Xử lý lỗi nếu cần
+      }
+    };
+    fetchCategories();
+  }, [reload]);
 
   useEffect(() => {
     const getProductsToShow = () => {
@@ -233,6 +224,21 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {categories.map((item) => (
+        <NavLink to={`/listproducts/${item.id}`}>
+          <button key={item.id}
+            className="w-[100%] bg-gray-50 px-4 flex items-center justify-between mt-5 py-1 rounded-xl mb-3">
+            <span className="mr-2 font-medium text-lg">{item.name}</span>
+            <img
+              src={`${DOMAIN}${item.logo}`}
+              alt=""
+              className="w-[70px] h-[50px]"
+            />
+          </button>
+        </NavLink>
+
+      ))}
       {/* samsung */}
       <div className=" grid max-w-[95%]  pt-20  mx-auto lg:gap-8  lg:py-0 lg:pt-10">
         <div className="relative">
@@ -737,7 +743,7 @@ export default function Home() {
             <div
               key={index}
               className="flex-1 w-full md:w-1/5 transition-transform ease-in-out duration-300 transform translate-x"
-              
+
             >
               <div className="border border-solid rounded-3xl bg-white">
                 {/* Your product display code here */}
@@ -776,37 +782,37 @@ export default function Home() {
           ))}
           <div className="mt-4 flex-1  flex justify-center items-center">
             <button onClick={prevSlide}><div className="mx-3 w-12 h-12 text-center rounded-full border border-gray-300 text-gray-700 text-lg cursor-pointer flex items-center justify-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
-              </div></button>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+            </div></button>
             <button onClick={nextSlide}><div className="mx-3 w-12 h-12 text-center rounded-full border border-gray-300 text-gray-700 text-lg cursor-pointer flex items-center justify-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </div></button>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </div></button>
           </div>
         </div>
       </div>

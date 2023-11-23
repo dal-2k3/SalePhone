@@ -1,9 +1,6 @@
 // import { Dialog } from "@headlessui/react";
 import { Fragment, useRef, useState } from "react";
-
-// import { useState } from "react";
 import { NavLink } from "react-router-dom";
-// import { Transition } from "react-transition-group";
 import { Dialog, Transition } from "@headlessui/react";
 export default function ProductDetail() {
   const [openAdd, setOpenAdd] = useState(false);

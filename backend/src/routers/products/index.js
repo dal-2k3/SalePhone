@@ -1,5 +1,5 @@
 const express = require('express');
-const { getProductByName, createProduct, getAllProduct, getProductById, addProductDetail, getProductDetailByIdProduct, getProductByCategory, updateProduct, deleteProduct, addPromotion, getProductDetailById, updateProductDetail, deleteProductDetail, getPromotionById, updatePromotion, } = require('../../services/products');
+const { createProduct, getAllProduct, getProductById, addProductDetail, getProductDetailByIdProduct, getProductByCategory, updateProduct, deleteProduct, addPromotion, getProductDetailById, updateProductDetail, deleteProductDetail, getPromotionById, updatePromotion, } = require('../../services/products');
 const { getCategoryById } = require('../../services/categories');
 const productRouter = express.Router();
 const path = require('path');
