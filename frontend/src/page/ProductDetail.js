@@ -16,14 +16,31 @@ export default function ProductDetail() {
     { id: 3, capacity: "512G", price: "15.000.000₫" },
   ];
   const [rating, setRating] = useState(0);
-
-  const handleStarClick = (value) => {
+  const handleChangeStar = (value) => {
     setRating(value);
+    setReview((prevReview) => ({
+      ...prevReview,
+      rating: value.toString(), // Chuyển đổi giá trị sang chuỗi nếu cần
+    }));
+  };
+  const [review, setReview] = useState({
+    username: "",
+    phone: "",
+    content: "",
+    rating: rating,
+  });
+  const handleChangeReview = (e) => {
+    const { name, value } = e.target;
+    setReview((prevCategory) => ({
+      ...prevCategory,
+      [name]: value,
+    }));
     // Ở đây bạn có thể gửi giá trị rating lên server hoặc xử lý nó theo ý muốn
   };
-  const handleReviewSubmit =  () => {
-    console.log(rating);
-  }
+  const handleReviewSubmit = (e) => {
+    e.preventDefault();
+    console.log(review);
+  };
   const handleSelectOption = (capacity) => {
     setSelectedOption(capacity);
   };
@@ -54,7 +71,6 @@ export default function ProductDetail() {
 
   const handleSelectColor = (colorValue) => {
     setSelectedColor(colorValue);
-
   };
   const [currentImage, setCurrentImage] = useState(0);
   const images = [
@@ -79,6 +95,162 @@ export default function ProductDetail() {
   return (
     <div>
       <div className="grid max-w-screen-xl  px-4 pt-20 pb-8 mx-auto lg:gap-8  lg:py-16 lg:pt-10 ">
+        {/* modal */}
+        <Transition.Root show={openAdd} as={Fragment}>
+          <Dialog
+            as="div"
+            className="relative z-50"
+            initialFocus={cancelButtonRef}
+            onClose={setOpenAdd}
+          >
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+            </Transition.Child>
+
+            <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+              <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0 ">
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                  enterTo="opacity-100 translate-y-0 sm:scale-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                  leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                >
+                  <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-screen-sm ">
+                    <div className="  mx-auto py-3 px-3 bg-white  ">
+                      <div className="flex  sm:items-center justify-between">
+                        <h1 className="text-2xl font-bold pl-2">
+                          Đánh giá sản phẩm
+                        </h1>
+                        <button
+                          type="button"
+                          onClick={() => setOpenAdd(false)}
+                          ref={cancelButtonRef}
+                          className=""
+                        >
+                          <svg
+                            className="w-5 h-5"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g
+                              id="SVGRepo_tracerCarrier"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            ></g>
+                            <g id="SVGRepo_iconCarrier">
+                              {" "}
+                              <path
+                                d="M20.7457 3.32851C20.3552 2.93798 19.722 2.93798 19.3315 3.32851L12.0371 10.6229L4.74275 3.32851C4.35223 2.93798 3.71906 2.93798 3.32854 3.32851C2.93801 3.71903 2.93801 4.3522 3.32854 4.74272L10.6229 12.0371L3.32856 19.3314C2.93803 19.722 2.93803 20.3551 3.32856 20.7457C3.71908 21.1362 4.35225 21.1362 4.74277 20.7457L12.0371 13.4513L19.3315 20.7457C19.722 21.1362 20.3552 21.1362 20.7457 20.7457C21.1362 20.3551 21.1362 19.722 20.7457 19.3315L13.4513 12.0371L20.7457 4.74272C21.1362 4.3522 21.1362 3.71903 20.7457 3.32851Z"
+                                fill="#0F0F0F"
+                              ></path>{" "}
+                            </g>
+                          </svg>
+                        </button>
+                      </div>
+                      <hr className=" border-solid border-[1.5px] my-5" />
+                      <form onSubmit={handleReviewSubmit}>
+                        <div className="">
+                          <div className="flex items-center justify-center h-300">
+                            <img
+                              src="https://images.fpt.shop/unsafe/fit-in/96x96/filters:quality(90):fill(white)/fptshop.com.vn/Uploads/Originals/2023/9/20/638307989548944936_iphone-15-promax-xanh-1.jpg"
+                              alt=""
+                            />
+                          </div>
+                          <p className="font-medium text-xl text-center">
+                            Iphone 15 Pro Max 512G
+                          </p>
+                          <div className="text-2xl text-center">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <span
+                                key={star}
+                                onClick={() => handleChangeStar(star)}
+                                className={
+                                  star <= rating
+                                    ? "text-yellow-500 cursor-pointer hover:transform scale-120 transition-transform duration-200"
+                                    : "text-gray-500 cursor-pointer hover:transform scale-120 transition-transform duration-200"
+                                }
+                              >
+                                ★
+                              </span>
+                            ))}
+                            <p className="text-base">Your Rating: {rating}</p>
+                          </div>
+                          <div>
+                            <textarea
+                              className="w-full border border-slate-300 rounded h-[80px] focus:border-slate-300"
+                              name="content"
+                              value={review.content}
+                              onChange={handleChangeReview}
+                              placeholder="Hãy để lại cảm nhận của bạn...."
+                              id=""
+                              cols="30"
+                              rows="10"
+                            ></textarea>
+                            {/* <input
+                              name="content"
+                              value={review.content}
+                              onChange={handleChangeReview}
+                              className="w-full border border-slate-300 rounded h-[80px]"
+                              type="text"
+                              placeholder="Hãy để lại cảm nhận của bạn...."
+                            /> */}
+                          </div>
+                          <hr className=" border-solid border-[1.5px] my-5" />
+                          <div>
+                            <div className="grid grid-cols-2 gap-4">
+                              <div>
+                              <label htmlFor="" className="font-normal">Họ tên:</label>
+                                <input
+                                  name="username"
+                                  value={review.username}
+                                  onChange={handleChangeReview}
+                                  className="border w-full  h-[40px]   rounded border-slate-300"
+                                  type="text"
+                                  placeholder="Nhập họ và tên"
+                                />
+                              </div>
+                              <div>
+                              <label htmlFor="" className="font-normal">Số điện thoại:</label>
+                                <input
+                                  name="phone"
+                                  value={review.phone}
+                                  onChange={handleChangeReview}
+                                  className="border w-full h-[40px]   rounded border-slate-300"
+                                  type="text"
+                                  placeholder="Nhập số điện thoại"
+                                />
+                              </div>
+                             
+                            </div>
+                          </div>
+                        </div>
+                        <button
+                          type="submit"
+                          className="bg-green-500 rounded-md  text-white py-2 px-4 w-full mb-4 mt-4"
+                        >
+                          Gửi đánh giá
+                        </button>
+                      </form>
+                    </div>
+                  </Dialog.Panel>
+                </Transition.Child>
+              </div>
+            </div>
+          </Dialog>
+        </Transition.Root>
         <div className="flex w-[100%] px-5">
           <div className="w-[45%] border border-solid py-8 rounded-2xl h-auto mr-5">
             <div className="relative mb-4 h-[200px] flex items-center justify-center">
@@ -233,128 +405,6 @@ export default function ProductDetail() {
           </div>
         </div>
 
-        {/* modal */}
-        <Transition.Root show={openAdd} as={Fragment}>
-          <Dialog
-            as="div"
-            className="relative z-50"
-            initialFocus={cancelButtonRef}
-            onClose={setOpenAdd}
-          >
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-            </Transition.Child>
-
-            <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-              <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0 ">
-                <Transition.Child
-                  as={Fragment}
-                  enter="ease-out duration-300"
-                  enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                  enterTo="opacity-100 translate-y-0 sm:scale-100"
-                  leave="ease-in duration-200"
-                  leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                  leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                >
-                  <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-screen-sm ">
-                    <form>
-                      <div className="  mx-auto py-3 px-3 bg-white  ">
-                        <div className="flex  sm:items-center justify-between">
-                          <h1 className="text-2xl font-bold pl-2">
-                            Đánh giá sản phẩm
-                          </h1>
-                          <button
-                            type="button"
-                            onClick={() => setOpenAdd(false)}
-                            ref={cancelButtonRef}
-                            className=""
-                          >
-                            <svg
-                              className="w-5 h-5"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                              <g
-                                id="SVGRepo_tracerCarrier"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                              ></g>
-                              <g id="SVGRepo_iconCarrier">
-                                {" "}
-                                <path
-                                  d="M20.7457 3.32851C20.3552 2.93798 19.722 2.93798 19.3315 3.32851L12.0371 10.6229L4.74275 3.32851C4.35223 2.93798 3.71906 2.93798 3.32854 3.32851C2.93801 3.71903 2.93801 4.3522 3.32854 4.74272L10.6229 12.0371L3.32856 19.3314C2.93803 19.722 2.93803 20.3551 3.32856 20.7457C3.71908 21.1362 4.35225 21.1362 4.74277 20.7457L12.0371 13.4513L19.3315 20.7457C19.722 21.1362 20.3552 21.1362 20.7457 20.7457C21.1362 20.3551 21.1362 19.722 20.7457 19.3315L13.4513 12.0371L20.7457 4.74272C21.1362 4.3522 21.1362 3.71903 20.7457 3.32851Z"
-                                  fill="#0F0F0F"
-                                ></path>{" "}
-                              </g>
-                            </svg>
-                          </button>
-                        </div>
-                        <hr className=" border-solid border-[1.5px] my-5" />
-                        <div className="">
-                          <div className="flex items-center justify-center h-300">
-                            <img
-                              src="https://images.fpt.shop/unsafe/fit-in/96x96/filters:quality(90):fill(white)/fptshop.com.vn/Uploads/Originals/2023/9/20/638307989548944936_iphone-15-promax-xanh-1.jpg"
-                              alt=""
-                            />
-                          </div>
-                          <p className="font-medium text-xl text-center">
-                            Iphone 15 Pro Max 512G
-                          </p>
-                          <div className="text-2xl text-center">
-                            {[1, 2, 3, 4, 5].map((star) => (
-                              <span
-                                key={star}
-                                onClick={() => handleStarClick(star)}
-                                className={
-                                  star <= rating
-                                    ? "text-yellow-500 cursor-pointer hover:transform scale-120 transition-transform duration-200"
-                                    : "text-gray-500 cursor-pointer hover:transform scale-120 transition-transform duration-200"
-                                }
-                              >
-                                ★
-                              </span>
-                            ))}
-                            <p className="text-base">Your Rating: {rating}</p>
-                          </div>
-                          <div>
-                            <input  className="w-full border border-slate-300 rounded h-[80px]" type="text" placeholder="Hãy để lại cảm nhận của bạn...." />
-                          </div>
-                          <hr className=" border-solid border-[1.5px] my-5" />
-                          <div>
-                            <div className="grid grid-cols-2 gap-4">
-                              <div><input className="border w-full    rounded border-slate-300" type="text" placeholder="Nhập họ và tên" /></div>
-                              <div><input className="border w-full  rounded border-slate-300" type="text" placeholder="Nhập số điện thoại" /></div>
-                              <div className="col-span-2">
-                              <input className=" w-full rounded border border-slate-300" type="text" placeholder="Nhập email của bạn" />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={handleReviewSubmit}
-                          className="bg-green-500 rounded-md  text-white py-2 px-4 w-full mb-4 mt-4"
-                        >
-                          Gửi đánh giá
-                        </button>
-                      </div>
-                    </form>
-                  </Dialog.Panel>
-                </Transition.Child>
-              </div>
-            </div>
-          </Dialog>
-        </Transition.Root>
         {/* parameter review */}
 
         <div>
