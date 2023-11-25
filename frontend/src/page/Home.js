@@ -108,11 +108,7 @@ export default function Home() {
   ];
 
   const [reload, setReload] = useState(false);
-
-  const [startIndex, setStartIndex] = useState(0);
-  const [productsToShow, setProductsToShow] = useState([]);
   const [categories, setcategories] = useState([0]);
-
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -124,7 +120,8 @@ export default function Home() {
     };
     fetchCategories();
   }, [reload]);
-
+  const [startIndex, setStartIndex] = useState(0);
+  const [productsToShow, setProductsToShow] = useState([]);
   useEffect(() => {
     const getProductsToShow = () => {
       const endIndex = (startIndex + 5) % products.length;
@@ -139,7 +136,7 @@ export default function Home() {
     };
 
     setProductsToShow(getProductsToShow());
-  }, [startIndex, products]);
+  }, [startIndex, products.length]);
 
   const nextSlide = () => {
     setStartIndex((startIndex + 1) % products.length);
@@ -270,22 +267,24 @@ export default function Home() {
           </div>
         </div>
       </div>
+      {/* THƯƠNG HIỆU  */}
+      <div className="grid max-w-[95%]  px-4 pt-20 pb-8 mx-auto lg:gap-8  lg:py-16 lg:pt-10">
+        <div className="flex flex-wrap mx-auto items-center bg-gray-50 w-full justify-center">
+          {categories.map((item) => (
+            <NavLink
+              className=" px-4 w-[150px] h-[60px] my-5"
+              to={`/listproducts/${item.id}`}
+            >
+              <img
+                src={`${DOMAIN}${item.logo}`}
+                alt=""
+                className="w-full h-full "
+              />
+            </NavLink>
+          ))}
+        </div>
+      </div>
 
-      {categories.map((item) => (
-        <NavLink to={`/listproducts/${item.id}`}>
-          <button
-            key={item.id}
-            className="w-[100%] bg-gray-50 px-4 flex items-center justify-between mt-5 py-1 rounded-xl mb-3"
-          >
-            <span className="mr-2 font-medium text-lg">{item.name}</span>
-            <img
-              src={`${DOMAIN}${item.logo}`}
-              alt=""
-              className="w-[70px] h-[50px]"
-            />
-          </button>
-        </NavLink>
-      ))}
       {/* samsung */}
       <div className=" grid max-w-[95%]  pt-20  mx-auto lg:gap-8  lg:py-0 lg:pt-10">
         <div className="relative">
@@ -636,7 +635,7 @@ export default function Home() {
         <h1 className="text-3xl leading-4 font-bold	text-center mt-10">
           Có thể bạn sẽ thích
         </h1>
-        <div className="flex flex-row overflow-hidden  duration-300 max-w-[80%] mx-auto lg:gap-8 lg:py-16 lg:pt mt-5 relative">
+        <div className="flex flex-row overflow-hidden  duration-300 max-w-[90%] mx-auto lg:gap-8 lg:py-16 lg:pt mt-5 relative px-[50px]">
           <button
             className="absolute left-[0px] top-1/2 transform -translate-y-1/2 "
             onClick={prevSlide}
@@ -718,135 +717,85 @@ export default function Home() {
           </button>
         </div>
       </div>
-
+      {/* banner  */}
       <div>
-        <div className="grid max-w-[1100px]	  mx-auto mt-5  pt-20 pb-8  lg:gap-8  lg:py-16  bg-blue-50 rounded-2xl sm:w-full ">
-          <div class="grid grid-cols-2 gap-4 px-10  ">
-            <div class="row-span-1 ">
-              <div>
-                <p className="font-black  font-3xl">AN TOÀN - TIN CẬY </p>
-                <p className="py-[20px] text-gray-700">
-                  Chúng tôi tin vào dịch vụ của mình, và bạn biết điều đó.
+        <div className=" grid max-w-[95%]  pt-20  mx-auto lg:gap-8  lg:py-0 lg:pt-10 ">
+          <div className="grid grid-cols-4 gap-4">
+            <div className="col-span-1 bg-gray-100 border rounded-3xl">
+              <div className="px-6 py-6">
+                <p className="text-xl font-medium uppercase">Iphone</p>
+                <p className="text-2xl max-w-[200px] py-3">
+                  Hãy nói theo cách của bạn
                 </p>
-                <hr className="border border-solid border-gray-400 sm:w-full " />
-                <div className="pt-5">
-                  <a href="">
-                    <div className="flex items-center">
-                      <span className="pr-1 font-medium text-cyan-500">
-                        Khám phá thêm
-                      </span>
-                      <svg
-                        className="w-[20px] h-[20px] fill-cyan-500"
-                        viewBox="0 0 32 32"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <title />
-                        <g data-name="Layer 2" id="Layer_2">
-                          <path d="M22,9a1,1,0,0,0,0,1.42l4.6,4.6H3.06a1,1,0,1,0,0,2H26.58L22,21.59A1,1,0,0,0,22,23a1,1,0,0,0,1.41,0l6.36-6.36a.88.88,0,0,0,0-1.27L23.42,9A1,1,0,0,0,22,9Z" />
-                        </g>
-                      </svg>
-                    </div>
-                  </a>
-                  <a href="">
-                    <div className="flex items-center">
-                      <span className="pr-1 font-medium text-cyan-500">
-                        Khám phá thêm
-                      </span>
-                      <svg
-                        className="w-[20px] h-[20px] fill-cyan-500"
-                        viewBox="0 0 32 32"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <title />
-                        <g data-name="Layer 2" id="Layer_2">
-                          <path d="M22,9a1,1,0,0,0,0,1.42l4.6,4.6H3.06a1,1,0,1,0,0,2H26.58L22,21.59A1,1,0,0,0,22,23a1,1,0,0,0,1.41,0l6.36-6.36a.88.88,0,0,0,0-1.27L23.42,9A1,1,0,0,0,22,9Z" />
-                        </g>
-                      </svg>
-                    </div>
-                  </a>
+                <NavLink to="/listproducts/1" >
+                <button class="rounded-full bg-sky-300 px-4 py-2">
+                  Mua ngay
+                </button>
+                </NavLink>
+              </div>
+              <div className="w-[300px] h-[200px] pl-20">
+                <img
+                  className="h-full w-full object-cover"
+                  src="https://png.monster/wp-content/uploads/2023/09/png.monster-237.png"
+                  alt=""
+                />
+              </div>
+            </div>
+            <div className="col-start-2 col-end-4  grid grid-rows-2 grid-flow-col gap-4">
+              <div className="bg-red-500 border rounded-3xl flex items-center justify-between px-10">
+                <div className="text-white">
+                <p className="text-xl font-medium uppercase pb-3">Oppo</p>
+                  <p className="text-sm">Phản hồi tức thì</p>
+                  <p className="text-3xl">Giữ nhịp vui cuộc sống</p>
+                  <button className="rounded-full bg-sky-300 px-3 py-1 text-black my-2">
+                    Mua ngay
+                  </button>
+                </div>
+                <div className="w-[150px] h-[150px]">
+                  <img
+                    src="https://www.oppo.com/content/dam/oppo/product-asset-library/find/find-n2-series/global/find-n2-flip/v1/assets/images-pet-en-keepFlow-1.png.webp"
+                    alt=""
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
+              <div className="bg-black border rounded-3xl flex items-center justify-between ">
+                <div className="text-white pl-10">
+                <p className="text-xl font-medium uppercase pb-3">Redmi</p>
+
+                  <p className="text-2xl">Sống bật chấttt</p>
+                  <button className="rounded-full bg-sky-300 px-3 py-1 text-black my-2">
+                    Mua ngay
+                  </button>
+                </div>
+                <div className="w-auto h-[150px]">
+                  <img
+                    src="https://cdn.nguyenkimmall.com/images/companies/_1/Content/dien-thoai/Xiaomi/note-12-pro-4g/dien-thoai-xiaomi-redmi-note-12-pro-12.png"
+                    alt=""
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               </div>
             </div>
-            <div class="col-span-1 grid grid-cols-2 grid-rows-2 gap-4 ">
-              <div className="row-span-1  flex items-center ">
-                <div className="w-[80px] h-[80px] pr-5">
-                  <svg
-                    className="w-full h-full"
-                    viewBox="0 0 846.66 846.66"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <g id="Layer_x0020_1">
-                      <path
-                        class="fil0"
-                        d="M474.98 748.85l-61.04 -109.6 -63.24 49.63 48.79 87.6 75.49 -27.63zm138.06 -654c42.88,0 77.65,34.76 77.65,77.64 0,14.3 -3.87,27.69 -10.61,39.2 26.85,20.76 42.57,52.62 42.57,86.65 0,11.44 -9.28,20.71 -20.72,20.71l-177.78 0c-11.44,0 -20.71,-9.27 -20.71,-20.71 0,-34.04 15.72,-65.89 42.57,-86.65 -6.74,-11.51 -10.61,-24.9 -10.61,-39.2 0,-42.87 34.77,-77.64 77.64,-77.64zm36.8 146.02c-10.95,5.91 -23.48,9.26 -36.8,9.26 -13.31,0 -25.84,-3.35 -36.79,-9.26 -13.34,8.59 -23.4,21.64 -28.2,36.76l129.98 0c-4.79,-15.11 -14.85,-28.17 -28.19,-36.76zm-36.8 -104.59c-20,0 -36.21,16.21 -36.21,36.21 0,20.01 16.21,36.22 36.21,36.22 20.01,0 36.22,-16.21 36.22,-36.22 0,-20 -16.21,-36.21 -36.22,-36.21zm80.74 272.07l-118.39 153.91c-12.09,15.65 -36.98,6.83 -37,-12.63l-0.06 -141.28 -128.82 0c-11.44,0 -20.71,-9.27 -20.71,-20.71l0 -353.07c0,-11.44 9.27,-20.71 20.71,-20.71l407.07 0c11.43,0 20.71,9.27 20.71,20.71l0 353.07c0,11.44 -9.28,20.71 -20.71,20.71l-122.8 0zm-114.02 80.49l86.55 -112.52c3.7,-5.66 10.09,-9.39 17.35,-9.39l112.2 0 0 -311.65 -365.64 0 0 311.65 128.82 0c11.44,0 20.72,9.27 20.72,20.71l0 101.2zm-359.78 -282.68l83.94 150.72c6.21,11.16 0.89,25.1 -11,29.44l-109.45 40.07c-36.56,46.14 -31.93,108.9 -4.55,158.08 27.37,49.12 78.32,86.08 136.71,79.34l91.8 -71.99c9.95,-7.82 24.61,-4.94 30.8,6.2l84.22 151.21c6.7,11.1 1.68,25.66 -10.63,30.13l-114.75 42c-0.67,0.24 -1.36,0.45 -2.05,0.62 -140.86,43.91 -269.34,-52.35 -335.08,-170.72 -63.48,-114.28 -81.9,-286.74 32.46,-377.03l96.1 -75.47c10.49,-8.25 25.82,-4.5 31.48,7.4zm-73.57 200.79l-46.13 -82.83c-75.98,85.2 -55.53,214.76 -4.26,307.08 51.49,92.69 150.02,177.36 262.86,157.24l-46.16 -82.89c-72.47,4.99 -135.69,-39.63 -169.88,-101.02 -34.18,-61.37 -38.81,-138.62 3.57,-197.58zm109.67 -51.13l-61.04 -109.6 -63.24 49.64 48.79 87.6 75.49 -27.64z"
-                      />
-                    </g>
-                  </svg>
-                </div>
-                <div>
-                  <p className="font-medium text-xl">Hotline hỗ trợ</p>
-                  <p className="font-medium">113</p>
-                </div>
+            <div className="col-span-1 bg-teal-400 border rounded-3xl flex flex-col justify-center items-center">
+              <div className="px-6 py-6">
+                <p className="text-xl font-medium uppercase">Samsung</p>
+                <p className="text-2xl max-w-full py-3">
+                  Hãy tưởng tượng những điều tuyệt vời mà chúng ta có thể thực
+                  hiện
+                </p>
+                <button className="rounded-full bg-sky-300 px-4 py-2">
+                  Mua ngay
+                </button>
               </div>
-              <div className="row-span-1  flex items-center ">
-                <div className="w-[80px] h-[80px] pr-5">
-                  <svg
-                    className="w-full h-full fill-indigo-500"
-                    id="icon"
-                    viewBox="0 0 32 32"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <title />
-                    <path d="M24,24v2h2.4592A5.94,5.94,0,0,1,22,28a6.0066,6.0066,0,0,1-6-6H14a7.9841,7.9841,0,0,0,14,5.2651V30h2V24Z" />
-                    <path d="M22,14a8.04,8.04,0,0,0-6,2.7349V14H14v6h6V18H17.5408A5.94,5.94,0,0,1,22,16a6.0066,6.0066,0,0,1,6,6h2A8.0092,8.0092,0,0,0,22,14Z" />
-                    <path d="M12,28H6V24H8V22H6V17H8V15H6V10H8V8H6V4H24v8h2V4a2,2,0,0,0-2-2H6A2,2,0,0,0,4,4V8H2v2H4v5H2v2H4v5H2v2H4v4a2,2,0,0,0,2,2h6Z" />
-                  </svg>
-                </div>
-                <div>
-                  <p className="font-normal text-sm">Sản phẩm</p>
-                  <p className="font-medium text-lg">CHÍNH HÃNG</p>
-                </div>
-              </div>
-              <div className="row-span-1  flex items-center ">
-                <div className="w-[80px] h-[80px] pr-5">
-                  <svg
-                    className="w-full h-full"
-                    id="icon"
-                    viewBox="0 0 32 32"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <title />
-                    <path d="M24,24v2h2.4592A5.94,5.94,0,0,1,22,28a6.0066,6.0066,0,0,1-6-6H14a7.9841,7.9841,0,0,0,14,5.2651V30h2V24Z" />
-                    <path d="M22,14a8.04,8.04,0,0,0-6,2.7349V14H14v6h6V18H17.5408A5.94,5.94,0,0,1,22,16a6.0066,6.0066,0,0,1,6,6h2A8.0092,8.0092,0,0,0,22,14Z" />
-                    <path d="M12,28H6V24H8V22H6V17H8V15H6V10H8V8H6V4H24v8h2V4a2,2,0,0,0-2-2H6A2,2,0,0,0,4,4V8H2v2H4v5H2v2H4v5H2v2H4v4a2,2,0,0,0,2,2h6Z" />
-                  </svg>
-                </div>
-                <div>
-                  <p className="font-medium text-xl">Hotline hỗ trợ</p>
-                  <p className="font-medium">113</p>
-                </div>
-              </div>
-              <div className="row-span-1  flex items-center ">
-                <div className="w-[80px] h-[80px] pr-5">
-                  <svg
-                    className="w-full h-full"
-                    id="icon"
-                    viewBox="0 0 32 32"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <title />
-                    <path d="M24,24v2h2.4592A5.94,5.94,0,0,1,22,28a6.0066,6.0066,0,0,1-6-6H14a7.9841,7.9841,0,0,0,14,5.2651V30h2V24Z" />
-                    <path d="M22,14a8.04,8.04,0,0,0-6,2.7349V14H14v6h6V18H17.5408A5.94,5.94,0,0,1,22,16a6.0066,6.0066,0,0,1,6,6h2A8.0092,8.0092,0,0,0,22,14Z" />
-                    <path d="M12,28H6V24H8V22H6V17H8V15H6V10H8V8H6V4H24v8h2V4a2,2,0,0,0-2-2H6A2,2,0,0,0,4,4V8H2v2H4v5H2v2H4v5H2v2H4v4a2,2,0,0,0,2,2h6Z" />
-                  </svg>
-                </div>
-                <div>
-                  <p className="font-normal text-sm">Thủ tục đổi trả</p>
-                  <p className="font-medium text-lg">Dễ dàng</p>
-                </div>
+              <div className="w-[250px] h-[250px] flex items-center justify-center">
+                <img
+                  className="h-full w-full object-cover"
+                  src="https://www.pngall.com/wp-content/uploads/13/Galaxy-S23-Ultra-PNG-Image-File.png"
+                  alt=""
+                />
               </div>
             </div>
-            {/* <div class="row-span-2 col-span-2 bg-cyan-300">03</div> */}
           </div>
         </div>
       </div>
