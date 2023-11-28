@@ -16,20 +16,29 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Comment.init({
-    idProduct: DataTypes.INTEGER,
+    idProduct: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
     rating: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      validate: {
-        min: 1,
-        max: 5,
-      }
     },
-    username: DataTypes.STRING,
-    phone: DataTypes.STRING,
-    content: DataTypes.TEXT,
+    username: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    phone: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    content: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     status: {
       type: DataTypes.STRING,
+      allowNull: false,
       defaultValue: "private"
     }
   }, {

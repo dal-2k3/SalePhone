@@ -1,17 +1,16 @@
-// import { Dialog } from "@headlessui/react";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
 import { Dialog, Transition } from "@headlessui/react";
 import { getProductDetail, getProductsByCategory } from "../services/products/product";
 import { DOMAIN } from "../utils/settings/config";
+import { createComment } from "../services/comments";
 export default function ProductDetail() {
   const [product, setProduct] = useState([]);
-  const { id } = useParams();
+  const { id: productId } = useParams();
   const [reload, setReload] = useState(false);
   const [openAdd, setOpenAdd] = useState(false);
   const cancelButtonRef = useRef(null);
-  const [selectedOption, setSelectedOption] = useState("128G");
-  const [products, setProducts] = useState([]);
+  const [selectedOption, setSelectedOption] = useState("");
 
   const [rating, setRating] = useState(0);
   const handleChangeStar = (value) => {
@@ -22,10 +21,12 @@ export default function ProductDetail() {
     }));
   };
   const [review, setReview] = useState({
+    idProduct: productId,
+    rating: rating,
     username: "",
     phone: "",
-    content: "",
-    rating: rating,
+    content: ""
+
   });
   const handleChangeReview = (e) => {
     const { name, value } = e.target;
@@ -35,9 +36,14 @@ export default function ProductDetail() {
     }));
     // Ở đây bạn có thể gửi giá trị rating lên server hoặc xử lý nó theo ý muốn
   };
-  const handleReviewSubmit = (e) => {
+  const handleReviewSubmit = async (e) => {
     e.preventDefault();
-    console.log(review);
+    try {
+      console.log("comment", review);
+      await createComment(review);
+    } catch (error) {
+      console.log(error);
+    }
   };
   const handleSelectOption = (capacity) => {
     setSelectedOption(capacity);
@@ -56,14 +62,20 @@ export default function ProductDetail() {
   useEffect(() => {
     const fetchProductsDetails = async () => {
       try {
-        const productsDetailsData = await getProductDetail(id);
+        const productsDetailsData = await getProductDetail(productId);
         console.log("product", productsDetailsData);
+
         const allDetail = productsDetailsData.reduce(
           (acc, curr) => [...acc, ...curr.product_detail.map((detail) => detail)],
           []
         );
         setProductDetail(allDetail);
-        console.log("detail", allDetail)
+        console.log("detail", allDetail);
+
+
+        const capacitydefault = productsDetailsData.map((item) => item.capacity);
+        setSelectedOption(capacitydefault[0]); // Chọn phần tử đầu tiên
+
 
         const productByCategory = await getProductsByCategory(productsDetailsData.map((item) => item.idCategory));
         console.log("idcategory", productByCategory);
@@ -75,18 +87,19 @@ export default function ProductDetail() {
       }
     };
     fetchProductsDetails();
-  }, [reload]);
+  }, [productId, reload]);
 
-  // Sử dụng filter để lọc ra các sản phẩm có cùng name trong mảng category
-  const productNameToFind = "samsung z5";
-  const filteredArray = product.filter(item =>
-    item.category.some(category => category.name === productNameToFind)
-  );
-  console.log("filter", filteredArray);
   useEffect(() => {
     if (!productDetail) return
     setisActivePhone(productDetail[0])
-  }, [productDetail])
+  }, [productDetail]);
+
+
+  const productNameToFind = product[0]?.name;
+  const filteredArray = product.map((item) =>
+    item.category.filter((category) => category.name === productNameToFind));
+  console.log("filter", filteredArray);
+
 
   const handlePrev = () => {
     const index = productDetail.findIndex((item) => item.id === isActivePhone.id);
@@ -104,7 +117,7 @@ export default function ProductDetail() {
 
     setisActivePhone(productDetail[index + 1]);
   };
-
+  console.log("sadv", selectedOption);
   return (
     <div>
       {product.map((item) => (
@@ -178,10 +191,11 @@ export default function ProductDetail() {
                         <form onSubmit={handleReviewSubmit}>
                           <div className="">
                             <div className="flex items-center justify-center h-300">
-                              <img
-                                src="https://images.fpt.shop/unsafe/fit-in/96x96/filters:quality(90):fill(white)/fptshop.com.vn/Uploads/Originals/2023/9/20/638307989548944936_iphone-15-promax-xanh-1.jpg"
-                                alt=""
-                              />
+                              {isActivePhone && <img
+                                src={`${DOMAIN}${isActivePhone.image}`}
+                                alt={`${isActivePhone.image}`}
+                                width={'100px'}
+                              />}
                             </div>
                             <p className="font-medium text-xl text-center">
                               Iphone 15 Pro Max 512G
@@ -193,8 +207,8 @@ export default function ProductDetail() {
                                   onClick={() => handleChangeStar(star)}
                                   className={
                                     star <= rating
-                                      ? "text-yellow-500 cursor-pointer hover:transform scale-120 transition-transform duration-200"
-                                      : "text-gray-500 cursor-pointer hover:transform scale-120 transition-transform duration-200"
+                                      ? "text-yellow-500 text-5xl cursor-pointer hover:transform scale-120 transition-transform duration-200"
+                                      : "text-gray-300 text-5xl cursor-pointer hover:transform scale-120 transition-transform duration-200"
                                   }
                                 >
                                   ★
@@ -212,15 +226,9 @@ export default function ProductDetail() {
                                 id=""
                                 cols="30"
                                 rows="10"
+                                required
                               ></textarea>
-                              {/* <input
-                              name="content"
-                              value={review.content}
-                              onChange={handleChangeReview}
-                              className="w-full border border-slate-300 rounded h-[80px]"
-                              type="text"
-                              placeholder="Hãy để lại cảm nhận của bạn...."
-                            /> */}
+
                             </div>
                             <hr className=" border-solid border-[1.5px] my-5" />
                             <div>
@@ -228,16 +236,14 @@ export default function ProductDetail() {
                                 <div>
 
                                   <label htmlFor="" className="font-normal">Họ tên:</label>
-
-                                  <label htmlFor="" className="font-normal">Họ tên:</label>
-
                                   <input
                                     name="username"
                                     value={review.username}
                                     onChange={handleChangeReview}
                                     className="border w-full  h-[40px]   rounded border-slate-300"
                                     type="text"
-                                    placeholder="Nhập họ và tên"
+                                    placeholder="Nhập họ và tên (bắt buộc..)"
+                                    required
                                   />
                                 </div>
                                 <div>
@@ -248,8 +254,9 @@ export default function ProductDetail() {
                                     value={review.phone}
                                     onChange={handleChangeReview}
                                     className="border w-full h-[40px]   rounded border-slate-300"
-                                    type="text"
-                                    placeholder="Nhập số điện thoại"
+                                    type="number"
+                                    placeholder="Nhập số điện thoại(bắt buộc..)"
+                                    required
                                   />
                                 </div>
 
@@ -360,26 +367,25 @@ export default function ProductDetail() {
               <div>
                 <div className="xl:flex mt-4 justify-center">
 
-                  {filteredArray.map((product) => (
+                  {filteredArray.flat().map((item) => (
                     <NavLink
-                      key={product.id}
-                      to="#"
-                      className={`flex-1 px-5 hover:bg-gray-300 rounded-sm ${selectedOption === product.capacity ? "bg-gray-300" : ""
+                      key={item.id}
+                      to={`/product_detail/${item.id}`}
+                      className={`flex-1 px-5 hover:bg-gray-300 rounded-sm ${selectedOption === item.capacity ? "bg-gray-300" : ""
                         }`}
-                      onClick={() => handleSelectOption(product.capacity)}
+                      onClick={() => handleSelectOption(item.capacity)}
                     >
                       <div className="">
-                        <div className="flex  items-center justify-center">
+                        <div className="flex items-center justify-center">
                           <input
                             type="radio"
-                            checked={selectedOption === product.capacity}
-                            onChange={() => handleSelectOption(product.capacity)}
+                            checked={item.capacity === selectedOption}
+                            onChange={() => handleSelectOption(item.capacity)}
                           />
                           <p className="text-lg font-semibold flex justify-center">
-                            {product.capacity}
+                            {item.capacity}
                           </p>
                         </div>
-
                       </div>
                     </NavLink>
                   ))}
@@ -426,7 +432,7 @@ export default function ProductDetail() {
 
           {/* parameter review */}
 
-          <div>
+          <div div >
             <div className="flex mt-20   justify-center ">
               <button
                 className={`py-2 px-4 font-bold text-2xl ${activeTab === 1 ? "text-cyan-600" : "text-black"
@@ -447,7 +453,11 @@ export default function ProductDetail() {
 
             <div className="mt-4">
               {activeTab === 1 && (
-                <div className="p-4 bg-gray-100">Thông tin sản phẩm</div>
+                <div className="p-4 bg-gray-100">
+                  <div dangerouslySetInnerHTML={{ __html: item.parameter }} />
+
+                </div>
+
               )}
               {activeTab === 2 && (
                 <div>

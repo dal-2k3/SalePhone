@@ -1,19 +1,18 @@
-const comment = require("../../models/comment");
-const Comment = require("../../models/comment");
+const { Comment } = require("../../models");
 
-const createComment = async (comment) => {
+const createComment = async (data) => {
     try {
-        const comment = await Comment.create(comment);
+        console.log(data);
+        const comment = await Comment.create(data);
         return comment;
     } catch (error) {
         console.log(error);
     }
 };
-const getCommentPrivate = async (idProduct) => {
+const getCommentPrivate = async () => {
     try {
         const comment = await Comment.findAll({
-            where: {
-                idProduct,
+            where: {       
                 status: "private",
             }
         });
@@ -22,11 +21,10 @@ const getCommentPrivate = async (idProduct) => {
         console.log(error);
     }
 };
-const getCommentPublic = async (idProduct) => {
+const getCommentPublic = async () => {
     try {
         const comment = await Comment.findAll({
             where: {
-                idProduct,
                 status: "public",
             }
         });
@@ -35,21 +33,10 @@ const getCommentPublic = async (idProduct) => {
         console.log(error);
     }
 };
-const getComments = async (id) => {
+
+const updateComment = async (id, data) => {
     try {
-        const comment = await Comment.findAll({
-            where: {
-                id,
-            }
-        });
-        return comment;
-    } catch (error) {
-        console.log(error);
-    }
-};
-const updateComment = async (id, comment) => {
-    try {
-        const updatecomment = await Comment.update(comment, {
+        const updatecomment = await Comment.update(data, {
             where: {
                 id,
             }
@@ -73,6 +60,8 @@ const deleteComments = async (id) => {
 };
 module.exports = {
     createComment,
-    getComments,
+    getCommentPublic,
+    getCommentPrivate,
+    updateComment,
     deleteComments
 }

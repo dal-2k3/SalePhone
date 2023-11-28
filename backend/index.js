@@ -16,9 +16,6 @@ app.use(
 );
 
 app.use("/api/v1", rootRouter);
-// app.get('/', (req, res) => {
-//     res.send("hello world").json()
-// });
 app.use('/uploads', express.static('uploads'));
 try {
     sequelize.authenticate();

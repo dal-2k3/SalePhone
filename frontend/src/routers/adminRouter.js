@@ -1,5 +1,6 @@
 
 import ListCategoris from "../components/Admin/categories/listCategoris";
+import ListComment from "../components/Admin/comments/ListComment";
 import HomeAdmin from "../components/Admin/homeAdmin";
 import ListProducts from "../components/Admin/products/listProducts";
 import ProductDetail from "../components/Admin/products/productDetail";
@@ -27,6 +28,10 @@ const adminRouter = [
     {
         path: "/products/detail/:id",
         component: ProductDetail
+    },
+    {
+        path: "/comments/list",
+        component: ListComment
     },
 
 

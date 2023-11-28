@@ -665,6 +665,14 @@ export default function ProductDetail() {
               </tbody>
             </table>
           </div>
+          <div className="mb-10">
+            <div className="flex justify-between items-center mb-3">
+              <div className="text-xl font-bold">PARAMETER</div>
+
+            </div>
+            <div dangerouslySetInnerHTML={{ __html: item.parameter }} />
+
+          </div>
           {editingDetail && (
             <EditDetail
               productdetail={editingDetail}

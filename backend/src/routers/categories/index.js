@@ -23,12 +23,10 @@ categoriesRouter.post('/', upload.single('logo'), async (req, res) => {
     try {
         const { name, note } = req.body;
         const logo = path.join('uploads', req.file.filename); // Kết hợp thư mục và tên file
-
         const checkname = await getCategoryByName(name);
         if (checkname) {
             return res.status(404).send("Category name already exists!!!");
         }
-
         const category = await createCategory({ name, note, logo });
         if (!category) {
             return res.status(500).send("Can't create category");

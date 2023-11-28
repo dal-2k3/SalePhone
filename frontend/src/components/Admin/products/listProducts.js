@@ -667,29 +667,24 @@ export default function ListProducts() {
                       </p>
                     </td>
                   ) : (
-                    item.product_promotion.map((promotion, index) => (
-                      <div className="">
-                        <td
-                          key={index}
-                          className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11"
-                        >
-
-                          <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                            <div className="w-12 rounded-md">
-                              <img
-                                className="max-w-full"
-                                src={`${DOMAIN}${promotion.image}`}
-                                alt=""
-                              />
-                            </div>
-
-                            <b className="text-xs text-black dark:text-white">
-                              {promotion.gift}
-                            </b>
+                    <td
+                      className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11"
+                    >
+                      {item.product_promotion.map((promotion, index) => (
+                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center pb-3">
+                          <div className="w-12 rounded-md">
+                            <img
+                              className="max-w-full"
+                              src={`${DOMAIN}${promotion.image}`}
+                              alt=""
+                            />
                           </div>
-                        </td>
-                      </div>
-                    ))
+                          <b className="text-xs text-black dark:text-white">
+                            {promotion.gift}
+                          </b>
+                        </div>
+                      ))}
+                    </td>
                   )}
 
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">

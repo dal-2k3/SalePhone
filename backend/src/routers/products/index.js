@@ -42,7 +42,6 @@ productRouter.post('/', upload.fields([{ name: 'image', maxCount: 10 }, { name: 
             capacity,
             parameter
         });
-
         const addDetailsPromises = product_details.map(async (detail, index) => {
             if (files['image'] && files['image'][index]) {
                 await addProductDetail({
