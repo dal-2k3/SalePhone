@@ -1,17 +1,18 @@
-// import { Dialog } from "@headlessui/react";
 import { Fragment, useEffect, useRef, useState } from "react";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, unstable_HistoryRouter, useNavigate, useParams } from "react-router-dom";
 import { Dialog, Transition } from "@headlessui/react";
-import { getProductDetail, getProductsByCategory } from "../services/products/product";
+import {
+  getProductDetail,
+  getProductsByCategory,
+} from "../services/products/product";
 import { DOMAIN } from "../utils/settings/config";
 export default function ProductDetail() {
   const [product, setProduct] = useState([]);
-  const { id } = useParams();
+  const { id: productId } = useParams();
   const [reload, setReload] = useState(false);
   const [openAdd, setOpenAdd] = useState(false);
   const cancelButtonRef = useRef(null);
-  const [selectedOption, setSelectedOption] = useState("128G");
-  const [products, setProducts] = useState([]);
+  const [selectedOption, setSelectedOption] = useState("");
 
   const [rating, setRating] = useState(0);
   const handleChangeStar = (value) => {
@@ -22,6 +23,7 @@ export default function ProductDetail() {
     }));
   };
   const [review, setReview] = useState({
+    idProduct: '',
     username: "",
     phone: "",
     content: "",
@@ -42,7 +44,7 @@ export default function ProductDetail() {
   const handleSelectOption = (capacity) => {
     setSelectedOption(capacity);
   };
-
+console.log(typeof rating);
   const [productDetail, setProductDetail] = useState([]);
   const [isActivePhone, setisActivePhone] = useState();
 
@@ -51,60 +53,150 @@ export default function ProductDetail() {
   const changeTab = (tabNumber) => {
     setActiveTab(tabNumber);
   };
-
+  const [selectedProduct, setSelectedProduct] = useState({
+    name: "",
+    price: "",
+    capacity: "",
+    color: "",
+    idProduct:'',
+    idProductDetail: "",
+    nameCategory:"",
+    imageProductDetail: '',
+    idGift:'',
+    gift:'',
+    imageGift: '',
+    discount: '',
+  });
   //  get list Products details
   useEffect(() => {
     const fetchProductsDetails = async () => {
       try {
-        const productsDetailsData = await getProductDetail(id);
+        const productsDetailsData = await getProductDetail(productId);
         console.log("product", productsDetailsData);
+        setSelectedProduct({
+          ...selectedProduct,
+          idProduct: productsDetailsData[0].id,
+          name: productsDetailsData[0].name,
+          capacity: productsDetailsData[0].capacity,
+          nameCategory: productsDetailsData[0].Categorie.name,
+          gift: productsDetailsData[0].product_promotion[0].gift,
+          imageGift:productsDetailsData[0].product_promotion[0].image,
+          discount: productsDetailsData[0].product_detail[0].discount
+        });
+        setReview({...review, idProduct:productsDetailsData[0].id})
         const allDetail = productsDetailsData.reduce(
-          (acc, curr) => [...acc, ...curr.product_detail.map((detail) => detail)],
+          (acc, curr) => [
+            ...acc,
+            ...curr.product_detail.map((detail) => detail),
+          ],
           []
         );
         setProductDetail(allDetail);
-        console.log("detail", allDetail)
+        console.log("detail", allDetail);
+        const capacitydefault = productsDetailsData.map(
+          (item) => item.capacity
+        );
+        setSelectedOption(capacitydefault[0]); // Chọn phần tử đầu tiên
 
-        const productByCategory = await getProductsByCategory(productsDetailsData.map((item) => item.idCategory));
+        const productByCategory = await getProductsByCategory(
+          productsDetailsData.map((item) => item.idCategory)
+        );
         console.log("idcategory", productByCategory);
-        const newProduct = productsDetailsData.map(item => ({ ...item, category: [...productByCategory] }));
-        console.log('nối', newProduct);
+        const newProduct = productsDetailsData.map((item) => ({
+          ...item,
+          category: [...productByCategory],
+        }));
+        console.log("nối", newProduct);
         setProduct(newProduct);
       } catch (error) {
         console.log(error);
       }
     };
     fetchProductsDetails();
-  }, [reload]);
+  }, [productId, reload]);
 
-  // Sử dụng filter để lọc ra các sản phẩm có cùng name trong mảng category
-  const productNameToFind = "samsung z5";
-  const filteredArray = product.filter(item =>
-    item.category.some(category => category.name === productNameToFind)
+  useEffect(() => {
+    if (!productDetail) return;
+    setisActivePhone(productDetail[0]);
+  }, [productDetail]);
+  useEffect(() => {
+    if (!isActivePhone) return;
+    setSelectedProduct({
+      ...selectedProduct,
+      color: isActivePhone.color,
+      idProductDetail: isActivePhone.id,
+      price: isActivePhone.price,
+      imageProductDetail: isActivePhone.image,
+    });
+  }, [isActivePhone]);
+
+  const productNameToFind = product[0]?.name;
+  const filteredArray = product.map((item) =>
+    item.category.filter((category) => category.name === productNameToFind)
   );
   console.log("filter", filteredArray);
-  useEffect(() => {
-    if (!productDetail) return
-    setisActivePhone(productDetail[0])
-  }, [productDetail])
 
   const handlePrev = () => {
-    const index = productDetail.findIndex((item) => item.id === isActivePhone.id);
+    const index = productDetail.findIndex(
+      (item) => item.id === isActivePhone.id
+    );
     console.log(index);
-    console.log(productDetail.length)
-    if ((index) === 0) return
+    console.log(productDetail.length);
+    if (index === 0) return;
     setisActivePhone(productDetail[index - 1]);
   };
 
   const handleNext = () => {
-    const index = productDetail.findIndex((item) => item.id === isActivePhone.id);
+    const index = productDetail.findIndex(
+      (item) => item.id === isActivePhone.id
+    );
     console.log(index);
-    console.log(productDetail.length)
-    if ((index + 1) === productDetail.length) return
+    console.log(productDetail.length);
+    if (index + 1 === productDetail.length) return;
 
     setisActivePhone(productDetail[index + 1]);
   };
+  const saveToLocalStorage = () => {
+    // Lưu thông tin sản phẩm được chọn vào localStorage
+    localStorage.setItem("selectedProduct", JSON.stringify(selectedProduct));
+    alert("Product details saved to LocalStorage!");
+  };
+  console.log("product", product);
+  console.log("dung luong", selectedOption);
+  console.log(isActivePhone);
 
+  console.log("local", selectedProduct);
+  const navigate = useNavigate();
+  const addToCart = () => {
+
+    const storedCart = JSON.parse(localStorage.getItem('cart')) || [];
+    const existingIndex = storedCart.findIndex(
+      (product) =>
+        product.name === selectedProduct.name &&
+        product.capacity === selectedProduct.capacity &&
+        product.color === selectedProduct.color
+    );
+
+    if (existingIndex !== -1) {
+      // Nếu sản phẩm đã tồn tại trong giỏ hàng, tăng số lượng lên
+      storedCart[existingIndex].quantity = (storedCart[existingIndex].quantity || 1) + 1;
+    } else {
+      // Nếu sản phẩm chưa tồn tại trong giỏ hàng, thêm mới vào
+      storedCart.push({ ...selectedProduct, quantity: 1 });
+    }
+
+    localStorage.setItem('cart', JSON.stringify(storedCart));
+    alert('Product added to cart!');
+    navigate('/cart')
+  };
+
+  useEffect(() => {
+    const storedProduct = localStorage.getItem('selectedProduct');
+    
+    if (storedProduct) {
+      setSelectedProduct(JSON.parse(storedProduct));
+    }
+  }, []);
   return (
     <div>
       {product.map((item) => (
@@ -226,10 +318,13 @@ export default function ProductDetail() {
                             <div>
                               <div className="grid grid-cols-2 gap-4">
                                 <div>
+                                  <label htmlFor="" className="font-normal">
+                                    Họ tên:
+                                  </label>
 
-                                  <label htmlFor="" className="font-normal">Họ tên:</label>
-
-                                  <label htmlFor="" className="font-normal">Họ tên:</label>
+                                  <label htmlFor="" className="font-normal">
+                                    Họ tên:
+                                  </label>
 
                                   <input
                                     name="username"
@@ -241,7 +336,9 @@ export default function ProductDetail() {
                                   />
                                 </div>
                                 <div>
-                                  <label htmlFor="" className="font-normal">Số điện thoại:</label>
+                                  <label htmlFor="" className="font-normal">
+                                    Số điện thoại:
+                                  </label>
 
                                   <input
                                     name="phone"
@@ -252,7 +349,6 @@ export default function ProductDetail() {
                                     placeholder="Nhập số điện thoại"
                                   />
                                 </div>
-
                               </div>
                             </div>
                           </div>
@@ -273,12 +369,13 @@ export default function ProductDetail() {
           <div className="flex w-[100%] px-5">
             <div className="w-[45%] border border-solid py-8 rounded-2xl h-auto mr-5">
               <div className="relative mb-4 h-[200px] flex items-center justify-center">
-                {isActivePhone && <img
-                  src={`${DOMAIN}${isActivePhone.image}`}
-                  alt={`Product Image`}
-                  className="w-auto h-full rounded-lg object-cover"
-                />
-                }
+                {isActivePhone && (
+                  <img
+                    src={`${DOMAIN}${isActivePhone.image}`}
+                    alt={`Product Image`}
+                    className="w-auto h-full rounded-lg object-cover"
+                  />
+                )}
                 <button
                   onClick={handlePrev}
                   className="absolute top-1/2 left-4 -translate-y-1/2 p-2 bg-cyan-100 bg-opacity-50 rounded-full"
@@ -301,7 +398,14 @@ export default function ProductDetail() {
                 </button>
                 <button
                   onClick={handleNext}
-                  disabled={isActivePhone && (productDetail.findIndex((item) => item.id === isActivePhone.id) + 1) === productDetail.length}
+                  disabled={
+                    isActivePhone &&
+                    productDetail.findIndex(
+                      (item) => item.id === isActivePhone.id
+                    ) +
+                      1 ===
+                      productDetail.length
+                  }
                   className="absolute top-1/2 right-4 -translate-y-1/2 p-2 bg-cyan-100 bg-opacity-50 rounded-full"
                 >
                   {/* Next Icon */}
@@ -324,22 +428,26 @@ export default function ProductDetail() {
 
               {/* Ảnh nhỏ */}
               <div className="flex justify-center space-x-4">
-                {isActivePhone && productDetail.map((detail, index) => (
-                  <img
-                    key={index}
-                    src={`${DOMAIN}${detail.image}`}
-                    alt={`Thumbnail ${index + 1}`}
-                    className={`w-12 h-12 rounded-md cursor-pointer ${isActivePhone.id === detail.id ? "border-2 border-blue-500" : ""
+                {isActivePhone &&
+                  productDetail.map((detail, index) => (
+                    <img
+                      key={index}
+                      src={`${DOMAIN}${detail.image}`}
+                      alt={`Thumbnail ${index + 1}`}
+                      className={`w-12 h-12 rounded-md cursor-pointer ${
+                        isActivePhone.id === detail.id
+                          ? "border-2 border-blue-500"
+                          : ""
                       }`}
-                    onClick={() => setisActivePhone(detail)}
-                  />
-                ))}
+                      onClick={() => setisActivePhone(detail)}
+                    />
+                  ))}
               </div>
             </div>
 
             <div className=" w-[40%]   h-auto ">
               <div>
-                <p className="font-bold text-xl 	">
+                <p className="font-bold text-xl   ">
                   {item.name} {item.capacity}
                 </p>
               </div>
@@ -359,27 +467,26 @@ export default function ProductDetail() {
               {/* //capacity */}
               <div>
                 <div className="xl:flex mt-4 justify-center">
-
-                  {filteredArray.map((product) => (
+                  {filteredArray.flat().map((item) => (
                     <NavLink
-                      key={product.id}
-                      to="#"
-                      className={`flex-1 px-5 hover:bg-gray-300 rounded-sm ${selectedOption === product.capacity ? "bg-gray-300" : ""
-                        }`}
-                      onClick={() => handleSelectOption(product.capacity)}
+                      key={item.id}
+                      to={`/product_detail/${item.id}`}
+                      className={`flex-1 px-5 hover:bg-gray-300 rounded-sm ${
+                        selectedOption === item.capacity ? "bg-gray-300" : ""
+                      }`}
+                      onClick={() => handleSelectOption(item.capacity)}
                     >
                       <div className="">
-                        <div className="flex  items-center justify-center">
+                        <div className="flex items-center justify-center">
                           <input
                             type="radio"
-                            checked={selectedOption === product.capacity}
-                            onChange={() => handleSelectOption(product.capacity)}
+                            checked={item.capacity === selectedOption}
+                            onChange={() => handleSelectOption(item.capacity)}
                           />
                           <p className="text-lg font-semibold flex justify-center">
-                            {product.capacity}
+                            {item.capacity}
                           </p>
                         </div>
-
                       </div>
                     </NavLink>
                   ))}
@@ -387,37 +494,42 @@ export default function ProductDetail() {
               </div>
               {/* color */}
               <div>
-
                 <div className="max-w-md mx-auto mt-8 flex">
-                  {isActivePhone && productDetail.map((detail, index) => (
-                    <div
-                      key={index}
-                      onClick={() => setisActivePhone(detail)}
-                      className={`items-center mx-4 cursor-pointer p-1 ${isActivePhone.id === detail.id
-                        ? "border-2 border-red-300"
-                        : "border"
-                        }`}
-                    >
+                  {isActivePhone &&
+                    productDetail.map((detail, index) => (
                       <div
-                        className={`w-12 h-12 rounded-full `}
-                        style={{ backgroundColor: detail.color }}
+                        key={index}
+                        onClick={() => {
+                          setisActivePhone(detail);
+                          
+                        }}
+                        // onChange={}
+                        className={`items-center mx-4 cursor-pointer p-1 ${
+                          isActivePhone.id === detail.id
+                            ? "border-2 border-red-300"
+                            : "border"
+                        }`}
                       >
-                        <img
-                          src={` ${DOMAIN}${detail.image}`}
-                          alt={`Color ${detail.color}`}
-                          className="w-full h-full object-cover"
-                        />
+                        <div
+                          className={`w-12 h-12 rounded-full `}
+                          style={{ backgroundColor: detail.color }}
+                        >
+                          <img
+                            src={` ${DOMAIN}${detail.image}`}
+                            alt={`Color ${detail.color}`}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="ml-2">
+                          <p>{detail.color}</p>
+                        </div>
                       </div>
-                      <div className="ml-2">
-                        <p>{detail.color}</p>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
                 </div>
               </div>
 
               <div>
-                <button className="bg-orange-500 text-white font-semibold w-full rounded-lg mt-6 py-2 px-4">
+                <button onClick={addToCart} className="bg-orange-500 text-white font-semibold w-full rounded-lg mt-6 py-2 px-4">
                   Mua Ngay
                 </button>
               </div>
@@ -429,15 +541,17 @@ export default function ProductDetail() {
           <div>
             <div className="flex mt-20   justify-center ">
               <button
-                className={`py-2 px-4 font-bold text-2xl ${activeTab === 1 ? "text-cyan-600" : "text-black"
-                  }`}
+                className={`py-2 px-4 font-bold text-2xl ${
+                  activeTab === 1 ? "text-cyan-600" : "text-black"
+                }`}
                 onClick={() => changeTab(1)}
               >
                 Thông tin sản phẩm
               </button>
               <button
-                className={`py-2 px-4  font-bold text-2xl ${activeTab === 2 ? "text-cyan-600 " : "text-black"
-                  }`}
+                className={`py-2 px-4  font-bold text-2xl ${
+                  activeTab === 2 ? "text-cyan-600 " : "text-black"
+                }`}
                 onClick={() => changeTab(2)}
               >
                 Đánh giá sản phẩm
@@ -447,7 +561,9 @@ export default function ProductDetail() {
 
             <div className="mt-4">
               {activeTab === 1 && (
-                <div className="p-4 bg-gray-100">Thông tin sản phẩm</div>
+                <div className="p-4 bg-gray-100">
+                  <div dangerouslySetInnerHTML={{ __html: item.parameter }} />
+                </div>
               )}
               {activeTab === 2 && (
                 <div>
