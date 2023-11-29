@@ -728,9 +728,11 @@ export default function Home() {
                   Hãy nói theo cách của bạn
                 </p>
                 <NavLink to="/listproducts/1" >
-                  <button class="rounded-full bg-sky-300 px-4 py-2">
-                    Mua ngay
-                  </button>
+
+                <button class="rounded-full bg-sky-300 px-4 py-2">
+                  Mua ngay
+                </button>
+
                 </NavLink>
               </div>
               <div className="w-[300px] h-[200px] pl-20">
@@ -744,7 +746,9 @@ export default function Home() {
             <div className="col-start-2 col-end-4  grid grid-rows-2 grid-flow-col gap-4">
               <div className="bg-red-500 border rounded-3xl flex items-center justify-between px-10">
                 <div className="text-white">
-                  <p className="text-xl font-medium uppercase pb-3">Oppo</p>
+
+                <p className="text-xl font-medium uppercase pb-3">Oppo</p>
+
                   <p className="text-sm">Phản hồi tức thì</p>
                   <p className="text-3xl">Giữ nhịp vui cuộc sống</p>
                   <button className="rounded-full bg-sky-300 px-3 py-1 text-black my-2">
@@ -761,9 +765,9 @@ export default function Home() {
               </div>
               <div className="bg-black border rounded-3xl flex items-center justify-between ">
                 <div className="text-white pl-10">
-                  <p className="text-xl font-medium uppercase pb-3">Redmi</p>
 
-                  <p className="text-2xl">Sống bật chấttt</p>
+                <p className="text-xl font-medium uppercase pb-3">Redmi</p>
+                  <p className="text-2xl">Sống bật chất</p>
                   <button className="rounded-full bg-sky-300 px-3 py-1 text-black my-2">
                     Mua ngay
                   </button>

@@ -1,16 +1,18 @@
 import React, { Fragment, useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { AddProducts, listProducts, updateProducts } from "../../../services/products/product";
+import {
+  AddProducts,
+  listProducts,
+  updateProducts,
+} from "../../../services/products/product";
 import { Dialog, Transition } from "@headlessui/react";
 import ReactQuill from "react-quill";
-import 'react-quill/dist/quill.snow.css';
+import "react-quill/dist/quill.snow.css";
 import { DOMAIN } from "../../../utils/settings/config";
 import { listCategories } from "../../../services/categories/categories";
 import EditProduct from "./EditProduct";
 
 export default function ListProducts() {
-
-
   const [products, setProducts] = useState([0]);
   const [reload, setReload] = useState(false);
   const [openAdd, setOpenAdd] = useState(false);
@@ -127,9 +129,15 @@ export default function ListProducts() {
       if (product.product_details.length > 0) {
         product.product_details.forEach((detail, index) => {
           formData.append(`product_details[${index}][color]`, detail.color);
-          formData.append(`product_details[${index}][quantity]`, detail.quantity);
+          formData.append(
+            `product_details[${index}][quantity]`,
+            detail.quantity
+          );
           formData.append(`product_details[${index}][price]`, detail.price);
-          formData.append(`product_details[${index}][discount]`, detail.discount);
+          formData.append(
+            `product_details[${index}][discount]`,
+            detail.discount
+          );
           formData.append(`image`, detail.image);
         });
       }
@@ -144,18 +152,16 @@ export default function ListProducts() {
       await AddProducts(formData);
       setOpenAdd(false);
       setReload((prevReload) => !prevReload);
-      setProduct(
-        {
-          idCategory: "1",
-          name: "",
-          capacity: "",
-          parameter: "",
-          product_details: [
-            { color: "", quantity: "", price: "", discount: "", image: "" },
-          ],
-          promotions: [{ gift: "", giftImage: "" }],
-        }
-      )
+      setProduct({
+        idCategory: "1",
+        name: "",
+        capacity: "",
+        parameter: "",
+        product_details: [
+          { color: "", quantity: "", price: "", discount: "", image: "" },
+        ],
+        promotions: [{ gift: "", giftImage: "" }],
+      });
     } catch (error) {
       console.log(error);
     }
@@ -232,7 +238,6 @@ export default function ListProducts() {
                 leave="ease-in duration-200"
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
-
               >
                 <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
               </Transition.Child>
@@ -260,7 +265,6 @@ export default function ListProducts() {
                       <form>
                         <div className="w-5/5  mx-auto p-8 bg-white ">
                           <div className="flex sm:items-center">
-
                             <h1 className="  text-teal-700 text-2xl font-bold pl-5">
                               Add product
                             </h1>
@@ -398,7 +402,11 @@ export default function ListProducts() {
                                     id={`gift-${index}`}
                                     value={promotion.gift}
                                     onChange={(event) =>
-                                      handlePromotionChange(index, "gift", event)
+                                      handlePromotionChange(
+                                        index,
+                                        "gift",
+                                        event
+                                      )
                                     }
                                     required
                                     className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
@@ -427,7 +435,11 @@ export default function ListProducts() {
                                     name="giftImage"
                                     id={`giftImage-${index}`}
                                     onChange={(event) =>
-                                      handlePromotionChange(index, "giftImage", event)
+                                      handlePromotionChange(
+                                        index,
+                                        "giftImage",
+                                        event
+                                      )
                                     }
                                     required
                                     className="w-full py-2 px-3 border rounded focus:outline-none focus:ring focus:border-blue-400"
@@ -501,7 +513,11 @@ export default function ListProducts() {
                                     id={`quantity-${index}`}
                                     value={detail.quantity}
                                     onChange={(event) =>
-                                      handleDetailChange(index, "quantity", event)
+                                      handleDetailChange(
+                                        index,
+                                        "quantity",
+                                        event
+                                      )
                                     }
                                     required
                                     className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
@@ -535,7 +551,11 @@ export default function ListProducts() {
                                     id={`discount-${index}`}
                                     value={detail.discount}
                                     onChange={(event) =>
-                                      handleDetailChange(index, "discount", event)
+                                      handleDetailChange(
+                                        index,
+                                        "discount",
+                                        event
+                                      )
                                     }
                                     required
                                     className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
@@ -648,7 +668,10 @@ export default function ListProducts() {
                       key={item.Categorie.id}
                       className="border-b border-[#eee] py-5 px-4 dark:border-strokedark"
                     >
-                      <p style={{ transition: "1s" }} className="inline-flex rounded-full bg-amber-200 bg-opacity-50 hover:bg-slate-100 py-1 px-3 text-sm font-medium text-black">
+                      <p
+                        style={{ transition: "1s" }}
+                        className="inline-flex rounded-full bg-amber-200 bg-opacity-50 hover:bg-slate-100 py-1 px-3 text-sm font-medium text-black"
+                      >
                         {item.Categorie.name}
                       </p>
                     </td>
@@ -660,7 +683,8 @@ export default function ListProducts() {
                     </p>
                   </td>
 
-                  {(!item.product_promotion || item.product_promotion.length === 0) ? (
+                  {!item.product_promotion ||
+                  item.product_promotion.length === 0 ? (
                     <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
                       <p className="inline-flex rounded-full bg-red-300 bg-opacity-0 py-1 px-3 text-sm font-medium text-orange-600">
                         Không có quà tặng nha..
@@ -670,20 +694,21 @@ export default function ListProducts() {
                     <td
                       className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11"
                     >
-                      {item.product_promotion.map((promotion, index) => (
-                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center pb-3">
-                          <div className="w-12 rounded-md">
-                            <img
-                              className="max-w-full"
-                              src={`${DOMAIN}${promotion.image}`}
-                              alt=""
-                            />
-                          </div>
-                          <b className="text-xs text-black dark:text-white">
-                            {promotion.gift}
-                          </b>
+
+                      { item.product_promotion.map((promotion, index) => (
+                      <div className="flex flex-col gap-4 sm:flex-row sm:items-center pb-3">
+                        <div className="w-12 rounded-md">
+                          <img
+                            className="max-w-full"
+                            src={`${DOMAIN}${promotion.image}`}
+                            alt=""
+                          />
                         </div>
-                      ))}
+                        <b className="text-xs text-black dark:text-white">
+                          {promotion.gift}
+                        </b>
+                      </div>
+                      ))} 
                     </td>
                   )}
 
@@ -695,9 +720,7 @@ export default function ListProducts() {
 
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <div className="flex items-center space-x-3.5">
-                      <NavLink
-                        to={`/products/detail/${item.id}`}
-                      >
+                      <NavLink to={`/products/detail/${item.id}`}>
                         <button className="hover:text-primary">
                           <svg
                             className="fill-current text-indigo-600"
@@ -746,17 +769,21 @@ export default function ListProducts() {
                           />
                         </svg>
                       </button>
-                      <button className="hover:text-primary"
+                      <button
+                        className="hover:text-primary"
                         onClick={() => handleEdit(item)}
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg"
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
                           className="fill-current text-green-600"
                           width="18"
                           height="18"
                           enable-background="new 0 0 32 32"
                           viewBox="0 0 32 32"
-                          id="update">
-                          <path d="M23.7207 8.1641c-3.7872-3.7316-9.6125-4.1499-13.8605-1.2914L9.8483 5.2317c-.002-.2762-.2276-.4985-.5039-.4963L8.3445 4.7432C8.0684 4.7453 7.8464 4.9708 7.8484 5.2468L7.876 8.9893c.0039.5498.4512.9922 1 .9922.002 0 .0049 0 .0078 0l3.743-.0276c.2762-.002.4984-.2277.4963-.5039l-.0078-1.0001c-.0021-.2761-.2276-.4981-.5036-.4961l-.6362.0046c3.3478-1.6712 7.5305-1.1391 10.341 1.6295 2.6972 2.6588 3.4342 6.6558 1.9015 10.0831-.1091.244-.0197.5283.2183.65l.8925.456c.2529.1292.5727.0251.6901-.2334C27.9255 16.3433 27.0319 11.4282 23.7207 8.1641zM23.124 22.0186c-.002 0-.0049 0-.0078 0l-3.743.0275c-.2762.0021-.4984.2277-.4963.5039l.0078 1.0001c.0021.276.2276.498.5036.4961l.6356-.0046c-3.348 1.6708-7.53 1.1382-10.3404-1.6295-2.6972-2.6588-3.4342-6.6559-1.9015-10.0831.1091-.244.0197-.5283-.2183-.65l-.8925-.456c-.2529-.1292-.5727-.0251-.6901.2334-1.9068 4.2002-1.0131 9.1153 2.298 12.3795 2.1396 2.1084 4.9307 3.1592 7.7197 3.1592 2.1475 0 4.2929-.6252 6.1407-1.869l.0119 1.6421c.002.2762.2276.4985.5039.4964l.9999-.0078c.2761-.0022.4981-.2277.4961-.5037l-.0276-3.7424C24.1201 22.4609 23.6729 22.0186 23.124 22.0186z"></path></svg>
+                          id="update"
+                        >
+                          <path d="M23.7207 8.1641c-3.7872-3.7316-9.6125-4.1499-13.8605-1.2914L9.8483 5.2317c-.002-.2762-.2276-.4985-.5039-.4963L8.3445 4.7432C8.0684 4.7453 7.8464 4.9708 7.8484 5.2468L7.876 8.9893c.0039.5498.4512.9922 1 .9922.002 0 .0049 0 .0078 0l3.743-.0276c.2762-.002.4984-.2277.4963-.5039l-.0078-1.0001c-.0021-.2761-.2276-.4981-.5036-.4961l-.6362.0046c3.3478-1.6712 7.5305-1.1391 10.341 1.6295 2.6972 2.6588 3.4342 6.6558 1.9015 10.0831-.1091.244-.0197.5283.2183.65l.8925.456c.2529.1292.5727.0251.6901-.2334C27.9255 16.3433 27.0319 11.4282 23.7207 8.1641zM23.124 22.0186c-.002 0-.0049 0-.0078 0l-3.743.0275c-.2762.0021-.4984.2277-.4963.5039l.0078 1.0001c.0021.276.2276.498.5036.4961l.6356-.0046c-3.348 1.6708-7.53 1.1382-10.3404-1.6295-2.6972-2.6588-3.4342-6.6559-1.9015-10.0831.1091-.244.0197-.5283-.2183-.65l-.8925-.456c-.2529-.1292-.5727-.0251-.6901.2334-1.9068 4.2002-1.0131 9.1153 2.298 12.3795 2.1396 2.1084 4.9307 3.1592 7.7197 3.1592 2.1475 0 4.2929-.6252 6.1407-1.869l.0119 1.6421c.002.2762.2276.4985.5039.4964l.9999-.0078c.2761-.0022.4981-.2277.4961-.5037l-.0276-3.7424C24.1201 22.4609 23.6729 22.0186 23.124 22.0186z"></path>
+                        </svg>
                       </button>
                     </div>
                   </td>
