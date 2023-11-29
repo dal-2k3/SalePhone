@@ -1,5 +1,10 @@
 import { Fragment, useEffect, useRef, useState } from "react";
-import { NavLink, unstable_HistoryRouter, useNavigate, useParams } from "react-router-dom";
+import {
+  NavLink,
+  unstable_HistoryRouter,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import { Dialog, Transition } from "@headlessui/react";
 import moment from "moment";
 import {
@@ -29,8 +34,7 @@ export default function ProductDetail() {
     rating: rating,
     username: "",
     phone: "",
-    content: ""
-
+    content: "",
   });
   const handleChangeReview = (e) => {
     const { name, value } = e.target;
@@ -66,32 +70,40 @@ export default function ProductDetail() {
     price: "",
     capacity: "",
     color: "",
-    idProduct: '',
+    idProduct: "",
     idProductDetail: "",
     nameCategory: "",
-    imageProductDetail: '',
-    idGift: '',
-    gift: '',
-    imageGift: '',
-    discount: '',
+    imageProductDetail: "",
+    idGift: "",
+    gift: "",
+    imageGift: "",
+    discount: "",
   });
   //  get list Products details
+  const [viewRating, setViewRating] = useState([]);
   useEffect(() => {
     const fetchProductsDetails = async () => {
       try {
         const productsDetailsData = await getProductDetail(productId);
         console.log("product", productsDetailsData);
-        setSelectedProduct({
-          ...selectedProduct,
-          idProduct: productsDetailsData[0].id,
-          name: productsDetailsData[0].name,
-          capacity: productsDetailsData[0].capacity,
-          nameCategory: productsDetailsData[0].Categorie.name,
-          gift: productsDetailsData[0].product_promotion[0].gift,
-          imageGift: productsDetailsData[0].product_promotion[0].image,
-          discount: productsDetailsData[0].product_detail[0].discount
-        });
 
+        if (productsDetailsData && productsDetailsData.length > 0) {
+          const productDetails = productsDetailsData[0];
+
+          setSelectedProduct({
+            ...selectedProduct,
+            idProduct: productDetails.id,
+            name: productDetails.name,
+            capacity: productDetails.capacity,
+            nameCategory: productDetails.Categorie.name,
+            gift: productDetails.product_promotion[0]?.gift || null,
+            imageGift: productDetails.product_promotion[0]?.image || null,
+            discount: productDetails.product_detail[0]?.discount || null,
+          });
+        }
+        // const starsArray = Array(4).fill(null);
+        // const starsArray = Array(productsDetailsData[0].comment.rating).fill(null);
+        // setViewRating(Array(productsDetailsData[0].comment.rating).fill(null))
 
         const allDetail = productsDetailsData.reduce(
           (acc, curr) => [
@@ -126,7 +138,6 @@ export default function ProductDetail() {
   }, [productId, reload]);
 
   useEffect(() => {
-
     if (!productDetail) return;
     setisActivePhone(productDetail[0]);
   }, [productDetail]);
@@ -180,10 +191,10 @@ export default function ProductDetail() {
   console.log(isActivePhone);
 
   console.log("local", selectedProduct);
+  console.log("viewRating", viewRating);
   const navigate = useNavigate();
   const addToCart = () => {
-
-    const storedCart = JSON.parse(localStorage.getItem('cart')) || [];
+    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     const existingIndex = storedCart.findIndex(
       (product) =>
         product.name === selectedProduct.name &&
@@ -193,19 +204,20 @@ export default function ProductDetail() {
 
     if (existingIndex !== -1) {
       // Nếu sản phẩm đã tồn tại trong giỏ hàng, tăng số lượng lên
-      storedCart[existingIndex].quantity = (storedCart[existingIndex].quantity || 1) + 1;
+      storedCart[existingIndex].quantity =
+        (storedCart[existingIndex].quantity || 1) + 1;
     } else {
       // Nếu sản phẩm chưa tồn tại trong giỏ hàng, thêm mới vào
       storedCart.push({ ...selectedProduct, quantity: 1 });
     }
 
-    localStorage.setItem('cart', JSON.stringify(storedCart));
-    alert('Product added to cart!');
-    navigate('/cart')
+    localStorage.setItem("cart", JSON.stringify(storedCart));
+    alert("Product added to cart!");
+    navigate("/cart");
   };
 
   useEffect(() => {
-    const storedProduct = localStorage.getItem('selectedProduct');
+    const storedProduct = localStorage.getItem("selectedProduct");
 
     if (storedProduct) {
       setSelectedProduct(JSON.parse(storedProduct));
@@ -285,11 +297,13 @@ export default function ProductDetail() {
                         <form onSubmit={handleReviewSubmit}>
                           <div className="">
                             <div className="flex items-center justify-center h-300">
-                              {isActivePhone && <img
-                                src={`${DOMAIN}${isActivePhone.image}`}
-                                alt={`${isActivePhone.image}`}
-                                width={'100px'}
-                              />}
+                              {isActivePhone && (
+                                <img
+                                  src={`${DOMAIN}${isActivePhone.image}`}
+                                  alt={`${isActivePhone.image}`}
+                                  width={"100px"}
+                                />
+                              )}
                             </div>
                             <p className="font-medium text-xl text-center">
                               Iphone 15 Pro Max 512G
@@ -322,7 +336,6 @@ export default function ProductDetail() {
                                 rows="10"
                                 required
                               ></textarea>
-
                             </div>
                             <hr className=" border-solid border-[1.5px] my-5" />
                             <div>
@@ -410,8 +423,8 @@ export default function ProductDetail() {
                     productDetail.findIndex(
                       (item) => item.id === isActivePhone.id
                     ) +
-                    1 ===
-                    productDetail.length
+                      1 ===
+                      productDetail.length
                   }
                   className="absolute top-1/2 right-4 -translate-y-1/2 p-2 bg-cyan-100 bg-opacity-50 rounded-full"
                 >
@@ -441,10 +454,11 @@ export default function ProductDetail() {
                       key={index}
                       src={`${DOMAIN}${detail.image}`}
                       alt={`Thumbnail ${index + 1}`}
-                      className={`w-12 h-12 rounded-md cursor-pointer ${isActivePhone.id === detail.id
-                        ? "border-2 border-blue-500"
-                        : ""
-                        }`}
+                      className={`w-12 h-12 rounded-md cursor-pointer ${
+                        isActivePhone.id === detail.id
+                          ? "border-2 border-blue-500"
+                          : ""
+                      }`}
                       onClick={() => setisActivePhone(detail)}
                     />
                   ))}
@@ -473,13 +487,13 @@ export default function ProductDetail() {
               {/* //capacity */}
               <div>
                 <div className="xl:flex mt-4 justify-center">
-
                   {filteredArray.flat().map((item) => (
                     <NavLink
                       key={item.id}
                       to={`/product_detail/${item.id}`}
-                      className={`flex-1 px-5 hover:bg-gray-300 rounded-sm ${selectedOption === item.capacity ? "bg-gray-300" : ""
-                        }`}
+                      className={`flex-1 px-5 hover:bg-gray-300 rounded-sm ${
+                        selectedOption === item.capacity ? "bg-gray-300" : ""
+                      }`}
                       onClick={() => handleSelectOption(item.capacity)}
                     >
                       <div className="">
@@ -507,13 +521,13 @@ export default function ProductDetail() {
                         key={index}
                         onClick={() => {
                           setisActivePhone(detail);
-
                         }}
                         // onChange={}
-                        className={`items-center mx-4 cursor-pointer p-1 ${isActivePhone.id === detail.id
-                          ? "border-2 border-red-300"
-                          : "border"
-                          }`}
+                        className={`items-center mx-4 cursor-pointer p-1 ${
+                          isActivePhone.id === detail.id
+                            ? "border-2 border-red-300"
+                            : "border"
+                        }`}
                       >
                         <div
                           className={`w-12 h-12 rounded-full `}
@@ -534,7 +548,10 @@ export default function ProductDetail() {
               </div>
 
               <div>
-                <button onClick={addToCart} className="bg-orange-500 text-white font-semibold w-full rounded-lg mt-6 py-2 px-4">
+                <button
+                  onClick={addToCart}
+                  className="bg-orange-500 text-white font-semibold w-full rounded-lg mt-6 py-2 px-4"
+                >
                   Mua Ngay
                 </button>
               </div>
@@ -543,18 +560,20 @@ export default function ProductDetail() {
 
           {/* parameter review */}
 
-          <div div >
+          <div div>
             <div className="flex mt-20   justify-center ">
               <button
-                className={`py-2 px-4 font-bold text-2xl ${activeTab === 1 ? "text-cyan-600" : "text-black"
-                  }`}
+                className={`py-2 px-4 font-bold text-2xl ${
+                  activeTab === 1 ? "text-cyan-600" : "text-black"
+                }`}
                 onClick={() => changeTab(1)}
               >
                 Thông tin sản phẩm
               </button>
               <button
-                className={`py-2 px-4  font-bold text-2xl ${activeTab === 2 ? "text-cyan-600 " : "text-black"
-                  }`}
+                className={`py-2 px-4  font-bold text-2xl ${
+                  activeTab === 2 ? "text-cyan-600 " : "text-black"
+                }`}
                 onClick={() => changeTab(2)}
               >
                 Đánh giá sản phẩm
@@ -566,8 +585,6 @@ export default function ProductDetail() {
               {activeTab === 1 && (
                 <div className="p-4 bg-gray-100">
                   <div dangerouslySetInnerHTML={{ __html: item.parameter }} />
-
-
                 </div>
               )}
               {activeTab === 2 && (
@@ -590,127 +607,150 @@ export default function ProductDetail() {
 
                   {/* list danh gia */}
                   <div className="px-5 my-4">
-                    {item.comments && item.comments.map((comment) => (
-                      <div key={comment.id} className="flex  mb-5">
-                        <div className="rounded-full w-[45px] h-[45px] overflow-hidden border border-solid border-gray-500 flex items-center mr-3">
-                          {/* <img
+                    {item.comments &&
+                      item.comments.map((comment) => (
+                        <div key={comment.id} className="flex  mb-5">
+                          <div className="rounded-full w-[45px] h-[45px] overflow-hidden border border-solid border-gray-500 flex items-center mr-3">
+                            {/* <img
                         src="https://www.vhv.rs/dpng/d/421-4213525_png-file-svg-single-user-icon-png-transparent.png"
                         alt=""
                         className="w-[80%] h-[80%] mx-auto"
                       /> */}
-                          <svg
-                            className="w-[80%] h-[80%] mx-auto"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g
-                              id="SVGRepo_tracerCarrier"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            ></g>
-                            <g id="SVGRepo_iconCarrier">
-                              {" "}
-                              <circle
-                                cx="12"
-                                cy="6"
-                                r="4"
-                                fill="#1C274C"
-                              ></circle>{" "}
-                              <path
-                                d="M20 17.5C20 19.9853 20 22 12 22C4 22 4 19.9853 4 17.5C4 15.0147 7.58172 13 12 13C16.4183 13 20 15.0147 20 17.5Z"
-                                fill="#1C274C"
-                              ></path>{" "}
-                            </g>
-                          </svg>
-                        </div>
-                        <div>
-                          <p className="font-semibold text-lg">{comment.username}</p>
-                          <div className="flex mb-2 mt-2 ">
                             <svg
-                              className="w-4 h-4 text-yellow-300 me-1"
-                              aria-hidden="true"
+                              className="w-[80%] h-[80%] mx-auto"
+                              viewBox="0 0 24 24"
+                              fill="none"
                               xmlns="http://www.w3.org/2000/svg"
-                              fill="currentColor"
-                              viewBox="0 0 22 20"
                             >
-                              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                            </svg>
-                            <svg
-                              className="w-4 h-4 text-yellow-300 me-1"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="currentColor"
-                              viewBox="0 0 22 20"
-                            >
-                              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                            </svg>
-                            <svg
-                              className="w-4 h-4 text-yellow-300 me-1"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="currentColor"
-                              viewBox="0 0 22 20"
-                            >
-                              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                            </svg>
-                            <svg
-                              className="w-4 h-4 text-yellow-300 me-1"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="currentColor"
-                              viewBox="0 0 22 20"
-                            >
-                              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                            </svg>
-                            <svg
-                              className="w-4 h-4 text-gray-300 me-1 dark:text-gray-500"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="currentColor"
-                              viewBox="0 0 22 20"
-                            >
-                              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                              <g
+                                id="SVGRepo_tracerCarrier"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              ></g>
+                              <g id="SVGRepo_iconCarrier">
+                                {" "}
+                                <circle
+                                  cx="12"
+                                  cy="6"
+                                  r="4"
+                                  fill="#1C274C"
+                                ></circle>{" "}
+                                <path
+                                  d="M20 17.5C20 19.9853 20 22 12 22C4 22 4 19.9853 4 17.5C4 15.0147 7.58172 13 12 13C16.4183 13 20 15.0147 20 17.5Z"
+                                  fill="#1C274C"
+                                ></path>{" "}
+                              </g>
                             </svg>
                           </div>
-                          <div>{comment.content}</div>
-                          <div className="flex items-center">
-                            <div className="flex items-center text-blue-500 font-medium mr-2">
-                              <svg
-                                className="w-[20px] h-[30px] mr-1"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                <g
-                                  id="SVGRepo_tracerCarrier"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                ></g>
-                                <g id="SVGRepo_iconCarrier">
-                                  <path
-                                    fill-rule="evenodd"
-                                    clip-rule="evenodd"
-                                    d="M12.444 1.35396C11.6474 0.955692 10.6814 1.33507 10.3687 2.16892L7.807 9.00001L4 9.00001C2.34315 9.00001 1 10.3432 1 12V20C1 21.6569 2.34315 23 4 23H18.3737C19.7948 23 21.0208 22.003 21.3107 20.6119L22.9773 12.6119C23.3654 10.7489 21.9433 9.00001 20.0404 9.00001H14.8874L15.6259 6.7846C16.2554 4.89615 15.4005 2.8322 13.62 1.94198L12.444 1.35396ZM9.67966 9.70225L12.0463 3.39119L12.7256 3.73083C13.6158 4.17595 14.0433 5.20792 13.7285 6.15215L12.9901 8.36755C12.5584 9.66261 13.5223 11 14.8874 11H20.0404C20.6747 11 21.1487 11.583 21.0194 12.204L20.8535 13H17C16.4477 13 16 13.4477 16 14C16 14.5523 16.4477 15 17 15H20.4369L20.0202 17H17C16.4477 17 16 17.4477 16 18C16 18.5523 16.4477 19 17 19H19.6035L19.3527 20.204C19.2561 20.6677 18.8474 21 18.3737 21H8V10.9907C8.75416 10.9179 9.40973 10.4221 9.67966 9.70225ZM6 11H4C3.44772 11 3 11.4477 3 12V20C3 20.5523 3.44772 21 4 21H6V11Z"
-                                    fill="#1640D6"
-                                  ></path>
-                                </g>
-                              </svg>
-
-                              <p>Thích</p>
-                            </div>
-                            <p className="mr-2 text-gray-400">|</p>
-                            <p className="text-gray-400">
-                              {moment(comment.createdAt).format("DD-MM-YYYY hh:mm:ss")}
+                          <div>
+                            <p className="font-semibold text-lg">
+                              {comment.username}
                             </p>
+                            <div className="flex mb-2 mt-2 ">
+                              {Array.from({ length: 5 }).map((_, index) => (
+                                <svg
+                                  key={index}
+                                  className={`w-8 h-8 ${
+                                    index < comment.rating
+                                      ? "text-yellow-300"
+                                      : "text-gray-300"
+                                  } me-1`}
+                                  aria-hidden="true"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="currentColor"
+                                  viewBox="0 0 22 20"
+                                >
+                                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                                </svg>
+                              ))}
+
+                              {/* <svg
+                              className="w-4 h-4 text-yellow-300 me-1"
+                              aria-hidden="true"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="currentColor"
+                              viewBox="0 0 22 20"
+                            >
+                              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                            </svg>
+                            <svg
+                              className="w-4 h-4 text-yellow-300 me-1"
+                              aria-hidden="true"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="currentColor"
+                              viewBox="0 0 22 20"
+                            >
+                              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                            </svg>
+                            <svg
+                              className="w-4 h-4 text-yellow-300 me-1"
+                              aria-hidden="true"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="currentColor"
+                              viewBox="0 0 22 20"
+                            >
+                              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                            </svg>
+                            <svg
+                              className="w-4 h-4 text-yellow-300 me-1"
+                              aria-hidden="true"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="currentColor"
+                              viewBox="0 0 22 20"
+                            >
+                              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                            </svg> */}
+                              {/* <svg
+                                className="w-4 h-4 text-gray-300 me-1 dark:text-gray-500"
+                                aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="currentColor"
+                                viewBox="0 0 22 20"
+                              >
+                                <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                              </svg> */}
+                            </div>
+                            <div>{comment.content}</div>
+                            <div className="flex items-center">
+                              <div className="flex items-center text-blue-500 font-medium mr-2">
+                                <svg
+                                  className="w-[20px] h-[30px] mr-1"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <g
+                                    id="SVGRepo_bgCarrier"
+                                    stroke-width="0"
+                                  ></g>
+                                  <g
+                                    id="SVGRepo_tracerCarrier"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                  ></g>
+                                  <g id="SVGRepo_iconCarrier">
+                                    <path
+                                      fill-rule="evenodd"
+                                      clip-rule="evenodd"
+                                      d="M12.444 1.35396C11.6474 0.955692 10.6814 1.33507 10.3687 2.16892L7.807 9.00001L4 9.00001C2.34315 9.00001 1 10.3432 1 12V20C1 21.6569 2.34315 23 4 23H18.3737C19.7948 23 21.0208 22.003 21.3107 20.6119L22.9773 12.6119C23.3654 10.7489 21.9433 9.00001 20.0404 9.00001H14.8874L15.6259 6.7846C16.2554 4.89615 15.4005 2.8322 13.62 1.94198L12.444 1.35396ZM9.67966 9.70225L12.0463 3.39119L12.7256 3.73083C13.6158 4.17595 14.0433 5.20792 13.7285 6.15215L12.9901 8.36755C12.5584 9.66261 13.5223 11 14.8874 11H20.0404C20.6747 11 21.1487 11.583 21.0194 12.204L20.8535 13H17C16.4477 13 16 13.4477 16 14C16 14.5523 16.4477 15 17 15H20.4369L20.0202 17H17C16.4477 17 16 17.4477 16 18C16 18.5523 16.4477 19 17 19H19.6035L19.3527 20.204C19.2561 20.6677 18.8474 21 18.3737 21H8V10.9907C8.75416 10.9179 9.40973 10.4221 9.67966 9.70225ZM6 11H4C3.44772 11 3 11.4477 3 12V20C3 20.5523 3.44772 21 4 21H6V11Z"
+                                      fill="#1640D6"
+                                    ></path>
+                                  </g>
+                                </svg>
+
+                                <p>Thích</p>
+                              </div>
+                              <p className="mr-2 text-gray-400">|</p>
+                              <p className="text-gray-400">
+                                {moment(comment.createdAt).format(
+                                  "DD-MM-YYYY hh:mm:ss"
+                                )}
+                              </p>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
-
-
+                      ))}
                   </div>
                 </div>
               )}

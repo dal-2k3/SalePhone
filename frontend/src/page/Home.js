@@ -148,12 +148,220 @@ export default function Home() {
   };
   return (
     <section className="mt-5">
+      
+      <div className="lg:grid max-w-[95%] lg:grid-cols-3 mx-auto lg:gap-4  sm:grid sm:grid-flow-row sm:grid-row-3 ">
+        {/* <div className="lg:col-span-2">
+          <div
+            id="indicators-carousel"
+            className="relative w-full h-full"
+            data-carousel="static"
+          >
+            <div className="relative lg:h-full overflow-hidden rounded-lg sm:h-96 ">
+              <div
+                class="hidden duration-700 ease-in-out "
+                data-carousel-item="active"
+              >
+                <img
+                  src="https://i.imgur.com/jY5KJsC.jpg"
+                  class="absolute block w-full h-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+                  alt="..."
+                />
+              </div>
+
+              <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                <img
+                  src="https://i.imgur.com/jY5KJsC.jpg"
+                  class="absolute block w-full h-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+                  alt="..."
+                />
+              </div>
+
+              <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                <img
+                  src="https://i.imgur.com/jY5KJsC.jpg"
+                  class="absolute block w-full h-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+                  alt="..."
+                />
+              </div>
+
+              <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                <img
+                  src="https://i.imgur.com/jY5KJsC.jpg"
+                  class="absolute block w-full h-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+                  alt="..."
+                />
+              </div>
+
+              <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                <img
+                  src="https://i.imgur.com/jY5KJsC.jpg"
+                  class="absolute block w-full  h-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+                  alt="..."
+                />
+              </div>
+            </div>
+
+            <div class="absolute z-30 flex -translate-x-1/2 space-x-3 rtl:space-x-reverse bottom-5 left-1/2">
+              <button
+                type="button"
+                class="w-3 h-3 rounded-full"
+                aria-current="true"
+                aria-label="Slide 1"
+                data-carousel-slide-to="0"
+              ></button>
+              <button
+                type="button"
+                class="w-3 h-3 rounded-full"
+                aria-current="false"
+                aria-label="Slide 2"
+                data-carousel-slide-to="1"
+              ></button>
+              <button
+                type="button"
+                class="w-3 h-3 rounded-full"
+                aria-current="false"
+                aria-label="Slide 3"
+                data-carousel-slide-to="2"
+              ></button>
+              <button
+                type="button"
+                class="w-3 h-3 rounded-full"
+                aria-current="false"
+                aria-label="Slide 4"
+                data-carousel-slide-to="3"
+              ></button>
+              <button
+                type="button"
+                class="w-3 h-3 rounded-full"
+                aria-current="false"
+                aria-label="Slide 5"
+                data-carousel-slide-to="4"
+              ></button>
+            </div>
+
+            <button
+              type="button"
+              class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+              data-carousel-prev
+            >
+              <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+                <svg
+                  class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 6 10"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 1 1 5l4 4"
+                  />
+                </svg>
+                <span class="sr-only">Previous</span>
+              </span>
+            </button>
+            <button
+              type="button"
+              class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+              data-carousel-next
+            >
+              <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+                <svg
+                  class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 6 10"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m1 9 4-4-4-4"
+                  />
+                </svg>
+                <span class="sr-only">Next</span>
+              </span>
+            </button>
+          </div>
+        </div> */}
+        <div className="lg:col-span-1  lg:grid grid-rows-2 grid-flow-col gap-4">
+            <div className="bg-red-500 border rounded-3xl flex items-center justify-between px-10">
+              <div className="text-white">
+                <p className="text-xl font-medium uppercase pb-3">Oppo</p>
+  
+                <p className="text-sm">Phản hồi tức thì</p>
+                <p className="text-3xl">Giữ nhịp vui cuộc sống</p>
+                <button className="rounded-full bg-sky-300 px-3 py-1 text-black my-2">
+                  Mua ngay
+                </button>
+              </div>
+              <div className="w-[100px] h-[100px]">
+                <img
+                  src="https://www.oppo.com/content/dam/oppo/product-asset-library/find/find-n2-series/global/find-n2-flip/v1/assets/images-pet-en-keepFlow-1.png.webp"
+                  alt=""
+                  className="w-full h-full object-cover"
+                />
+              </div>
+  
+            
+            </div>
+            <div className="bg-red-500 border rounded-3xl flex items-center justify-between px-10 sm:mt-2 ">
+              <div className="text-white">
+                <p className="text-xl font-medium uppercase pb-3">Oppo</p>
+  
+                <p className="text-sm">Phản hồi tức thì</p>
+                <p className="text-3xl">Giữ nhịp vui cuộc sống</p>
+                <button className="rounded-full bg-sky-300 px-3 py-1 text-black my-2">
+                  Mua ngay
+                </button>
+              </div>
+              <div className="w-[100px] h-[100px]">
+                <img
+                  src="https://www.oppo.com/content/dam/oppo/product-asset-library/find/find-n2-series/global/find-n2-flip/v1/assets/images-pet-en-keepFlow-1.png.webp"
+                  alt=""
+                  className="w-full h-full object-cover"
+                />
+              </div>
+  
+            
+            
+          </div>
+        </div>
+      </div>
+       {/* THƯƠNG HIỆU  */}
+       <div className="bg-gray-100 mt-4  "> 
+        <div className="grid max-w-[95%]  px-4  mx-auto">
+        <h1 className="text-3xl leading-4 font-medium pt-5 text-red-400">Danh mục thịnh hành</h1>
+          <div className="flex flex-wrap mx-auto items-center w-full justify-between pb-20">
+            {categories.map((item) => (
+              <NavLink
+                className=" px-4 w-[150px] h-[60px] my-5 flex-col"
+                to={`/listproducts/${item.id}`}
+              >
+                <div className="p-4 bg-white h-[100px] rounded-lg ">
+                  <img
+                    src={`${DOMAIN}${item.logo}`}
+                    alt=""
+                    className="w-full h-full "
+                  />
+                </div>
+                <p className="text-center font-medium mt-2 text-lg">{item.name}</p>
+              </NavLink>
+            ))}
+          </div>
+        </div>
+      </div>
       {/* có gì mới */}
-      <div>
-        <h1 className="text-3xl leading-4 font-bold	text-center">Có gì mới</h1>
+      <div className="bg-gray-100 ">
+        <h1 className="text-3xl leading-4 font-bold	text-center pt-20">Có gì mới</h1>
         <div className="grid max-w-[95%]  px-4 pt-20 pb-8 mx-auto lg:gap-8  lg:py-16 lg:pt-10">
-          <div class=" grid grid-cols-2 gap-4">
-            <div class="row-span-1 ">
+          <div className=" grid grid-cols-2 gap-4">
+            <div className="row-span-1 border">
               <a href="">
                 <div className="relative inline-block border-box w-full h-full pointer ">
                   <img
@@ -174,7 +382,7 @@ export default function Home() {
                 </div>
               </a>
             </div>
-            <div class="col-span-1 grid grid-cols-2 grid-rows-2 gap-4 ">
+            <div class="col-span-1 grid grid-cols-2 grid-rows-2 gap-4 border ">
               <div className="row-span-1 bg-cyan-300">
                 <a href="">
                   <div className="relative inline-block border-box w-full h-full pointer ">
@@ -267,23 +475,8 @@ export default function Home() {
           </div>
         </div>
       </div>
-      {/* THƯƠNG HIỆU  */}
-      <div className="grid max-w-[95%]  px-4 pt-20 pb-8 mx-auto lg:gap-8  lg:py-16 lg:pt-10">
-        <div className="flex flex-wrap mx-auto items-center bg-gray-50 w-full justify-center">
-          {categories.map((item) => (
-            <NavLink
-              className=" px-4 w-[150px] h-[60px] my-5"
-              to={`/listproducts/${item.id}`}
-            >
-              <img
-                src={`${DOMAIN}${item.logo}`}
-                alt=""
-                className="w-full h-full "
-              />
-            </NavLink>
-          ))}
-        </div>
-      </div>
+
+     
 
       {/* samsung */}
       <div className=" grid max-w-[95%]  pt-20  mx-auto lg:gap-8  lg:py-0 lg:pt-10">
@@ -603,8 +796,8 @@ export default function Home() {
           Điện thoại nào phù hợp với bạn?
         </h1>
         <div className="grid  px-4 pt-20 pb-8 mx-auto lg:gap-8  lg:py-16 lg:pt-10">
-          <div class="grid grid-cols-2 gap-4">
-            <div class="row-span-1 ">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="row-span-1 ">
               <a href="">
                 <div className="relative inline-block border-box w-full h-full pointer ">
                   <img
@@ -615,7 +808,7 @@ export default function Home() {
                 </div>
               </a>
             </div>
-            <div class="row-span-1 ">
+            <div className="row-span-1 ">
               <a href="">
                 <div className="relative inline-block border-box w-full h-full pointer ">
                   <img
@@ -727,12 +920,10 @@ export default function Home() {
                 <p className="text-2xl max-w-[200px] py-3">
                   Hãy nói theo cách của bạn
                 </p>
-                <NavLink to="/listproducts/1" >
-
-                <button class="rounded-full bg-sky-300 px-4 py-2">
-                  Mua ngay
-                </button>
-
+                <NavLink to="/listproducts/1">
+                  <button class="rounded-full bg-sky-300 px-4 py-2">
+                    Mua ngay
+                  </button>
                 </NavLink>
               </div>
               <div className="w-[300px] h-[200px] pl-20">
@@ -746,8 +937,7 @@ export default function Home() {
             <div className="col-start-2 col-end-4  grid grid-rows-2 grid-flow-col gap-4">
               <div className="bg-red-500 border rounded-3xl flex items-center justify-between px-10">
                 <div className="text-white">
-
-                <p className="text-xl font-medium uppercase pb-3">Oppo</p>
+                  <p className="text-xl font-medium uppercase pb-3">Oppo</p>
 
                   <p className="text-sm">Phản hồi tức thì</p>
                   <p className="text-3xl">Giữ nhịp vui cuộc sống</p>
@@ -765,8 +955,7 @@ export default function Home() {
               </div>
               <div className="bg-black border rounded-3xl flex items-center justify-between ">
                 <div className="text-white pl-10">
-
-                <p className="text-xl font-medium uppercase pb-3">Redmi</p>
+                  <p className="text-xl font-medium uppercase pb-3">Redmi</p>
                   <p className="text-2xl">Sống bật chất</p>
                   <button className="rounded-full bg-sky-300 px-3 py-1 text-black my-2">
                     Mua ngay
