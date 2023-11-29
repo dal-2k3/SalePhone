@@ -4,5 +4,9 @@
 @layer base {
   html {
     font-family: "Roboto", sans-serif;
+    scroll-behavior: smooth;
   }
 }
+/* body {
+  background-color: hsl(0, 0%, 1%);
+} */

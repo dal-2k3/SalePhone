@@ -146,11 +146,18 @@ export default function Home() {
     const newStartIndex = (startIndex - 1 + products.length) % products.length;
     setStartIndex(newStartIndex);
   };
+  // BACK_TOP
+
   return (
-    <section className="mt-5">
+    <section className="mt-20">
+      {/* <div className="w-12 h-12 bg-[#ccc] flex justify-center text-[#fff] align rounded-[50%] fixed bottom-10 right-5 z-1 items-center text-[30px] cursor-pointer ">
+        <ion-icon name="chevron-up-outline"></ion-icon>
+      </div> */}
       {/* có gì mới */}
       <div>
-        <h1 className="text-3xl leading-4 font-bold	text-center">Có gì mới</h1>
+        <h1 className="text-3xl leading-4 font-bold	text-center py-5">
+          Có gì mới
+        </h1>
         <div className="grid max-w-[95%]  px-4 pt-20 pb-8 mx-auto lg:gap-8  lg:py-16 lg:pt-10">
           <div class=" grid grid-cols-2 gap-4">
             <div class="row-span-1 ">
@@ -718,7 +725,7 @@ export default function Home() {
         </div>
       </div>
       {/* banner  */}
-      <div>
+      <div className="mb-28">
         <div className=" grid max-w-[95%]  pt-20  mx-auto lg:gap-8  lg:py-0 lg:pt-10 ">
           <div className="grid grid-cols-4 gap-4">
             <div className="col-span-1 bg-gray-100 border rounded-3xl">
@@ -727,12 +734,10 @@ export default function Home() {
                 <p className="text-2xl max-w-[200px] py-3">
                   Hãy nói theo cách của bạn
                 </p>
-                <NavLink to="/listproducts/1" >
-
-                <button class="rounded-full bg-sky-300 px-4 py-2">
-                  Mua ngay
-                </button>
-
+                <NavLink to="/listproducts/1">
+                  <button class="rounded-full bg-sky-300 px-4 py-2">
+                    Mua ngay
+                  </button>
                 </NavLink>
               </div>
               <div className="w-[300px] h-[200px] pl-20">
@@ -746,8 +751,7 @@ export default function Home() {
             <div className="col-start-2 col-end-4  grid grid-rows-2 grid-flow-col gap-4">
               <div className="bg-red-500 border rounded-3xl flex items-center justify-between px-10">
                 <div className="text-white">
-
-                <p className="text-xl font-medium uppercase pb-3">Oppo</p>
+                  <p className="text-xl font-medium uppercase pb-3">Oppo</p>
 
                   <p className="text-sm">Phản hồi tức thì</p>
                   <p className="text-3xl">Giữ nhịp vui cuộc sống</p>
@@ -765,8 +769,7 @@ export default function Home() {
               </div>
               <div className="bg-black border rounded-3xl flex items-center justify-between ">
                 <div className="text-white pl-10">
-
-                <p className="text-xl font-medium uppercase pb-3">Redmi</p>
+                  <p className="text-xl font-medium uppercase pb-3">Redmi</p>
                   <p className="text-2xl">Sống bật chất</p>
                   <button className="rounded-full bg-sky-300 px-3 py-1 text-black my-2">
                     Mua ngay

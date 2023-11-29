@@ -1,16 +1,13 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
-  ],
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
-      // backgroundImage: {
-      //   'banner': "url('https://i.imgur.com/jY5KJsC.jpg')",
-      //   'footer-texture': "url('/img/footer-texture.png')",
-      // }
+      zIndex: {
+        1: "1",
+      },
     },
-    
+
     // screens: {
     //   'sm': '640px',
     //   // => @media (min-width: 640px) { ... }
@@ -29,5 +26,4 @@ module.exports = {
     // }
   },
   plugins: [],
-}
-
+};
