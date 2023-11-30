@@ -2,12 +2,12 @@ import React from "react";
 
 export default function Header() {
   return (
-    <header className="w-full ba">
-      <nav className="bg-white border-gray-200 py-2.5 dark:bg-gray-900 bg-cyan-300">
+    <header className="w-full fixed top-0 left-0 right-0 z-1">
+      <nav className=" border-gray-200 py-4 dark:bg-gray-900 bg-cyan-300">
         <div className="flex flex-wrap items-center justify-between max-w-screen-xl px-4 mx-auto">
           <a className="flex items-center">
             <img
-              src="logo.png"
+              src="https://images.unsplash.com/photo-1611339555312-e607c8352fd7?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
               className="h-6 mr-3 sm:h-9"
               alt="SalePhone Logo"
             />
