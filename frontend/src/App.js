@@ -1,11 +1,15 @@
-
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import AdminLayout from './layouts/AdminLayout';
-import adminRouter from './routers/adminRouter';
-import publicRoutes from './routers/defaulLayoutRouter';
+import AdminLayout from "./layouts/AdminLayout";
+import adminRouter from "./routers/adminRouter";
+import publicRoutes from "./routers/defaulLayoutRouter";
 import DefaultLayout from "./layouts/DefaultLayout";
-function App() {
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+library.add(faArrowUp);
+
+function App() {
   return (
     <div className="App">
       <BrowserRouter>
@@ -39,9 +43,9 @@ function App() {
               ></Route>
             );
           })}
-
         </Routes>
       </BrowserRouter>
+      <FontAwesomeIcon></FontAwesomeIcon>
     </div>
   );
 }

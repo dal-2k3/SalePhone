@@ -88,7 +88,7 @@ export default function Cart() {
   console.log("này lấy từ localstorage", cart);
   console.log("này lấy để up lên db", order);
   return (
-    <div className="w-full bg-gray-100">
+    <div className="w-full bg-gray-100 py-20">
       <div className="rounded-lg md:max-w-[900px] max-w-screen-lg pt-4 mx-auto ">
         <NavLink to="/listproducts/1">
           <div className="flex items-center text-blue-600 ">
