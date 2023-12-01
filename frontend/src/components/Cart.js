@@ -88,7 +88,7 @@ export default function Cart() {
   console.log("này lấy từ localstorage", cart);
   console.log("này lấy để up lên db", order);
   return (
-    <div className="w-full bg-gray-100">
+    <div className="w-full bg-gray-100 py-20">
       <div className="rounded-lg md:max-w-[900px] max-w-screen-lg pt-4 mx-auto ">
         <NavLink to="/listproducts/1">
           <div className="flex items-center text-blue-600 ">
@@ -292,13 +292,13 @@ export default function Cart() {
                       </div>
                       <div className="text-lg">
                         <p className="text-red-500 font-semibold">
-                          tổng tiền detail:
+
                           {formatPrice(
                             `${product.price * (product.quantity || 1)} ₫`
                           )}
                           {/* {`${product.price * (product.quantity || 1)}`} */}
                         </p>
-                        <p className="line-through">
+                        <p className="line-through text-gray-400">
                           {formatPrice(
                             `${product.discount * (product.quantity || 1)} ₫`
                           )}
@@ -310,7 +310,7 @@ export default function Cart() {
                 </div>
                 <div className="my-7">
                   <p className="text-gray-500">Khuyến mãi theo sản phẩm</p>
-                  <div className="border border-gray-200 rounded-lg flex items-center ">
+                  <div className="border border-gray-200 rounded-lg flex items-center p-3">
                     <div className="rounded-full w-20 h-20  border flex items-center justify-center ">
                       <img
                         className="w-[80%] h-[80%] my-auto mx-auto"

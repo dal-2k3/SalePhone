@@ -3,11 +3,14 @@ import React from "react";
 export default function Header() {
   return (
     <header className="w-full fixed top-0 left-0 right-0 z-1">
-      <nav className=" border-gray-200 py-4 dark:bg-gray-900 bg-cyan-300">
+      <nav
+        className=" border-gray-200 py-2 dark:bg-gray-900  bg-[url('https://media.istockphoto.com/id/1278318280/vi/vec-to/thi%E1%BA%BFt-k%E1%BA%BF-banner-m%C3%B9a-%C4%91%C3%B4ng-nh%E1%BB%AFng-b%C3%B4ng-tuy%E1%BA%BFt-tr%E1%BA%AFng-l%E1%BA%A1nh-trong-thi%E1%BA%BFt-k%E1%BA%BF-n%E1%BB%81n-m%C3%A0u-xanh-nh%E1%BB%AFng-b%C3%B4ng.jpg?s=1024x1024&w=is&k=20&c=J4QUfMKXiSV7mGJYBSZDv2ZjOUGg7raHkGh73lwr6G0=')] "
+        // style={{ background: "#f589a9" }}
+      >
         <div className="flex flex-wrap items-center justify-between max-w-screen-xl px-4 mx-auto">
-          <a className="flex items-center">
+          <a href="#" className="flex items-center">
             <img
-              src="https://images.unsplash.com/photo-1611339555312-e607c8352fd7?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              src="/image/logo.png"
               className="h-6 mr-3 sm:h-9"
               alt="SalePhone Logo"
             />
