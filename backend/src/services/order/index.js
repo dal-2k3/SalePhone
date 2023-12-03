@@ -15,7 +15,7 @@ const createOrder = async (data) => {
 const getAllOrders = async () => {
     try {
         const order = await Order.findAll({
-              order: [['createdAt', 'DESC']],
+            order: [['createdAt', 'DESC']],
         }
         )
         return order;
@@ -47,7 +47,7 @@ const getOrderByPhone = async (phone) => {
         console.log(error);
     }
 };
-const updateOrder = async (id,data) => {
+const updateOrder = async (id, data) => {
     try {
         const order = await Order.update(data, {
             where: {
@@ -84,7 +84,7 @@ const createOrderDetail = async (data) => {
 const getOrderDetailByOrder = async (id_Order) => {
     try {
         const orderDetail = await Order_detail.findOne({
-            where:{
+            where: {
                 id_Order,
             }
         });
@@ -109,9 +109,9 @@ const getOrderDetail = async (id_Order) => {
                 {
                     model: Product_detail,
                 },
-                // {
-                //     model: Promotion,
-                // }
+                {
+                    model: Promotion,
+                }
             ]
 
         });

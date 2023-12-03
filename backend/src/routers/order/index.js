@@ -17,6 +17,7 @@ orderRouter.post('/', async (req, res) => {
                 id_Order: newOrder.id,
                 id_Product: detail.id_Product,
                 id_Product_detail: detail.id_Product_detail,
+                id_Promotion: detail.id_Promotion,
                 totalDetail: detail.totalDetail,
                 quantity: detail.quantity,
             });
@@ -64,16 +65,16 @@ orderRouter.delete('/:id', async (req, res) => {
 
 // Order detail
 
-orderRouter.get('/detail/:id', async (req,res) => {
-const {id} = req.params;
- const checkId = await getOrderDetailByOrder(id);
- if (!checkId) {
-    res.status(500).send("order does not exist")
- }
- const orderDetai = await getOrderDetail(id);
- if (!orderDetai) {
-    res.status(501).send("can't get list order detail");
- }
- res.status(200).send(orderDetai);
+orderRouter.get('/detail/:id', async (req, res) => {
+    const { id } = req.params;
+    const checkId = await getOrderDetailByOrder(id);
+    if (!checkId) {
+        res.status(500).send("order does not exist")
+    }
+    const orderDetai = await getOrderDetail(id);
+    if (!orderDetai) {
+        res.status(501).send("can't get list order detail");
+    }
+    res.status(200).send(orderDetai);
 });
 module.exports = orderRouter;
