@@ -18,6 +18,9 @@ module.exports = {
       id_Product_detail: {
         type: Sequelize.STRING
       },
+      id_Promotion: {
+        type: Sequelize.STRING
+      },
       quantity: {
         type: Sequelize.STRING
       },

@@ -438,8 +438,8 @@ export default function ProductDetail() {
                     productDetail.findIndex(
                       (item) => item.id === isActivePhone.id
                     ) +
-                      1 ===
-                      productDetail.length
+                    1 ===
+                    productDetail.length
                   }
                   className="absolute top-1/2 right-4 -translate-y-1/2 p-2 bg-cyan-100 bg-opacity-50 rounded-full"
                 >
@@ -469,11 +469,10 @@ export default function ProductDetail() {
                       key={index}
                       src={`${DOMAIN}${detail.image}`}
                       alt={`Thumbnail ${index + 1}`}
-                      className={`w-12 h-12 rounded-md cursor-pointer ${
-                        isActivePhone.id === detail.id
+                      className={`w-12 h-12 rounded-md cursor-pointer ${isActivePhone.id === detail.id
                           ? "border-2 border-blue-500"
                           : ""
-                      }`}
+                        }`}
                       onClick={() => setisActivePhone(detail)}
                     />
                   ))}
@@ -534,9 +533,8 @@ export default function ProductDetail() {
                     <NavLink
                       key={item.id}
                       to={`/product_detail/${item.id}`}
-                      className={`flex-1 px-5 hover:bg-gray-300 rounded-md py-2 ${
-                        selectedOption === item.capacity ? "bg-gray-300" : ""
-                      }`}
+                      className={`flex-1 px-5 hover:bg-gray-300 rounded-md py-2 ${selectedOption === item.capacity ? "bg-gray-300" : ""
+                        }`}
                       onClick={() => handleSelectOption(item.capacity)}
                     >
                       <div className="">
@@ -566,18 +564,17 @@ export default function ProductDetail() {
                           setisActivePhone(detail);
                         }}
                         className="items-center mx-4 cursor-pointer p-1 flex flex-col "
-                        // className={`items-center mx-4 cursor-pointer p-1 flex flex-col ${
-                        //   isActivePhone.id === detail.id
-                        //     ? "border-2 border-red-300"
-                        //     : "border"
-                        // }`}
+                      // className={`items-center mx-4 cursor-pointer p-1 flex flex-col ${
+                      //   isActivePhone.id === detail.id
+                      //     ? "border-2 border-red-300"
+                      //     : "border"
+                      // }`}
                       >
                         <div
-                          className={`w-14 h-14 rounded-lg ${
-                            isActivePhone.id === detail.id
+                          className={`w-14 h-14 rounded-lg ${isActivePhone.id === detail.id
                               ? "border-2 border-red-300"
                               : ""
-                          }`}
+                            }`}
                           style={{ backgroundColor: detail.color }}
                         >
                           <img
@@ -764,20 +761,18 @@ export default function ProductDetail() {
 
           {/* parameter review */}
 
-          <div div>
+          <div>
             <div className="flex mt-20   justify-center ">
               <button
-                className={`py-2 px-4 font-bold text-2xl ${
-                  activeTab === 1 ? "text-cyan-600" : "text-black"
-                }`}
+                className={`py-2 px-4 font-bold text-2xl ${activeTab === 1 ? "text-cyan-600" : "text-black"
+                  }`}
                 onClick={() => changeTab(1)}
               >
                 Thông tin sản phẩm
               </button>
               <button
-                className={`py-2 px-4  font-bold text-2xl ${
-                  activeTab === 2 ? "text-cyan-600 " : "text-black"
-                }`}
+                className={`py-2 px-4  font-bold text-2xl ${activeTab === 2 ? "text-cyan-600 " : "text-black"
+                  }`}
                 onClick={() => changeTab(2)}
               >
                 Đánh giá sản phẩm
