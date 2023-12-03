@@ -5,6 +5,7 @@ import Contact from "../page/Contact";
 import News from "../page/News";
 import NotFound from "../page/NotFound";
 
+
 const { default: Home } = require("../page/Home");
 
 const publicRoutes = [
@@ -36,6 +37,7 @@ const publicRoutes = [
         path: "/404",
         component: NotFound
     },
+
 
 
 ]

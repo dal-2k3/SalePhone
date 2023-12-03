@@ -12,7 +12,7 @@ module.exports = {
       id_Order: {
         type: Sequelize.STRING
       },
-      idProduct: {
+      id_Product: {
         type: Sequelize.STRING
       },
       id_Product_detail: {

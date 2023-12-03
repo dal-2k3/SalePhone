@@ -1,8 +1,21 @@
 import { useEffect, useState } from "react";
 import { DOMAIN } from "../utils/settings/config";
 import { NavLink } from "react-router-dom";
+import { createOrder } from "../services/order";
+import {
+  apiGetPublicDistrict,
+  apiGetPublicProvinces,
+  apiGetPublicWard,
+} from "./app";
+import Select from "./Select";
+import InputReadOnly from "./InputReadOnly";
+import * as yup from "yup";
+const schema = yup.object().shape({
+  soNha: yup.string().required("Địa chỉ / số nhà không được để trống"),
+});
+
+
 export default function Cart() {
-  // const [order, setOrder] = useState([])
   const [order, setOrder] = useState({
     fullname: "",
     phone: "",
@@ -15,18 +28,28 @@ export default function Cart() {
       },
     ],
   });
-  const handleChangeReview = (e) => {
+
+
+  const [soNha, setSoNha] = useState("");
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setOrder((prevCategory) => ({
       ...prevCategory,
       [name]: value,
     }));
-    // Ở đây bạn có thể gửi giá trị rating lên server hoặc xử lý nó theo ý muốn
   };
+  const handleChangeSoNha = (e) => {
+    const diaChi = e.target.value;
+    setSoNha(diaChi);
+  };
+  console.log("dia chi:", soNha);
+
   //   setOrder((prevOrder) => ({
   //     ...prevOrder,
-  //     total: calculateTotal(),
+  //     total: formatPrice(calculateTotal() + 20000),
   //   }));
+  // };
+
   const [totalDetail, settotalDetail] = useState();
   const [cart, setCart] = useState([]);
   useEffect(() => {
@@ -36,13 +59,14 @@ export default function Cart() {
     setCart(storedCart);
   }, []);
   const updateOrderDetails = (cart) => {
-    const updatedOrderDetails = cart.map((product,index) => ({
-        ...cart[index],
+    const updatedOrderDetails = cart.map((product, index) => ({
+      ...cart[index],
       totalDetail: formatPrice(product.price * (product.quantity || 1)),
     }));
 
     setOrder({ ...order, order_details: updatedOrderDetails });
   };
+  const [showMaxQuantityMessage, setShowMaxQuantityMessage] = useState(false);
   const removeFromCart = (index) => {
     const updatedCart = [...cart];
     updatedCart.splice(index, 1);
@@ -59,7 +83,28 @@ export default function Cart() {
   };
   const increaseQuantity = (index) => {
     const updatedCart = [...cart];
-    updatedCart[index].quantity = (updatedCart[index].quantity || 1) + 1;
+    const productId = updatedCart[index].idProduct;
+    const maxQuantity = parseInt(updatedCart[index].quantityDB, 10); // Lấy giá trị quantityDB và chuyển về kiểu số nguyên
+
+    const newQuantity = Math.min(
+      (updatedCart[index].quantity || 1) + 1,
+      maxQuantity
+    );
+    console.log("quantityDB:", maxQuantity);
+    console.log("newQuantity:", newQuantity);
+    //   if (newQuantity >= maxQuantity) {
+    //     // Hiển thị thông báo hoặc thực hiện các hành động khác khi vượt quá giới hạn
+    //     console.log("Tối đa số lượng trong kho");
+
+    // }
+    if (newQuantity >= maxQuantity) {
+      // Show max quantity message
+      setShowMaxQuantityMessage(productId);
+      setTimeout(() => {
+        setShowMaxQuantityMessage(null);
+      }, 2000); // Adjust timeout as needed
+    }
+    updatedCart[index].quantity = newQuantity;
     setCart(updatedCart);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
     updateOrderDetails(updatedCart);
@@ -75,6 +120,10 @@ export default function Cart() {
     localStorage.setItem("cart", JSON.stringify(updatedCart));
     updateOrderDetails(updatedCart);
   };
+  function clearLocalStorage() {
+    localStorage.removeItem('cart');
+    // Thêm các khóa khác nếu cần thiết
+  }
   const calculateTotal = () => {
     return cart.reduce((total, product) => {
       return total + product.price * (product.quantity || 1);
@@ -83,10 +132,104 @@ export default function Cart() {
   function formatPrice(price) {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const orderfinal = await createOrder(order);
+      console.log("final", orderfinal);
+      setOrder([]);
+      clearLocalStorage();
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-  //   const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+
   console.log("này lấy từ localstorage", cart);
   console.log("này lấy để up lên db", order);
+
+  const [address, setAddress] = useState("");
+  const [provinces, setProvinces] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+
+  const [province, setProvince] = useState("");
+  const [district, setDistrict] = useState("");
+  const [ward, setWard] = useState("");
+
+  const [reset, setReset] = useState(false);
+
+  // get tỉnh
+  useEffect(() => {
+    const fetchPublicProvince = async () => {
+      const response = await apiGetPublicProvinces();
+      if (response.status === 200) {
+        setProvinces(response?.data.results);
+      }
+    };
+    fetchPublicProvince();
+  }, []);
+  // get huỵen
+  useEffect(() => {
+    setDistrict(null);
+    const fetchPublicDistrict = async () => {
+      const response = await apiGetPublicDistrict(province);
+      if (response.status === 200) {
+        setDistricts(response.data?.results);
+      }
+    };
+    province && fetchPublicDistrict();
+    !province ? setReset(true) : setReset(false);
+    !province && setDistricts([]);
+  }, [province]);
+  //get xa
+  useEffect(() => {
+    setWard(null);
+    const fetchPublicWard = async () => {
+      const response = await apiGetPublicWard(district);
+      if (response.status === 200) {
+        setWards(response.data?.results);
+      }
+    };
+    district && fetchPublicWard();
+    !district ? setReset(true) : setReset(false);
+    !district && setWards([]);
+  }, [district]);
+
+  //set tinh huyen xa
+  useEffect(() => {
+    setAddress((prev) => ({
+      ...prev,
+      address: `${
+        ward
+          ? `${wards?.find((item) => item.ward_id === ward)?.ward_name},`
+          : ""
+      } ${
+        district
+          ? `${
+              districts?.find((item) => item.district_id === district)
+                ?.district_name
+            },`
+          : ""
+      } ${
+        province
+          ? provinces?.find((item) => item.province_id === province)
+              ?.province_name
+          : ""
+      }`,
+      province: province
+        ? provinces?.find((item) => item.province_id === province)
+            ?.province_name
+        : "",
+    }));
+  }, [province, district, ward]);
+  useEffect(() => {
+    setOrder((prevOrder) => ({
+      ...prevOrder,
+      address: `${soNha}, ${address.address}`,
+    }));
+  }, [soNha]);
+  console.log("address", address);
   return (
     <div className="w-full bg-gray-100 py-20">
       <div className="rounded-lg md:max-w-[900px] max-w-screen-lg pt-4 mx-auto ">
@@ -102,7 +245,7 @@ export default function Cart() {
               // xmlns:xlink="http://www.w3.org/1999/xlink"
               viewBox="0 0 72 72"
               enable-background="new 0 0 72 72"
-              // xml:space="preserve"
+            // xml:space="preserve"
             >
               <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
               <g
@@ -144,6 +287,7 @@ export default function Cart() {
                         Điện thoại {product.name} {product.capacity}{" "}
                         {product.color}
                       </p>
+                      <p>số lượng trong kho: {product.quantityDB}</p>
                       <div>
                         <button onClick={() => removeFromCart(index)}>
                           <svg
@@ -289,10 +433,14 @@ export default function Cart() {
                             </button>
                           </div>
                         </div>
+                        {showMaxQuantityMessage === product.idProduct && (
+                          <p className="text-red-500">
+                            Tối đa số lượng trong kho
+                          </p>
+                        )}
                       </div>
                       <div className="text-lg">
                         <p className="text-red-500 font-semibold">
-
                           {formatPrice(
                             `${product.price * (product.quantity || 1)} ₫`
                           )}
@@ -308,6 +456,7 @@ export default function Cart() {
                     </div>
                   </div>
                 </div>
+
                 <div className="my-7">
                   <p className="text-gray-500">Khuyến mãi theo sản phẩm</p>
                   <div className="border border-gray-200 rounded-lg flex items-center p-3">
@@ -321,40 +470,12 @@ export default function Cart() {
                     <p className="py-2 px-2 text-sm">
                       Tặng ngay bộ sạc dự phòng giá lên tới dưới 1 tỉ đồng
                     </p>
-                    {/* <p className="py-2 px-2 text-sm">
-                      Giảm ngay 800,000đ áp dụng đến 27/11 Khuyến mãi chỉ áp
-                      dụng trên loại đơn hàng Trả góp.
-                    </p> */}
                   </div>
                 </div>
               </div>
             ))}
 
-            {/* <div className="mt-5">
-              <p className="text-gray-500">Khuyến mãi theo sản phẩm</p>
-              <div className="border border-gray-200 rounded-lg">
-                <p className="py-2 px-2 text-sm">
-                  Tặng ngay bộ sạc dự phòng giá lên tới dưới 1 tỉ đồng
-                </p>
-                <p className="py-2 px-2 text-sm">
-                  Giảm ngay 800,000đ áp dụng đến 27/11 Khuyến mãi chỉ áp dụng
-                  trên loại đơn hàng Trả góp.
-                </p>
-              </div>
-            </div> */}
-            {/* <div className="mt-5">
-              <p className="text-gray-500">Khuyến mãi thanh toán</p>
-              <div className="border border-gray-200 rounded-lg">
-                <p className="py-2 px-2 text-sm">
-                  Nhập mã FPTSHOP200 giảm 1% tối đa 200.000 đồng khi thanh toán
-                  100% qua ZaloPay
-                </p>
-                <p className="py-2 px-2 text-sm">
-                  Giảm ngay 5% tối đa 200.000 đồng khi thanh toán trả góp 6/12
-                  tháng qua Kredivo
-                </p>
-              </div>
-            </div> */}
+
           </div>
           <div className="h-[30px] rounded-t-2xl bg-red-400 bg-[url('https://fptshop.com.vn/estore-images/bggiftpromotion.png')] flex items-center px-4 mt-5 font-semibold text-base text-white ">
             Khuyến mãi theo đơn hàng
@@ -433,83 +554,159 @@ export default function Cart() {
                 Giao hàng tận nhà
               </span>
             </div>
-            <div className="py-2 px-2 bg-gray-200 rounded-2xl mt-4">
+            <div className="py-4 px-2 bg-gray-200 rounded-2xl mt-4 ">
               <div className="p-3 ">
                 <p>Thông tin người nhận hàng</p>
-                <div className=" mt-2 grid grid-cols-2 gap-4">
-                  <input
-                    type="text"
-                    name="fullname"
-                    value={order.fullname}
-                    onChange={handleChangeReview}
-                    className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2"
-                    placeholder="Nhập họ và tên"
-                  />
-                  <input
-                    name="phone"
-                    value={order.phone}
-                    onChange={handleChangeReview}
-                    type="text"
-                    className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2"
-                    placeholder="Nhập số điện thoại"
-                  />
-                  <input
-                    type="text"
-                    name="email"
-                    value={order.email}
-                    onChange={handleChangeReview}
-                    className="col-span-2 border rounded-lg xl:h-[50px] sm:h-[30px] px-2"
-                    placeholder="Nhập địa chỉ email"
-                  />
-                </div>
+                <form onSubmit={handleSubmit}>
+                  <div className=" mt-2 grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block">Họ và tên:</label>
+                      <input
+                        type="text"
+                        name="fullname"
+                        value={order.fullname}
+                        onChange={handleChange}
+                        className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2 w-full"
+                        placeholder="Nhập họ và tên"
+                        required
+                      />
+                    </div>
+                    <div> 
+                    <label className="block">Số điện thoại:</label>
+                      <input
+                        name="phone"
+                        value={order.phone}
+                        onChange={handleChange}
+                        type="text"
+                        className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2 w-full"
+                        placeholder="Nhập số điện thoại"
+                        required
+                      />
+                    </div>
+                    <div className="col-span-2">
+                    <label className="block">Email:</label>
+                      <input
+                        type="text"
+                        name="email"
+                        value={order.email}
+                        onChange={handleChange}
+                        className="col-span-2 border rounded-lg xl:h-[50px] sm:h-[30px] px-2 w-full"
+                        placeholder="Nhập địa chỉ email"
+                        required
+                      />
+                    </div>
+                     <div className="col-span-2 border rounded-lg   px-2">
+                    <div className="flex flex-col gap-4">
+                      <div className="flex items-center gap-4">
+                        <Select
+                          type="province"
+                          value={province}
+                          setValue={setProvince}
+                          options={provinces}
+                          label="Tỉnh/Thành phố"
+                        />
+                        <Select
+                          type="district"
+                          reset={reset}
+                          value={district}
+                          setValue={setDistrict}
+                          options={districts}
+                          label="Quận/Huyện"
+                        />
+                        <Select
+                          reset={reset}
+                          type="ward"
+                          value={ward}
+                          setValue={setWard}
+                          options={wards}
+                          label="Xã"
+                        />
+                      </div>
+                      {/* <InputReadOnly
+                        name="address"
+                        onChange={handleChange}
+                        label="Địa chỉ chính xác"
+                        value={`${
+                          ward
+                            ? `${
+                                wards?.find((item) => item.ward_id === ward)
+                                  ?.ward_name
+                              },`
+                            : ""
+                        } ${
+                          district
+                            ? `${
+                                districts?.find(
+                                  (item) => item.district_id === district
+                                )?.district_name
+                              },`
+                            : ""
+                        } ${
+                          province
+                            ? provinces?.find(
+                                (item) => item.province_id === province
+                              )?.province_name
+                            : ""
+                        }`}
+                      /> */}
+                    </div>
+                  </div>
+                  <div className="col-span-2">
+                  <label className="block">Số nhà/ tên đường:</label>
+                    <input
+                      type="text"
+                      name="soNha"
+                      value={soNha}
+                      onChange={handleChangeSoNha}
+                      className=" border rounded-lg xl:h-[50px] sm:h-[30px] px-2 w-full"
+                      placeholder="Nhập địa chỉ / số nhà"
+                    />
+                  </div>
+                  </div>
+                  <div className="rounded-2xl bg-white py-5 px-4 mt-5 ">
+                    <div className="flex gap-4  justify-between items-start">
+                      <div className="flex-1">
+                        <div className="flex justify-between">
+                          <p>Tổng tiền:</p>
+                          <p>
+                            {formatPrice(`${calculateTotal()} ₫`)}
+                            {/* {calculateTotal()}đ */}
+                          </p>
+                        </div>
+                        <div className="flex justify-between">
+                          <p>Phí giao hàng</p>
+                          <p>20.000 ₫</p>
+                        </div>
+                        <div className="flex justify-between">
+                          <p>Giảm giá voucher</p>
+                          <p>0đ</p>
+                        </div>
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex justify-between ">
+                          <p>Cần thanh toán ({cart.length} sản phẩm)</p>
+                          <p className="text-red-500 text-lg font-semibold">
+                            {formatPrice(`${calculateTotal() + 20000} ₫`)}
+                            {/* {calculateTotal() + 20000} */}
+                          </p>
+                        </div>
+                        <div className="mt-2">
+                          <button
+                            className="font-medium text-lg text-center bg-red-500 text-white w-full rounded-full py-2"
+                          >
+                            Hoàn tất đặt hàng
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+
               </div>
             </div>
           </div>
-          <div className="rounded-2xl bg-white py-5 px-4 mt-5 ">
-            <div className="flex gap-4  justify-between items-start">
-              <div className="flex-1">
-                <div className="flex justify-between">
-                  <p>Tổng tiền:</p>
-                  <p>
-                    {formatPrice(`${calculateTotal()} ₫`)}
-                    {/* {calculateTotal()}đ */}
-                  </p>
-                </div>
-                <div className="flex justify-between">
-                  <p>Phí giao hàng</p>
-                  <p>20.000 ₫</p>
-                </div>
-                <div className="flex justify-between">
-                  <p>Giảm giá voucher</p>
-                  <p>0đ</p>
-                </div>
-              </div>
-              <div className="flex-1">
-                <div className="flex justify-between ">
-                  <p>Cần thanh toán ({cart.length} sản phẩm)</p>
-                  <p className="text-red-500 text-lg font-semibold">
-                    {formatPrice(`${calculateTotal() + 20000} ₫`)}
-                    {/* {calculateTotal() + 20000} */}
-                  </p>
-                </div>
-                <div className="mt-2">
-                  <button
-                    onClick={() => {
-                      setOrder((prevOrder) => ({
-                        ...prevOrder,
-                        total: formatPrice(calculateTotal() + 20000),
-                       
-                        // order_details.totalDetail:
-                      }));
-                    }}
-                    className="font-medium text-lg text-center bg-red-500 text-white w-full rounded-full py-2"
-                  >
-                    Hoàn tất đặt hàng
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+
+
         </div>
       ) : (
         <div className="flex flex-col rounded-lg md:max-w-[900px] max-w-screen-lg pt-4 mx-auto ">

@@ -52,6 +52,18 @@ const getProductById = async (id) => {
         console.log(err);
     }
 };
+const getIdCategory = async (idCategory) => {
+    try {
+        const idproduct = await Product.findOne({
+            where: {
+                idCategory,
+            },
+        });
+        return idproduct;
+    } catch (err) {
+        console.log(err);
+    }
+};
 
 const getProductByCategory = async (idCategory) => {
     try {
@@ -100,7 +112,7 @@ const deleteProduct = async (id) => {
                 id
             }
         })
-        return product
+        return product;
     } catch (err) {
         console.log(err)
     }
@@ -136,13 +148,7 @@ const getProductDetailByIdProduct = async (id) => {
                     model: Categorie,
                     attributes: ['name']
                 },
-                {
-                    model: Comment,
-                    as: "comments",
-                    // where: {
-                    //     status: "public"
-                    // }
-                },
+
             ],
         });
         return productDetail;
@@ -240,6 +246,7 @@ const deletePromotion = async (id) => {
 module.exports = {
     createProduct,
     getAllProduct,
+    getIdCategory,
     getProductById,
     updateProduct,
     deleteProduct,
