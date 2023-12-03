@@ -1,7 +1,19 @@
 import { useEffect, useState } from "react";
 import { DOMAIN } from "../utils/settings/config";
 import { NavLink } from "react-router-dom";
+import {
+  apiGetPublicDistrict,
+  apiGetPublicProvinces,
+  apiGetPublicWard,
+} from "./app";
+import Select from "./Select";
+import InputReadOnly from "./InputReadOnly";
+import * as yup from "yup";
+const schema = yup.object().shape({
+  soNha: yup.string().required("Địa chỉ / số nhà không được để trống"),
+});
 export default function Cart() {
+  
   // const [order, setOrder] = useState([])
   const [order, setOrder] = useState({
     fullname: "",
@@ -15,19 +27,21 @@ export default function Cart() {
       },
     ],
   });
-  const handleChangeReview = (e) => {
+
+  const [soNha, setSoNha] = useState("");
+  const handleChangeAddress = (e) => {
     const { name, value } = e.target;
     setOrder((prevCategory) => ({
       ...prevCategory,
       [name]: value,
     }));
-    // Ở đây bạn có thể gửi giá trị rating lên server hoặc xử lý nó theo ý muốn
   };
-  //   setOrder((prevOrder) => ({
-  //     ...prevOrder,
-  //     total: calculateTotal(),
-  //   }));
-  const [totalDetail, settotalDetail] = useState();
+  const handleChangeSoNha = (e) => {
+    const diaChi = e.target.value;
+    setSoNha(diaChi);
+  };
+  console.log("dia chi:", soNha);
+ 
   const [cart, setCart] = useState([]);
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -36,13 +50,14 @@ export default function Cart() {
     setCart(storedCart);
   }, []);
   const updateOrderDetails = (cart) => {
-    const updatedOrderDetails = cart.map((product,index) => ({
-        ...cart[index],
+    const updatedOrderDetails = cart.map((product, index) => ({
+      ...cart[index],
       totalDetail: formatPrice(product.price * (product.quantity || 1)),
     }));
 
     setOrder({ ...order, order_details: updatedOrderDetails });
   };
+  const [showMaxQuantityMessage, setShowMaxQuantityMessage] = useState(false);
   const removeFromCart = (index) => {
     const updatedCart = [...cart];
     updatedCart.splice(index, 1);
@@ -59,7 +74,28 @@ export default function Cart() {
   };
   const increaseQuantity = (index) => {
     const updatedCart = [...cart];
-    updatedCart[index].quantity = (updatedCart[index].quantity || 1) + 1;
+    const productId = updatedCart[index].idProduct;
+    const maxQuantity = parseInt(updatedCart[index].quantityDB, 10); // Lấy giá trị quantityDB và chuyển về kiểu số nguyên
+
+    const newQuantity = Math.min(
+      (updatedCart[index].quantity || 1) + 1,
+      maxQuantity
+    );
+    console.log("quantityDB:", maxQuantity);
+    console.log("newQuantity:", newQuantity);
+    //   if (newQuantity >= maxQuantity) {
+    //     // Hiển thị thông báo hoặc thực hiện các hành động khác khi vượt quá giới hạn
+    //     console.log("Tối đa số lượng trong kho");
+
+    // }
+    if (newQuantity >= maxQuantity) {
+      // Show max quantity message
+      setShowMaxQuantityMessage(productId);
+      setTimeout(() => {
+        setShowMaxQuantityMessage(null);
+      }, 2000); // Adjust timeout as needed
+    }
+    updatedCart[index].quantity = newQuantity;
     setCart(updatedCart);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
     updateOrderDetails(updatedCart);
@@ -84,9 +120,100 @@ export default function Cart() {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
 
-  //   const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+
   console.log("này lấy từ localstorage", cart);
   console.log("này lấy để up lên db", order);
+
+  const [address, setAddress] = useState("");
+  const [provinces, setProvinces] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+
+  const [province, setProvince] = useState("");
+  const [district, setDistrict] = useState("");
+  const [ward, setWard] = useState("");
+
+  const [reset, setReset] = useState(false);
+
+  // get tỉnh
+  useEffect(() => {
+    const fetchPublicProvince = async () => {
+      const response = await apiGetPublicProvinces();
+      if (response.status === 200) {
+        setProvinces(response?.data.results);
+      }
+    };
+    fetchPublicProvince();
+  }, []);
+  // get huỵen
+  useEffect(() => {
+    setDistrict(null);
+    const fetchPublicDistrict = async () => {
+      const response = await apiGetPublicDistrict(province);
+      if (response.status === 200) {
+        setDistricts(response.data?.results);
+      }
+    };
+    province && fetchPublicDistrict();
+    !province ? setReset(true) : setReset(false);
+    !province && setDistricts([]);
+  }, [province]);
+  //get xa
+  useEffect(() => {
+    setWard(null);
+    const fetchPublicWard = async () => {
+      const response = await apiGetPublicWard(district);
+      if (response.status === 200) {
+        setWards(response.data?.results);
+      }
+    };
+    district && fetchPublicWard();
+    !district ? setReset(true) : setReset(false);
+    !district && setWards([]);
+  }, [district]);
+  const handleChange = (e) => {
+    const { name, value } = e;
+    setAddress((prevCategory) => ({
+      ...prevCategory,
+      [name]: value,
+    }));
+    // Ở đây bạn có thể gửi giá trị rating lên server hoặc xử lý nó theo ý muốn
+  };
+
+  //set tinh huyen xa
+  useEffect(() => {
+    setAddress((prev) => ({
+      ...prev,
+      address: `${
+        ward
+          ? `${wards?.find((item) => item.ward_id === ward)?.ward_name},`
+          : ""
+      } ${
+        district
+          ? `${
+              districts?.find((item) => item.district_id === district)
+                ?.district_name
+            },`
+          : ""
+      } ${
+        province
+          ? provinces?.find((item) => item.province_id === province)
+              ?.province_name
+          : ""
+      }`,
+      province: province
+        ? provinces?.find((item) => item.province_id === province)
+            ?.province_name
+        : "",
+    }));
+  }, [province, district, ward]);
+  useEffect(() => {
+    setOrder((prevOrder) => ({
+      ...prevOrder,
+      address: `${soNha}, ${address.address}`,
+    }));
+  }, [soNha]);
+  console.log("address", address);
   return (
     <div className="w-full bg-gray-100 py-20">
       <div className="rounded-lg md:max-w-[900px] max-w-screen-lg pt-4 mx-auto ">
@@ -144,6 +271,7 @@ export default function Cart() {
                         Điện thoại {product.name} {product.capacity}{" "}
                         {product.color}
                       </p>
+                      <p>số lượng trong kho: {product.quantityDB}</p>
                       <div>
                         <button onClick={() => removeFromCart(index)}>
                           <svg
@@ -289,10 +417,14 @@ export default function Cart() {
                             </button>
                           </div>
                         </div>
+                        {showMaxQuantityMessage === product.idProduct && (
+                          <p className="text-red-500">
+                            Tối đa số lượng trong kho
+                          </p>
+                        )}
                       </div>
                       <div className="text-lg">
                         <p className="text-red-500 font-semibold">
-
                           {formatPrice(
                             `${product.price * (product.quantity || 1)} ₫`
                           )}
@@ -308,6 +440,7 @@ export default function Cart() {
                     </div>
                   </div>
                 </div>
+
                 <div className="my-7">
                   <p className="text-gray-500">Khuyến mãi theo sản phẩm</p>
                   <div className="border border-gray-200 rounded-lg flex items-center p-3">
@@ -433,7 +566,7 @@ export default function Cart() {
                 Giao hàng tận nhà
               </span>
             </div>
-            <div className="py-2 px-2 bg-gray-200 rounded-2xl mt-4">
+            <div className="py-4 px-2 bg-gray-200 rounded-2xl mt-4 ">
               <div className="p-3 ">
                 <p>Thông tin người nhận hàng</p>
                 <div className=" mt-2 grid grid-cols-2 gap-4">
@@ -441,14 +574,14 @@ export default function Cart() {
                     type="text"
                     name="fullname"
                     value={order.fullname}
-                    onChange={handleChangeReview}
+                    onChange={handleChangeAddress}
                     className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2"
                     placeholder="Nhập họ và tên"
                   />
                   <input
                     name="phone"
                     value={order.phone}
-                    onChange={handleChangeReview}
+                    onChange={handleChangeAddress}
                     type="text"
                     className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2"
                     placeholder="Nhập số điện thoại"
@@ -457,9 +590,73 @@ export default function Cart() {
                     type="text"
                     name="email"
                     value={order.email}
-                    onChange={handleChangeReview}
+                    onChange={handleChangeAddress}
                     className="col-span-2 border rounded-lg xl:h-[50px] sm:h-[30px] px-2"
                     placeholder="Nhập địa chỉ email"
+                  />
+                  <div className="col-span-2 border rounded-lg   px-2">
+                    <div className="flex flex-col gap-4">
+                      <div className="flex items-center gap-4">
+                        <Select
+                          type="province"
+                          value={province}
+                          setValue={setProvince}
+                          options={provinces}
+                          label="Tỉnh/Thành phố"
+                        />
+                        <Select
+                          type="district"
+                          reset={reset}
+                          value={district}
+                          setValue={setDistrict}
+                          options={districts}
+                          label="Quận/Huyện"
+                        />
+                        <Select
+                          reset={reset}
+                          type="ward"
+                          value={ward}
+                          setValue={setWard}
+                          options={wards}
+                          label="Xã"
+                        />
+                      </div>
+                      <InputReadOnly
+                        name="address"
+                        onChange={handleChange}
+                        label="Địa chỉ chính xác"
+                        value={`${
+                          ward
+                            ? `${
+                                wards?.find((item) => item.ward_id === ward)
+                                  ?.ward_name
+                              },`
+                            : ""
+                        } ${
+                          district
+                            ? `${
+                                districts?.find(
+                                  (item) => item.district_id === district
+                                )?.district_name
+                              },`
+                            : ""
+                        } ${
+                          province
+                            ? provinces?.find(
+                                (item) => item.province_id === province
+                              )?.province_name
+                            : ""
+                        }`}
+                      />
+                    </div>
+                  </div>
+                  <input
+                    type="text"
+                    name="email"
+                    value={soNha}
+                    onChange={handleChangeSoNha}
+                    className="col-span-2 border rounded-lg xl:h-[50px] sm:h-[30px] px-2"
+                    placeholder="Nhập địa chỉ / số nhà"
                   />
                 </div>
               </div>
@@ -498,7 +695,7 @@ export default function Cart() {
                       setOrder((prevOrder) => ({
                         ...prevOrder,
                         total: formatPrice(calculateTotal() + 20000),
-                       
+
                         // order_details.totalDetail:
                       }));
                     }}

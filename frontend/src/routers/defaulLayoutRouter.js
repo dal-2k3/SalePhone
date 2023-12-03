@@ -1,6 +1,7 @@
 import Cart from "../components/Cart";
 import ListProducts from "../components/ListProducts";
 import ProductDetail from "../components/ProductDetail";
+import Tinhthanh from "../page/tuyet";
 
 const { default: Home } = require("../page/Home");
 
@@ -20,6 +21,10 @@ const publicRoutes = [
     {
         path: "/cart",
         component: Cart
+    },
+    {
+        path: "/tinhthanh",
+        component: Tinhthanh
     },
 
 

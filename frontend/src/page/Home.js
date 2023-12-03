@@ -13,8 +13,9 @@ import "swiper/swiper-bundle.css";
 import { listCategories } from "../services/categories/categories";
 import { DOMAIN } from "../utils/settings/config";
 import { NavLink } from "react-router-dom";
+import { listProducts } from "../services/products/product";
 export default function Home() {
-  const products = [
+  const products2 = [
     {
       id: 1,
       name: "Iphone 15 Pro (128GB) - Chính hãng VN/A",
@@ -109,6 +110,7 @@ export default function Home() {
 
   const [reload, setReload] = useState(false);
   const [categories, setcategories] = useState([0]);
+  const [products, setProducts] = useState([]);
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -120,17 +122,44 @@ export default function Home() {
     };
     fetchCategories();
   }, [reload]);
+
+  //all product
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const productsData = await listProducts();
+        // console.log(productsData);
+        setProducts(productsData);
+      } catch (error) {
+        // Xử lý lỗi nếu cần
+        console.log(error);
+      }
+    };
+    fetchProducts();
+  }, [reload]);
+  console.log(products);
+  const iphone = "IPHONE";
+  const filteredArrayIphone = products.filter(
+    (item) => item.Categorie.name == iphone
+  );
+  console.log("filter", filteredArrayIphone);
+  const samsung = "SAMSUNG";
+  const filteredArraySamsung = products.filter(
+    (item) => item.Categorie.name == samsung
+  );
+  console.log("filter", filteredArraySamsung);
+
   const [startIndex, setStartIndex] = useState(0);
   const [productsToShow, setProductsToShow] = useState([]);
   useEffect(() => {
     const getProductsToShow = () => {
-      const endIndex = (startIndex + 5) % products.length;
+      const endIndex = (startIndex + 5) % products2.length;
       if (endIndex >= startIndex) {
-        return products.slice(startIndex, endIndex);
+        return products2.slice(startIndex, endIndex);
       } else {
         return [
-          ...products.slice(startIndex, products.length),
-          ...products.slice(0, endIndex),
+          ...products2.slice(startIndex, products2.length),
+          ...products2.slice(0, endIndex),
         ];
       }
     };
@@ -147,7 +176,9 @@ export default function Home() {
     setStartIndex(newStartIndex);
   };
   // BACK_TOP
-
+  function formatPrice(price) {
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  }
   return (
     <section className="mt-5 sm:w-full">
       <div className="lg:grid max-w-[95%] lg:grid-cols-3 mx-auto lg:gap-4  sm:grid sm:grid-flow-row sm:grid-row-3 py-20 ">
@@ -314,7 +345,9 @@ export default function Home() {
               <p className="text-xl font-medium uppercase ">SAMSUNG</p>
 
               <p className="text-sm">GALAXY S23 ULTRA </p>
-              <p className="text-2xl mb-1 ">“Tân vương của điện thoại camera”</p>
+              <p className="text-2xl mb-1 ">
+                “Tân vương của điện thoại camera”
+              </p>
               <button class="py-1 px-3 rounded-full bg-blue-400 text-white font-bold transition duration-500 transform hover:bg-blue-300 hover:scale-110 active:bg-blue-700 active:scale-98 focus:outline-none">
                 Mua ngay
               </button>
@@ -498,250 +531,107 @@ export default function Home() {
         </div>
         <div className="grid  max-w-[95%] px-4  mx-auto lg:gap-8  lg:py-16 lg:pt bg-gray-100">
           <div class="grid grid-cols-5 gap-4 xl:px-[100px]">
-            <div class="row-span-1  border border-solid rounded-3xl bg-white shadow-lg ">
-              <div className="py-8 flex flex-col items-center lg:relative ">
-                <div className="mb-4  ">
-                  <img
-                    src="https://cdn.hoanghamobile.com/i/productlist/ts/Uploads/2023/02/02/s23-xang.png"
-                    alt=""
-                  />
-                </div>
-                <div className="flex items-center lg:absolute top-[230px] left-0 rounded-xl bg-red-500">
-                  <svg
-                    height="20px"
-                    width="20px"
-                    version="1.1"
-                    id="Layer_1"
-                    xmlns="http://www.w3.org/2000/svg"
-                    // xmlns:xlink="http://www.w3.org/1999/xlink"
-                    viewBox="0 0 512 512"
-                    // xml:space="preserve"
-                    fill="#000000"
-                  >
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                    <g
-                      id="SVGRepo_tracerCarrier"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    ></g>
-                    <g id="SVGRepo_iconCarrier">
-                      {" "}
-                      <path
-                        style={{ fill: "#FF5023" }}
-                        d="M141.005,339.641H16.696c-5.788,0-11.157-3.082-14.201-7.995c-3.043-4.924-3.32-11.117-0.733-16.29 L31.42,256.02L1.761,196.695c-2.587-5.173-2.31-11.249,0.733-16.174c3.043-4.913,8.413-7.837,14.201-7.837h124.31 c5.978,0,11.5,3.114,14.473,8.299c2.979,5.173,2.962,11.513-0.049,16.677c-10.815,18.566-16.299,38.186-16.299,58.36 s5.484,39.805,16.299,58.37c3.011,5.163,3.027,11.62,0.049,16.794C152.505,336.368,146.983,339.641,141.005,339.641z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#CD2A00" }}
-                        d="M495.304,339.641h-124.31c-5.978,0-11.5-3.277-14.473-8.462c-2.978-5.173-2.962-11.595,0.049-16.758 c10.815-18.566,16.299-38.226,16.299-58.4s-5.484-39.826-16.299-58.39c-3.011-5.163-3.027-11.467-0.049-16.641 c2.973-5.185,8.495-8.304,14.473-8.304h124.31c5.788,0,11.157,2.918,14.201,7.831c3.043,4.924,3.32,11.036,0.733,16.209 l-29.658,59.295l29.658,59.305c2.587,5.173,2.31,11.402-0.733,16.326C506.461,336.564,501.092,339.641,495.304,339.641z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#FFDA44" }}
-                        d="M253.773,406.261c-82.853,0-148.033-67.402-148.033-150.261S173.147,105.739,256,105.739 S406.261,173.142,406.261,256S336.625,406.261,253.773,406.261z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#FFA733" }}
-                        d="M406.261,256c0-82.858-67.408-150.261-150.261-150.261l-2.227,300.521 C336.625,406.261,406.261,338.858,406.261,256z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#FFEB99" }}
-                        d="M300.13,333.434c-2.658,0-5.326-0.63-7.771-1.924L256,312.39l-36.359,19.12 c-5.635,2.978-12.446,2.468-17.582-1.261c-5.147-3.739-7.718-10.065-6.647-16.337l6.94-40.478l-29.413-28.684 c-4.549-4.445-6.185-11.076-4.217-17.12c1.962-6.044,7.19-10.446,13.478-11.359l40.647-5.902l18.179-36.837 c2.815-5.695,8.619-9.304,14.973-9.304c6.353,0,12.158,3.608,14.973,9.304l18.179,36.837l40.647,5.902 c6.288,0.913,11.517,5.315,13.478,11.359c1.968,6.044,0.332,12.674-4.217,17.12l-29.413,28.684l6.94,40.478 c1.071,6.272-1.5,12.597-6.647,16.337C307.032,332.358,303.591,333.434,300.13,333.434z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#FFDA44" }}
-                        d="M292.357,331.51c2.445,1.293,5.114,1.924,7.772,1.924c3.462,0,6.902-1.076,9.81-3.184 c5.147-3.739,7.718-10.065,6.647-16.337l-6.94-40.478l29.413-28.684c4.549-4.445,6.185-11.076,4.217-17.12 c-1.962-6.044-7.19-10.446-13.478-11.359l-40.647-5.902l-18.179-36.837c-2.815-5.695-8.294-9.304-14.973-9.304v148.162 L292.357,331.51z"
-                      ></path>{" "}
-                    </g>
-                  </svg>
-                  <p className=" px-1 py-1  text-white text-xs">
-                    Giảm 2.000.000 đ
-                  </p>
-                </div>
-                <div className="text-center">
-                  <div className="mb-2 px-4">
-                    <a href="" className="font-bold text-sm">
-                      Samsung Galaxy S23 Plus - 8GB/256GB - Chính hãng
-                    </a>
-                  </div>
-                  <div className="mb-2 flex text-center items-center justify-center gap-1">
-                    <span className="text-red-500 text-[18px] font-medium">
-                      31.000.000 đ
-                    </span>
-                    <span className="text-sm text-gray-500 line-through">
-                      10.000 đ
-                    </span>
-                  </div>
-
-                  <div>
-                    <button class="py-2 px-5 rounded-full bg-blue-400 text-white font-bold transition duration-500 transform hover:bg-blue-300 hover:scale-110 active:bg-blue-700 active:scale-98 focus:outline-none">
-                      Mua ngay
-                    </button>
-                  </div>
-                </div>
+          {filteredArraySamsung.slice(0, 4).map((item) => (
+              <div
+                key={item.id}
+                class="row-span-1  border border-solid rounded-3xl bg-white  shadow-lg"
+              >
+                {item.product_detail &&
+                  item.product_detail.map((detail, index) => (
+                    <div
+                      key={index}
+                      className="py-8 flex flex-col items-center lg:relative group "
+                    >
+                      <NavLink to={`/product_detail/${item.id}`}>
+                        <div className="mb-4 relative overflow-hidden transition-transform duration-500 ease-in-out transform-gpu group-hover:-translate-y-3">
+                          <img
+                          className="max-h-[200px]"
+                            src={`${DOMAIN}${detail.image}`}
+                            alt={`${detail.image}`}
+                          />
+                        </div>
+                      </NavLink>
+                      <div className="flex items-center lg:absolute top-[230px] left-0 rounded-xl bg-red-500">
+                        <svg
+                          height="20px"
+                          width="20px"
+                          version="1.1"
+                          id="Layer_1"
+                          xmlns="http://www.w3.org/2000/svg"
+                          // xmlns:xlink="http://www.w3.org/1999/xlink"
+                          viewBox="0 0 512 512"
+                          // xml:space="preserve"
+                          fill="#000000"
+                        >
+                          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                          <g
+                            id="SVGRepo_tracerCarrier"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          ></g>
+                          <g id="SVGRepo_iconCarrier">
+                            {" "}
+                            <path
+                              style={{ fill: "#FF5023" }}
+                              d="M141.005,339.641H16.696c-5.788,0-11.157-3.082-14.201-7.995c-3.043-4.924-3.32-11.117-0.733-16.29 L31.42,256.02L1.761,196.695c-2.587-5.173-2.31-11.249,0.733-16.174c3.043-4.913,8.413-7.837,14.201-7.837h124.31 c5.978,0,11.5,3.114,14.473,8.299c2.979,5.173,2.962,11.513-0.049,16.677c-10.815,18.566-16.299,38.186-16.299,58.36 s5.484,39.805,16.299,58.37c3.011,5.163,3.027,11.62,0.049,16.794C152.505,336.368,146.983,339.641,141.005,339.641z"
+                            ></path>{" "}
+                            <path
+                              style={{ fill: "#CD2A00" }}
+                              d="M495.304,339.641h-124.31c-5.978,0-11.5-3.277-14.473-8.462c-2.978-5.173-2.962-11.595,0.049-16.758 c10.815-18.566,16.299-38.226,16.299-58.4s-5.484-39.826-16.299-58.39c-3.011-5.163-3.027-11.467-0.049-16.641 c2.973-5.185,8.495-8.304,14.473-8.304h124.31c5.788,0,11.157,2.918,14.201,7.831c3.043,4.924,3.32,11.036,0.733,16.209 l-29.658,59.295l29.658,59.305c2.587,5.173,2.31,11.402-0.733,16.326C506.461,336.564,501.092,339.641,495.304,339.641z"
+                            ></path>{" "}
+                            <path
+                              style={{ fill: "#FFDA44" }}
+                              d="M253.773,406.261c-82.853,0-148.033-67.402-148.033-150.261S173.147,105.739,256,105.739 S406.261,173.142,406.261,256S336.625,406.261,253.773,406.261z"
+                            ></path>{" "}
+                            <path
+                              style={{ fill: "#FFA733" }}
+                              d="M406.261,256c0-82.858-67.408-150.261-150.261-150.261l-2.227,300.521 C336.625,406.261,406.261,338.858,406.261,256z"
+                            ></path>{" "}
+                            <path
+                              style={{ fill: "#FFEB99" }}
+                              d="M300.13,333.434c-2.658,0-5.326-0.63-7.771-1.924L256,312.39l-36.359,19.12 c-5.635,2.978-12.446,2.468-17.582-1.261c-5.147-3.739-7.718-10.065-6.647-16.337l6.94-40.478l-29.413-28.684 c-4.549-4.445-6.185-11.076-4.217-17.12c1.962-6.044,7.19-10.446,13.478-11.359l40.647-5.902l18.179-36.837 c2.815-5.695,8.619-9.304,14.973-9.304c6.353,0,12.158,3.608,14.973,9.304l18.179,36.837l40.647,5.902 c6.288,0.913,11.517,5.315,13.478,11.359c1.968,6.044,0.332,12.674-4.217,17.12l-29.413,28.684l6.94,40.478 c1.071,6.272-1.5,12.597-6.647,16.337C307.032,332.358,303.591,333.434,300.13,333.434z"
+                            ></path>{" "}
+                            <path
+                              style={{ fill: "#FFDA44" }}
+                              d="M292.357,331.51c2.445,1.293,5.114,1.924,7.772,1.924c3.462,0,6.902-1.076,9.81-3.184 c5.147-3.739,7.718-10.065,6.647-16.337l-6.94-40.478l29.413-28.684c4.549-4.445,6.185-11.076,4.217-17.12 c-1.962-6.044-7.19-10.446-13.478-11.359l-40.647-5.902l-18.179-36.837c-2.815-5.695-8.294-9.304-14.973-9.304v148.162 L292.357,331.51z"
+                            ></path>{" "}
+                          </g>
+                        </svg>
+                        <p className=" px-1 py-1  text-white text-xs">
+                          Giảm{" "}
+                          {formatPrice(`${detail.discount - detail.price} ₫`)}
+                        </p>
+                      </div>
+                      <div className="text-center">
+                        <div className="mb-2 px-4">
+                          <a
+                            href={`/product_detail/${item.id}`}
+                            className="font-bold text-sm"
+                          >
+                            {item.name} ({item.capacity}) - Chính hãng VN/A
+                          </a>
+                        </div>
+                        <div className="mb-2 flex text-center items-center justify-center gap-1">
+                          <span className="text-red-500 text-[18px] font-medium">
+                          {formatPrice(`${detail.price} ₫`)}
+                          </span>
+                          <span className="text-sm text-gray-500 line-through">
+                          {formatPrice(`${detail.discount} ₫`)}
+                          </span>
+                        </div>
+                        <div className="mb-4"></div>
+                        <div>
+                          <button class="py-2 px-5 rounded-full bg-blue-400 text-white font-bold transition duration-500 transform hover:bg-blue-300 hover:scale-110 active:bg-blue-700 active:scale-98 focus:outline-none">
+                            Mua ngay
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
               </div>
-            </div>
-            <div class="row-span-1  border border-solid rounded-3xl bg-white shadow-lg">
-              <div className="py-8 flex flex-col items-center lg:relative ">
-                <div className="mb-4  ">
-                  <img
-                    src="https://cdn.hoanghamobile.com/i/productlist/ts/Uploads/2023/02/02/s23-xang.png"
-                    alt=""
-                  />
-                </div>
-                <div className="flex items-center lg:absolute top-[230px] left-0 rounded-xl bg-red-500">
-                  <svg
-                    height="20px"
-                    width="20px"
-                    version="1.1"
-                    id="Layer_1"
-                    xmlns="http://www.w3.org/2000/svg"
-                    // xmlns:xlink="http://www.w3.org/1999/xlink"
-                    viewBox="0 0 512 512"
-                    // xml:space="preserve"
-                    fill="#000000"
-                  >
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                    <g
-                      id="SVGRepo_tracerCarrier"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    ></g>
-                    <g id="SVGRepo_iconCarrier">
-                      {" "}
-                      <path
-                        style={{ fill: "#FF5023" }}
-                        d="M141.005,339.641H16.696c-5.788,0-11.157-3.082-14.201-7.995c-3.043-4.924-3.32-11.117-0.733-16.29 L31.42,256.02L1.761,196.695c-2.587-5.173-2.31-11.249,0.733-16.174c3.043-4.913,8.413-7.837,14.201-7.837h124.31 c5.978,0,11.5,3.114,14.473,8.299c2.979,5.173,2.962,11.513-0.049,16.677c-10.815,18.566-16.299,38.186-16.299,58.36 s5.484,39.805,16.299,58.37c3.011,5.163,3.027,11.62,0.049,16.794C152.505,336.368,146.983,339.641,141.005,339.641z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#CD2A00" }}
-                        d="M495.304,339.641h-124.31c-5.978,0-11.5-3.277-14.473-8.462c-2.978-5.173-2.962-11.595,0.049-16.758 c10.815-18.566,16.299-38.226,16.299-58.4s-5.484-39.826-16.299-58.39c-3.011-5.163-3.027-11.467-0.049-16.641 c2.973-5.185,8.495-8.304,14.473-8.304h124.31c5.788,0,11.157,2.918,14.201,7.831c3.043,4.924,3.32,11.036,0.733,16.209 l-29.658,59.295l29.658,59.305c2.587,5.173,2.31,11.402-0.733,16.326C506.461,336.564,501.092,339.641,495.304,339.641z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#FFDA44" }}
-                        d="M253.773,406.261c-82.853,0-148.033-67.402-148.033-150.261S173.147,105.739,256,105.739 S406.261,173.142,406.261,256S336.625,406.261,253.773,406.261z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#FFA733" }}
-                        d="M406.261,256c0-82.858-67.408-150.261-150.261-150.261l-2.227,300.521 C336.625,406.261,406.261,338.858,406.261,256z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#FFEB99" }}
-                        d="M300.13,333.434c-2.658,0-5.326-0.63-7.771-1.924L256,312.39l-36.359,19.12 c-5.635,2.978-12.446,2.468-17.582-1.261c-5.147-3.739-7.718-10.065-6.647-16.337l6.94-40.478l-29.413-28.684 c-4.549-4.445-6.185-11.076-4.217-17.12c1.962-6.044,7.19-10.446,13.478-11.359l40.647-5.902l18.179-36.837 c2.815-5.695,8.619-9.304,14.973-9.304c6.353,0,12.158,3.608,14.973,9.304l18.179,36.837l40.647,5.902 c6.288,0.913,11.517,5.315,13.478,11.359c1.968,6.044,0.332,12.674-4.217,17.12l-29.413,28.684l6.94,40.478 c1.071,6.272-1.5,12.597-6.647,16.337C307.032,332.358,303.591,333.434,300.13,333.434z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#FFDA44" }}
-                        d="M292.357,331.51c2.445,1.293,5.114,1.924,7.772,1.924c3.462,0,6.902-1.076,9.81-3.184 c5.147-3.739,7.718-10.065,6.647-16.337l-6.94-40.478l29.413-28.684c4.549-4.445,6.185-11.076,4.217-17.12 c-1.962-6.044-7.19-10.446-13.478-11.359l-40.647-5.902l-18.179-36.837c-2.815-5.695-8.294-9.304-14.973-9.304v148.162 L292.357,331.51z"
-                      ></path>{" "}
-                    </g>
-                  </svg>
-                  <p className=" px-1 py-1  text-white text-xs">
-                    Giảm 2.000.000 đ
-                  </p>
-                </div>
-                <div className="text-center">
-                  <div className="mb-2 px-4">
-                    <a href="" className="font-bold text-sm">
-                      Samsung Galaxy S23 Plus - 8GB/256GB - Chính hãng
-                    </a>
-                  </div>
-                  <div className="mb-2 flex text-center items-center justify-center gap-1">
-                    <span className="text-red-500 text-[18px] font-medium">
-                      31.000.000 đ
-                    </span>
-                    <span className="text-sm text-gray-500 line-through">
-                      10.000 đ
-                    </span>
-                  </div>
-                  <div className="mb-4"></div>
-                  <div>
-                    <button class="py-2 px-5 rounded-full bg-blue-400 text-white font-bold transition duration-500 transform hover:bg-blue-300 hover:scale-110 active:bg-blue-700 active:scale-98 focus:outline-none">
-                      Mua ngay
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row-span-1  border border-solid rounded-3xl bg-white shadow-lg">
-              <div className="py-8 flex flex-col items-center lg:relative ">
-                <div className="mb-4  ">
-                  <img
-                    src="https://cdn.hoanghamobile.com/i/productlist/ts/Uploads/2023/02/02/s23-xang.png"
-                    alt=""
-                  />
-                </div>
-                <div className="flex items-center lg:absolute top-[230px] left-0 rounded-xl bg-red-500">
-                  <svg
-                    height="20px"
-                    width="20px"
-                    version="1.1"
-                    id="Layer_1"
-                    xmlns="http://www.w3.org/2000/svg"
-                    // xmlns:xlink="http://www.w3.org/1999/xlink"
-                    viewBox="0 0 512 512"
-                    // xml:space="preserve"
-                    fill="#000000"
-                  >
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                    <g
-                      id="SVGRepo_tracerCarrier"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    ></g>
-                    <g id="SVGRepo_iconCarrier">
-                      {" "}
-                      <path
-                        style={{ fill: "#FF5023" }}
-                        d="M141.005,339.641H16.696c-5.788,0-11.157-3.082-14.201-7.995c-3.043-4.924-3.32-11.117-0.733-16.29 L31.42,256.02L1.761,196.695c-2.587-5.173-2.31-11.249,0.733-16.174c3.043-4.913,8.413-7.837,14.201-7.837h124.31 c5.978,0,11.5,3.114,14.473,8.299c2.979,5.173,2.962,11.513-0.049,16.677c-10.815,18.566-16.299,38.186-16.299,58.36 s5.484,39.805,16.299,58.37c3.011,5.163,3.027,11.62,0.049,16.794C152.505,336.368,146.983,339.641,141.005,339.641z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#CD2A00" }}
-                        d="M495.304,339.641h-124.31c-5.978,0-11.5-3.277-14.473-8.462c-2.978-5.173-2.962-11.595,0.049-16.758 c10.815-18.566,16.299-38.226,16.299-58.4s-5.484-39.826-16.299-58.39c-3.011-5.163-3.027-11.467-0.049-16.641 c2.973-5.185,8.495-8.304,14.473-8.304h124.31c5.788,0,11.157,2.918,14.201,7.831c3.043,4.924,3.32,11.036,0.733,16.209 l-29.658,59.295l29.658,59.305c2.587,5.173,2.31,11.402-0.733,16.326C506.461,336.564,501.092,339.641,495.304,339.641z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#FFDA44" }}
-                        d="M253.773,406.261c-82.853,0-148.033-67.402-148.033-150.261S173.147,105.739,256,105.739 S406.261,173.142,406.261,256S336.625,406.261,253.773,406.261z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#FFA733" }}
-                        d="M406.261,256c0-82.858-67.408-150.261-150.261-150.261l-2.227,300.521 C336.625,406.261,406.261,338.858,406.261,256z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#FFEB99" }}
-                        d="M300.13,333.434c-2.658,0-5.326-0.63-7.771-1.924L256,312.39l-36.359,19.12 c-5.635,2.978-12.446,2.468-17.582-1.261c-5.147-3.739-7.718-10.065-6.647-16.337l6.94-40.478l-29.413-28.684 c-4.549-4.445-6.185-11.076-4.217-17.12c1.962-6.044,7.19-10.446,13.478-11.359l40.647-5.902l18.179-36.837 c2.815-5.695,8.619-9.304,14.973-9.304c6.353,0,12.158,3.608,14.973,9.304l18.179,36.837l40.647,5.902 c6.288,0.913,11.517,5.315,13.478,11.359c1.968,6.044,0.332,12.674-4.217,17.12l-29.413,28.684l6.94,40.478 c1.071,6.272-1.5,12.597-6.647,16.337C307.032,332.358,303.591,333.434,300.13,333.434z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#FFDA44" }}
-                        d="M292.357,331.51c2.445,1.293,5.114,1.924,7.772,1.924c3.462,0,6.902-1.076,9.81-3.184 c5.147-3.739,7.718-10.065,6.647-16.337l-6.94-40.478l29.413-28.684c4.549-4.445,6.185-11.076,4.217-17.12 c-1.962-6.044-7.19-10.446-13.478-11.359l-40.647-5.902l-18.179-36.837c-2.815-5.695-8.294-9.304-14.973-9.304v148.162 L292.357,331.51z"
-                      ></path>{" "}
-                    </g>
-                  </svg>
-                  <p className=" px-1 py-1  text-white text-xs">
-                    Giảm 2.000.000 đ
-                  </p>
-                </div>
-                <div className="text-center">
-                  <div className="mb-2 px-4">
-                    <a href="" className="font-bold text-sm">
-                      Samsung Galaxy S23 Plus - 8GB/256GB - Chính hãng
-                    </a>
-                  </div>
-                  <div className="mb-2 flex text-center items-center justify-center gap-1">
-                    <span className="text-red-500 text-[18px] font-medium">
-                      31.000.000 đ
-                    </span>
-                    <span className="text-sm text-gray-500 line-through">
-                      10.000 đ
-                    </span>
-                  </div>
-                  <div className="mb-4"></div>
-                  <div>
-                    <button class="py-2 px-5 rounded-full bg-blue-400 text-white font-bold transition duration-500 transform hover:bg-blue-300 hover:scale-110 active:bg-blue-700 active:scale-98 focus:outline-none">
-                      Mua ngay
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row-span-1  border border-solid rounded-3xl bg-white shadow-lg">
+            ))}
+            
+            {/* <div class="row-span-1  border border-solid rounded-3xl bg-white shadow-lg">
               <div className="py-8 flex flex-col items-center lg:relative ">
                 <div className="mb-4  ">
                   <img
@@ -822,6 +712,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
+             */}
             <div class="row-span-1  border border-solid rounded-3xl bg-white bg-[url('https://images.samsung.com/is/image/samsung/assets/vn/2302/pcd/smartphones/PCD_DM3_KV_Promotion-Card_264x698_pc.jpg?$264_N_JPG$')] bg-cover bg-center bg-no-repeat shadow-lg	">
               <div className="py-8 flex flex-col items-center lg:relative ">
                 <div className="mb-4  ">
@@ -960,335 +851,111 @@ export default function Home() {
       <div className="bg-gray-100">
         <div className="grid  max-w-[95%] px-4  mx-auto lg:gap-8  lg:py-16 lg:pt bg-gray-100">
           <div class="grid grid-cols-5 gap-4 xl:px-[100px]">
-            <div class="row-span-1  border border-solid rounded-3xl bg-white  shadow-lg">
-              <div className="py-8 flex flex-col items-center lg:relative group ">
-                <div className="mb-4 relative overflow-hidden transition-transform duration-500 ease-in-out transform-gpu group-hover:-translate-y-3">
-                  <img
-                    src="https://cdn2.cellphones.com.vn/insecure/rs:fill:358:358/q:80/plain/https://cellphones.com.vn/media/catalog/product/t/_/t_m_12_1_3_2.png"
-                    alt=""
-                  />
-                </div>
-                <div className="flex items-center lg:absolute top-[230px] left-0 rounded-xl bg-red-500">
-                  <svg
-                    height="20px"
-                    width="20px"
-                    version="1.1"
-                    id="Layer_1"
-                    xmlns="http://www.w3.org/2000/svg"
-                    // xmlns:xlink="http://www.w3.org/1999/xlink"
-                    viewBox="0 0 512 512"
-                    // xml:space="preserve"
-                    fill="#000000"
-                  >
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                    <g
-                      id="SVGRepo_tracerCarrier"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    ></g>
-                    <g id="SVGRepo_iconCarrier">
-                      {" "}
-                      <path
-                        style={{ fill: "#FF5023" }}
-                        d="M141.005,339.641H16.696c-5.788,0-11.157-3.082-14.201-7.995c-3.043-4.924-3.32-11.117-0.733-16.29 L31.42,256.02L1.761,196.695c-2.587-5.173-2.31-11.249,0.733-16.174c3.043-4.913,8.413-7.837,14.201-7.837h124.31 c5.978,0,11.5,3.114,14.473,8.299c2.979,5.173,2.962,11.513-0.049,16.677c-10.815,18.566-16.299,38.186-16.299,58.36 s5.484,39.805,16.299,58.37c3.011,5.163,3.027,11.62,0.049,16.794C152.505,336.368,146.983,339.641,141.005,339.641z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#CD2A00" }}
-                        d="M495.304,339.641h-124.31c-5.978,0-11.5-3.277-14.473-8.462c-2.978-5.173-2.962-11.595,0.049-16.758 c10.815-18.566,16.299-38.226,16.299-58.4s-5.484-39.826-16.299-58.39c-3.011-5.163-3.027-11.467-0.049-16.641 c2.973-5.185,8.495-8.304,14.473-8.304h124.31c5.788,0,11.157,2.918,14.201,7.831c3.043,4.924,3.32,11.036,0.733,16.209 l-29.658,59.295l29.658,59.305c2.587,5.173,2.31,11.402-0.733,16.326C506.461,336.564,501.092,339.641,495.304,339.641z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#FFDA44" }}
-                        d="M253.773,406.261c-82.853,0-148.033-67.402-148.033-150.261S173.147,105.739,256,105.739 S406.261,173.142,406.261,256S336.625,406.261,253.773,406.261z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#FFA733" }}
-                        d="M406.261,256c0-82.858-67.408-150.261-150.261-150.261l-2.227,300.521 C336.625,406.261,406.261,338.858,406.261,256z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#FFEB99" }}
-                        d="M300.13,333.434c-2.658,0-5.326-0.63-7.771-1.924L256,312.39l-36.359,19.12 c-5.635,2.978-12.446,2.468-17.582-1.261c-5.147-3.739-7.718-10.065-6.647-16.337l6.94-40.478l-29.413-28.684 c-4.549-4.445-6.185-11.076-4.217-17.12c1.962-6.044,7.19-10.446,13.478-11.359l40.647-5.902l18.179-36.837 c2.815-5.695,8.619-9.304,14.973-9.304c6.353,0,12.158,3.608,14.973,9.304l18.179,36.837l40.647,5.902 c6.288,0.913,11.517,5.315,13.478,11.359c1.968,6.044,0.332,12.674-4.217,17.12l-29.413,28.684l6.94,40.478 c1.071,6.272-1.5,12.597-6.647,16.337C307.032,332.358,303.591,333.434,300.13,333.434z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#FFDA44" }}
-                        d="M292.357,331.51c2.445,1.293,5.114,1.924,7.772,1.924c3.462,0,6.902-1.076,9.81-3.184 c5.147-3.739,7.718-10.065,6.647-16.337l-6.94-40.478l29.413-28.684c4.549-4.445,6.185-11.076,4.217-17.12 c-1.962-6.044-7.19-10.446-13.478-11.359l-40.647-5.902l-18.179-36.837c-2.815-5.695-8.294-9.304-14.973-9.304v148.162 L292.357,331.51z"
-                      ></path>{" "}
-                    </g>
-                  </svg>
-                  <p className=" px-1 py-1  text-white text-xs">
-                    Giảm 2.000.000 đ
-                  </p>
-                </div>
-                <div className="text-center">
-                  <div className="mb-2 px-4">
-                    <a href="" className="font-bold text-sm">
-                      Iphone 15 Pro (128GB) - Chính hãng VN/A
-                    </a>
-                  </div>
-                  <div className="mb-2 flex text-center items-center justify-center gap-1">
-                    <span className="text-red-500 text-[18px] font-medium">
-                      31.000.000 đ
-                    </span>
-                    <span className="text-sm text-gray-500 line-through">
-                      10.000 đ
-                    </span>
-                  </div>
-                  <div className="mb-4"></div>
-                  <div>
-                    <button class="py-2 px-5 rounded-full bg-blue-400 text-white font-bold transition duration-500 transform hover:bg-blue-300 hover:scale-110 active:bg-blue-700 active:scale-98 focus:outline-none">
-                      Mua ngay
-                    </button>
-                  </div>
-                </div>
+            {filteredArrayIphone.slice(0, 4).map((item) => (
+              <div
+                key={item.id}
+                class="row-span-1  border border-solid rounded-3xl bg-white  shadow-lg"
+              >
+                {item.product_detail &&
+                  item.product_detail.map((detail, index) => (
+                    <div
+                      key={index}
+                      className="py-8 flex flex-col items-center lg:relative group "
+                    >
+                      <NavLink to={`/product_detail/${item.id}`}>
+                        <div className="mb-4 relative overflow-hidden transition-transform duration-500 ease-in-out transform-gpu group-hover:-translate-y-3">
+                          <img
+                          className="max-h-[200px]"
+                            src={`${DOMAIN}${detail.image}`}
+                            alt={`${detail.image}`}
+                          />
+                        </div>
+                      </NavLink>
+                      <div className="flex items-center lg:absolute top-[230px] left-0 rounded-xl bg-red-500">
+                        <svg
+                          height="20px"
+                          width="20px"
+                          version="1.1"
+                          id="Layer_1"
+                          xmlns="http://www.w3.org/2000/svg"
+                          // xmlns:xlink="http://www.w3.org/1999/xlink"
+                          viewBox="0 0 512 512"
+                          // xml:space="preserve"
+                          fill="#000000"
+                        >
+                          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                          <g
+                            id="SVGRepo_tracerCarrier"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          ></g>
+                          <g id="SVGRepo_iconCarrier">
+                            {" "}
+                            <path
+                              style={{ fill: "#FF5023" }}
+                              d="M141.005,339.641H16.696c-5.788,0-11.157-3.082-14.201-7.995c-3.043-4.924-3.32-11.117-0.733-16.29 L31.42,256.02L1.761,196.695c-2.587-5.173-2.31-11.249,0.733-16.174c3.043-4.913,8.413-7.837,14.201-7.837h124.31 c5.978,0,11.5,3.114,14.473,8.299c2.979,5.173,2.962,11.513-0.049,16.677c-10.815,18.566-16.299,38.186-16.299,58.36 s5.484,39.805,16.299,58.37c3.011,5.163,3.027,11.62,0.049,16.794C152.505,336.368,146.983,339.641,141.005,339.641z"
+                            ></path>{" "}
+                            <path
+                              style={{ fill: "#CD2A00" }}
+                              d="M495.304,339.641h-124.31c-5.978,0-11.5-3.277-14.473-8.462c-2.978-5.173-2.962-11.595,0.049-16.758 c10.815-18.566,16.299-38.226,16.299-58.4s-5.484-39.826-16.299-58.39c-3.011-5.163-3.027-11.467-0.049-16.641 c2.973-5.185,8.495-8.304,14.473-8.304h124.31c5.788,0,11.157,2.918,14.201,7.831c3.043,4.924,3.32,11.036,0.733,16.209 l-29.658,59.295l29.658,59.305c2.587,5.173,2.31,11.402-0.733,16.326C506.461,336.564,501.092,339.641,495.304,339.641z"
+                            ></path>{" "}
+                            <path
+                              style={{ fill: "#FFDA44" }}
+                              d="M253.773,406.261c-82.853,0-148.033-67.402-148.033-150.261S173.147,105.739,256,105.739 S406.261,173.142,406.261,256S336.625,406.261,253.773,406.261z"
+                            ></path>{" "}
+                            <path
+                              style={{ fill: "#FFA733" }}
+                              d="M406.261,256c0-82.858-67.408-150.261-150.261-150.261l-2.227,300.521 C336.625,406.261,406.261,338.858,406.261,256z"
+                            ></path>{" "}
+                            <path
+                              style={{ fill: "#FFEB99" }}
+                              d="M300.13,333.434c-2.658,0-5.326-0.63-7.771-1.924L256,312.39l-36.359,19.12 c-5.635,2.978-12.446,2.468-17.582-1.261c-5.147-3.739-7.718-10.065-6.647-16.337l6.94-40.478l-29.413-28.684 c-4.549-4.445-6.185-11.076-4.217-17.12c1.962-6.044,7.19-10.446,13.478-11.359l40.647-5.902l18.179-36.837 c2.815-5.695,8.619-9.304,14.973-9.304c6.353,0,12.158,3.608,14.973,9.304l18.179,36.837l40.647,5.902 c6.288,0.913,11.517,5.315,13.478,11.359c1.968,6.044,0.332,12.674-4.217,17.12l-29.413,28.684l6.94,40.478 c1.071,6.272-1.5,12.597-6.647,16.337C307.032,332.358,303.591,333.434,300.13,333.434z"
+                            ></path>{" "}
+                            <path
+                              style={{ fill: "#FFDA44" }}
+                              d="M292.357,331.51c2.445,1.293,5.114,1.924,7.772,1.924c3.462,0,6.902-1.076,9.81-3.184 c5.147-3.739,7.718-10.065,6.647-16.337l-6.94-40.478l29.413-28.684c4.549-4.445,6.185-11.076,4.217-17.12 c-1.962-6.044-7.19-10.446-13.478-11.359l-40.647-5.902l-18.179-36.837c-2.815-5.695-8.294-9.304-14.973-9.304v148.162 L292.357,331.51z"
+                            ></path>{" "}
+                          </g>
+                        </svg>
+                        <p className=" px-1 py-1  text-white text-xs">
+                          Giảm{" "}
+                          {formatPrice(`${detail.discount - detail.price} ₫`)}
+                        </p>
+                      </div>
+                      <div className="text-center">
+                        <div className="mb-2 px-4">
+                          <a
+                            href={`/product_detail/${item.id}`}
+                            className="font-bold text-sm"
+                          >
+                            {item.name} ({item.capacity}) - Chính hãng VN/A
+                          </a>
+                        </div>
+                        <div className="mb-2 flex text-center items-center justify-center gap-1">
+                          <span className="text-red-500 text-[18px] font-medium">
+                          {formatPrice(`${detail.price} ₫`)}
+                          </span>
+                          <span className="text-sm text-gray-500 line-through">
+                          {formatPrice(`${detail.discount} ₫`)}
+                          </span>
+                        </div>
+                        <div className="mb-4"></div>
+                        <div>
+                          <button class="py-2 px-5 rounded-full bg-blue-400 text-white font-bold transition duration-500 transform hover:bg-blue-300 hover:scale-110 active:bg-blue-700 active:scale-98 focus:outline-none">
+                            Mua ngay
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
               </div>
-            </div>
-            <div class="row-span-1  border border-solid rounded-3xl bg-white shadow-lg">
-              <div className="py-8 flex flex-col items-center lg:relative group  ">
-                <div className="mb-4 relative overflow-hidden transition-transform duration-500 ease-in-out transform-gpu group-hover:-translate-y-3 ">
-                  <img
-                    src="https://cdn2.cellphones.com.vn/insecure/rs:fill:358:358/q:80/plain/https://cellphones.com.vn/media/catalog/product/t/_/t_m_12_1_3_2.png"
-                    alt=""
-                  />
-                </div>
-                <div className="flex items-center lg:absolute top-[230px] left-0 rounded-xl bg-red-500">
-                  <svg
-                    height="20px"
-                    width="20px"
-                    version="1.1"
-                    id="Layer_1"
-                    xmlns="http://www.w3.org/2000/svg"
-                    // xmlns:xlink="http://www.w3.org/1999/xlink"
-                    viewBox="0 0 512 512"
-                    // xml:space="preserve"
-                    fill="#000000"
-                  >
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                    <g
-                      id="SVGRepo_tracerCarrier"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    ></g>
-                    <g id="SVGRepo_iconCarrier">
-                      {" "}
-                      <path
-                        style={{ fill: "#FF5023" }}
-                        d="M141.005,339.641H16.696c-5.788,0-11.157-3.082-14.201-7.995c-3.043-4.924-3.32-11.117-0.733-16.29 L31.42,256.02L1.761,196.695c-2.587-5.173-2.31-11.249,0.733-16.174c3.043-4.913,8.413-7.837,14.201-7.837h124.31 c5.978,0,11.5,3.114,14.473,8.299c2.979,5.173,2.962,11.513-0.049,16.677c-10.815,18.566-16.299,38.186-16.299,58.36 s5.484,39.805,16.299,58.37c3.011,5.163,3.027,11.62,0.049,16.794C152.505,336.368,146.983,339.641,141.005,339.641z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#CD2A00" }}
-                        d="M495.304,339.641h-124.31c-5.978,0-11.5-3.277-14.473-8.462c-2.978-5.173-2.962-11.595,0.049-16.758 c10.815-18.566,16.299-38.226,16.299-58.4s-5.484-39.826-16.299-58.39c-3.011-5.163-3.027-11.467-0.049-16.641 c2.973-5.185,8.495-8.304,14.473-8.304h124.31c5.788,0,11.157,2.918,14.201,7.831c3.043,4.924,3.32,11.036,0.733,16.209 l-29.658,59.295l29.658,59.305c2.587,5.173,2.31,11.402-0.733,16.326C506.461,336.564,501.092,339.641,495.304,339.641z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#FFDA44" }}
-                        d="M253.773,406.261c-82.853,0-148.033-67.402-148.033-150.261S173.147,105.739,256,105.739 S406.261,173.142,406.261,256S336.625,406.261,253.773,406.261z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#FFA733" }}
-                        d="M406.261,256c0-82.858-67.408-150.261-150.261-150.261l-2.227,300.521 C336.625,406.261,406.261,338.858,406.261,256z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#FFEB99" }}
-                        d="M300.13,333.434c-2.658,0-5.326-0.63-7.771-1.924L256,312.39l-36.359,19.12 c-5.635,2.978-12.446,2.468-17.582-1.261c-5.147-3.739-7.718-10.065-6.647-16.337l6.94-40.478l-29.413-28.684 c-4.549-4.445-6.185-11.076-4.217-17.12c1.962-6.044,7.19-10.446,13.478-11.359l40.647-5.902l18.179-36.837 c2.815-5.695,8.619-9.304,14.973-9.304c6.353,0,12.158,3.608,14.973,9.304l18.179,36.837l40.647,5.902 c6.288,0.913,11.517,5.315,13.478,11.359c1.968,6.044,0.332,12.674-4.217,17.12l-29.413,28.684l6.94,40.478 c1.071,6.272-1.5,12.597-6.647,16.337C307.032,332.358,303.591,333.434,300.13,333.434z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#FFDA44" }}
-                        d="M292.357,331.51c2.445,1.293,5.114,1.924,7.772,1.924c3.462,0,6.902-1.076,9.81-3.184 c5.147-3.739,7.718-10.065,6.647-16.337l-6.94-40.478l29.413-28.684c4.549-4.445,6.185-11.076,4.217-17.12 c-1.962-6.044-7.19-10.446-13.478-11.359l-40.647-5.902l-18.179-36.837c-2.815-5.695-8.294-9.304-14.973-9.304v148.162 L292.357,331.51z"
-                      ></path>{" "}
-                    </g>
-                  </svg>
-                  <p className=" px-1 py-1  text-white text-xs">
-                    Giảm 2.000.000 đ
-                  </p>
-                </div>
-                <div className="text-center">
-                  <div className="mb-2 px-4">
-                    <a href="" className="font-bold text-sm">
-                      Iphone 15 Pro (128GB) - Chính hãng VN/A
-                    </a>
-                  </div>
-                  <div className="mb-2 flex text-center items-center justify-center gap-1">
-                    <span className="text-red-500 text-[18px] font-medium">
-                      31.000.000 đ
-                    </span>
-                    <span className="text-sm text-gray-500 line-through">
-                      10.000 đ
-                    </span>
-                  </div>
-                  <div className="mb-4"></div>
-                  <div>
-                    <button class="py-2 px-5 rounded-full bg-blue-400 text-white font-bold transition duration-500 transform hover:bg-blue-300 hover:scale-110 active:bg-blue-700 active:scale-98 focus:outline-none">
-                      Mua ngay
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row-span-1  border border-solid rounded-3xl bg-white shadow-lg">
-              <div className="py-8 flex flex-col items-center lg:relative group ">
-                <div className="mb-4 relative overflow-hidden transition-transform duration-500 ease-in-out transform-gpu group-hover:-translate-y-3">
-                  <img
-                    src="https://cdn2.cellphones.com.vn/insecure/rs:fill:358:358/q:80/plain/https://cellphones.com.vn/media/catalog/product/t/_/t_m_12_1_3_2.png"
-                    alt=""
-                  />
-                </div>
-                <div className="flex items-center lg:absolute top-[230px] left-0 rounded-xl bg-red-500">
-                  <svg
-                    height="20px"
-                    width="20px"
-                    version="1.1"
-                    id="Layer_1"
-                    xmlns="http://www.w3.org/2000/svg"
-                    // xmlns:xlink="http://www.w3.org/1999/xlink"
-                    viewBox="0 0 512 512"
-                    // xml:space="preserve"
-                    fill="#000000"
-                  >
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                    <g
-                      id="SVGRepo_tracerCarrier"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    ></g>
-                    <g id="SVGRepo_iconCarrier">
-                      {" "}
-                      <path
-                        style={{ fill: "#FF5023" }}
-                        d="M141.005,339.641H16.696c-5.788,0-11.157-3.082-14.201-7.995c-3.043-4.924-3.32-11.117-0.733-16.29 L31.42,256.02L1.761,196.695c-2.587-5.173-2.31-11.249,0.733-16.174c3.043-4.913,8.413-7.837,14.201-7.837h124.31 c5.978,0,11.5,3.114,14.473,8.299c2.979,5.173,2.962,11.513-0.049,16.677c-10.815,18.566-16.299,38.186-16.299,58.36 s5.484,39.805,16.299,58.37c3.011,5.163,3.027,11.62,0.049,16.794C152.505,336.368,146.983,339.641,141.005,339.641z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#CD2A00" }}
-                        d="M495.304,339.641h-124.31c-5.978,0-11.5-3.277-14.473-8.462c-2.978-5.173-2.962-11.595,0.049-16.758 c10.815-18.566,16.299-38.226,16.299-58.4s-5.484-39.826-16.299-58.39c-3.011-5.163-3.027-11.467-0.049-16.641 c2.973-5.185,8.495-8.304,14.473-8.304h124.31c5.788,0,11.157,2.918,14.201,7.831c3.043,4.924,3.32,11.036,0.733,16.209 l-29.658,59.295l29.658,59.305c2.587,5.173,2.31,11.402-0.733,16.326C506.461,336.564,501.092,339.641,495.304,339.641z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#FFDA44" }}
-                        d="M253.773,406.261c-82.853,0-148.033-67.402-148.033-150.261S173.147,105.739,256,105.739 S406.261,173.142,406.261,256S336.625,406.261,253.773,406.261z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#FFA733" }}
-                        d="M406.261,256c0-82.858-67.408-150.261-150.261-150.261l-2.227,300.521 C336.625,406.261,406.261,338.858,406.261,256z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#FFEB99" }}
-                        d="M300.13,333.434c-2.658,0-5.326-0.63-7.771-1.924L256,312.39l-36.359,19.12 c-5.635,2.978-12.446,2.468-17.582-1.261c-5.147-3.739-7.718-10.065-6.647-16.337l6.94-40.478l-29.413-28.684 c-4.549-4.445-6.185-11.076-4.217-17.12c1.962-6.044,7.19-10.446,13.478-11.359l40.647-5.902l18.179-36.837 c2.815-5.695,8.619-9.304,14.973-9.304c6.353,0,12.158,3.608,14.973,9.304l18.179,36.837l40.647,5.902 c6.288,0.913,11.517,5.315,13.478,11.359c1.968,6.044,0.332,12.674-4.217,17.12l-29.413,28.684l6.94,40.478 c1.071,6.272-1.5,12.597-6.647,16.337C307.032,332.358,303.591,333.434,300.13,333.434z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#FFDA44" }}
-                        d="M292.357,331.51c2.445,1.293,5.114,1.924,7.772,1.924c3.462,0,6.902-1.076,9.81-3.184 c5.147-3.739,7.718-10.065,6.647-16.337l-6.94-40.478l29.413-28.684c4.549-4.445,6.185-11.076,4.217-17.12 c-1.962-6.044-7.19-10.446-13.478-11.359l-40.647-5.902l-18.179-36.837c-2.815-5.695-8.294-9.304-14.973-9.304v148.162 L292.357,331.51z"
-                      ></path>{" "}
-                    </g>
-                  </svg>
-                  <p className=" px-1 py-1  text-white text-xs">
-                    Giảm 2.000.000 đ
-                  </p>
-                </div>
-                <div className="text-center">
-                  <div className="mb-2 px-4">
-                    <a href="" className="font-bold text-sm">
-                      Iphone 15 Pro (128GB) - Chính hãng VN/A
-                    </a>
-                  </div>
-                  <div className="mb-2 flex text-center items-center justify-center gap-1">
-                    <span className="text-red-500 text-[18px] font-medium">
-                      31.000.000 đ
-                    </span>
-                    <span className="text-sm text-gray-500 line-through">
-                      10.000 đ
-                    </span>
-                  </div>
-                  <div className="mb-4"></div>
-                  <div>
-                    <button class="py-2 px-5 rounded-full bg-blue-400 text-white font-bold transition duration-500 transform hover:bg-blue-300 hover:scale-110 active:bg-blue-700 active:scale-98 focus:outline-none">
-                      Mua ngay
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row-span-1  border border-solid rounded-3xl bg-white shadow-lg">
-              <div className="py-8 flex flex-col items-center lg:relative group ">
-                <div className="mb-4 relative overflow-hidden transition-transform duration-500 ease-in-out transform-gpu group-hover:-translate-y-3">
-                  <img
-                    src="https://cdn1.viettelstore.vn/images/Product/ProductImage/medium/15-Pro-3.jpg"
-                    alt=""
-                    className="transform-gpu z-10"
-                  />
-                </div>
-                <div className="flex items-center lg:absolute top-[230px] left-0 rounded-xl bg-red-500">
-                  <svg
-                    height="20px"
-                    width="20px"
-                    version="1.1"
-                    id="Layer_1"
-                    xmlns="http://www.w3.org/2000/svg"
-                    // xmlns:xlink="http://www.w3.org/1999/xlink"
-                    viewBox="0 0 512 512"
-                    // xml:space="preserve"
-                    fill="#000000"
-                  >
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                    <g
-                      id="SVGRepo_tracerCarrier"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    ></g>
-                    <g id="SVGRepo_iconCarrier">
-                      {" "}
-                      <path
-                        style={{ fill: "#FF5023" }}
-                        d="M141.005,339.641H16.696c-5.788,0-11.157-3.082-14.201-7.995c-3.043-4.924-3.32-11.117-0.733-16.29 L31.42,256.02L1.761,196.695c-2.587-5.173-2.31-11.249,0.733-16.174c3.043-4.913,8.413-7.837,14.201-7.837h124.31 c5.978,0,11.5,3.114,14.473,8.299c2.979,5.173,2.962,11.513-0.049,16.677c-10.815,18.566-16.299,38.186-16.299,58.36 s5.484,39.805,16.299,58.37c3.011,5.163,3.027,11.62,0.049,16.794C152.505,336.368,146.983,339.641,141.005,339.641z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#CD2A00" }}
-                        d="M495.304,339.641h-124.31c-5.978,0-11.5-3.277-14.473-8.462c-2.978-5.173-2.962-11.595,0.049-16.758 c10.815-18.566,16.299-38.226,16.299-58.4s-5.484-39.826-16.299-58.39c-3.011-5.163-3.027-11.467-0.049-16.641 c2.973-5.185,8.495-8.304,14.473-8.304h124.31c5.788,0,11.157,2.918,14.201,7.831c3.043,4.924,3.32,11.036,0.733,16.209 l-29.658,59.295l29.658,59.305c2.587,5.173,2.31,11.402-0.733,16.326C506.461,336.564,501.092,339.641,495.304,339.641z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#FFDA44" }}
-                        d="M253.773,406.261c-82.853,0-148.033-67.402-148.033-150.261S173.147,105.739,256,105.739 S406.261,173.142,406.261,256S336.625,406.261,253.773,406.261z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#FFA733" }}
-                        d="M406.261,256c0-82.858-67.408-150.261-150.261-150.261l-2.227,300.521 C336.625,406.261,406.261,338.858,406.261,256z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#FFEB99" }}
-                        d="M300.13,333.434c-2.658,0-5.326-0.63-7.771-1.924L256,312.39l-36.359,19.12 c-5.635,2.978-12.446,2.468-17.582-1.261c-5.147-3.739-7.718-10.065-6.647-16.337l6.94-40.478l-29.413-28.684 c-4.549-4.445-6.185-11.076-4.217-17.12c1.962-6.044,7.19-10.446,13.478-11.359l40.647-5.902l18.179-36.837 c2.815-5.695,8.619-9.304,14.973-9.304c6.353,0,12.158,3.608,14.973,9.304l18.179,36.837l40.647,5.902 c6.288,0.913,11.517,5.315,13.478,11.359c1.968,6.044,0.332,12.674-4.217,17.12l-29.413,28.684l6.94,40.478 c1.071,6.272-1.5,12.597-6.647,16.337C307.032,332.358,303.591,333.434,300.13,333.434z"
-                      ></path>{" "}
-                      <path
-                        style={{ fill: "#FFDA44" }}
-                        d="M292.357,331.51c2.445,1.293,5.114,1.924,7.772,1.924c3.462,0,6.902-1.076,9.81-3.184 c5.147-3.739,7.718-10.065,6.647-16.337l-6.94-40.478l29.413-28.684c4.549-4.445,6.185-11.076,4.217-17.12 c-1.962-6.044-7.19-10.446-13.478-11.359l-40.647-5.902l-18.179-36.837c-2.815-5.695-8.294-9.304-14.973-9.304v148.162 L292.357,331.51z"
-                      ></path>{" "}
-                    </g>
-                  </svg>
-                  <p className=" px-1 py-1  text-white text-xs">
-                    Giảm 2.000.000 đ
-                  </p>
-                </div>
-                <div className="text-center">
-                  <div className="mb-2 px-4">
-                    <a href="" className="font-bold text-sm">
-                      Iphone 15 Pro (128GB) - Chính hãng VN/A
-                    </a>
-                  </div>
-                  <div className="mb-2 flex text-center items-center justify-center gap-1">
-                    <span className="text-red-500 text-[18px] font-medium">
-                      31.000.000 đ
-                    </span>
-                    <span className="text-sm text-gray-500 line-through">
-                      10.000 đ
-                    </span>
-                  </div>
-                  <div className="mb-4"></div>
-                  <div>
-                    <button class="py-2 px-5 rounded-full bg-blue-400 text-white font-bold transition duration-500 transform hover:bg-blue-300 hover:scale-110 active:bg-blue-700 active:scale-98 focus:outline-none">
-                      Mua ngay
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+            ))}
+
             <div class="row-span-1  border border-solid rounded-3xl bg-white bg-[url('https://www.guidingtech.com/wp-content/uploads//Preppy-Christmas-Wallpaper-768x939.jpg')] bg-cover bg-center bg-no-repeat	">
               <div className="py-8 flex flex-col items-center lg:relative ">
                 <div className="mb-4  ">
                   <img
+                  className="max-h-[200px]"
                     src="https://cdn.hoanghamobile.com/i/productlist/ts/Uploads/2023/02/02/s23-xang.png"
                     alt=""
                     style={{ visibility: "hidden" }}
@@ -1318,6 +985,7 @@ export default function Home() {
               </div>
             </div>
           </div>
+
           <div className="text-center">
             <button
               type="button"
