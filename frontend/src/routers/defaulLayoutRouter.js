@@ -1,9 +1,7 @@
 import Cart from "../components/Cart";
 import ListProducts from "../components/ListProducts";
 import ProductDetail from "../components/ProductDetail";
-import AddressDropdowns from "../components/address";
-import AddressList from "../components/address";
-import ProvinceList from "../components/address";
+
 
 const { default: Home } = require("../page/Home");
 
@@ -24,10 +22,7 @@ const publicRoutes = [
         path: "/cart",
         component: Cart
     },
-    {
-        path: "/address",
-        component: AddressDropdowns
-    },
+
 
 
 ]
