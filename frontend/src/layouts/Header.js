@@ -1,4 +1,5 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 
 export default function Header() {
   return (
@@ -10,16 +11,18 @@ export default function Header() {
       >
 
         <div className="flex flex-wrap items-center justify-between max-w-screen-xl px-4 mx-auto">
-          <a href="#" className="flex items-center">
-            <img
-              src="/image/logo.png"
-              className="h-6 mr-3 sm:h-9"
-              alt="SalePhone Logo"
-            />
+          <NavLink to="/">
+            <a href="#" className="flex items-center">
+              <img
+                src="/image/logo.png"
+                className="h-6 mr-3 sm:h-9"
+                alt="SalePhone Logo"
+              />
+          </a>
+          </NavLink>
             {/* <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
               Landwind
             </span> */}
-          </a>
           <div className="flex items-center lg:order-2">
             <div className="hidden sm:inline-block">
               <div class="relative">
