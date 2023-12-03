@@ -149,7 +149,7 @@ export default function Home() {
   // BACK_TOP
 
   return (
-    <section className="mt-5 sm:w-full">
+    <section className="mt-16 sm:w-full">
       <div className="lg:grid max-w-[95%] lg:grid-cols-3 mx-auto lg:gap-4  sm:grid sm:grid-flow-row sm:grid-row-3 py-20 ">
         <div className="lg:col-span-2">
           <div
