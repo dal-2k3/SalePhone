@@ -3,11 +3,11 @@ import React from "react";
 export default function Header() {
   return (
     <header className="w-full ba">
-      <nav className="bg-white border-gray-200 py-2.5 dark:bg-gray-900 bg-cyan-300">
+      <nav className="border-gray-200 py-2.5 dark:bg-gray-900 " style={{ background: '#a7a9e8' }}>
         <div className="flex flex-wrap items-center justify-between max-w-screen-xl px-4 mx-auto">
           <a className="flex items-center">
             <img
-              src="logo.png"
+              src="/image/logo.png"
               className="h-6 mr-3 sm:h-9"
               alt="SalePhone Logo"
             />

@@ -22,7 +22,6 @@ export default function ListCategoris() {
     logo: null, // Đối tượng File
     note: "",
   });
-
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     setCategory((prevCategory) => ({
@@ -67,20 +66,17 @@ export default function ListCategoris() {
         editedCategory
       );
       console.log(editedCategory);
-
       // Cập nhật danh sách người dùng
       const updatedCategories = categories.map((category) =>
         category.id === updatedCategory.id ? updatedCategory : category
       );
       setReload(!reload);
       setcategories(updatedCategories);
-
       seteditingCategory(null);
     } catch (error) {
       console.error("Error updating user:", error);
     }
   };
-
   // delete
   const handleDelete = async (id) => {
     console.log(id);

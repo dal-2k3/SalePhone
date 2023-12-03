@@ -7,9 +7,10 @@ import {
   getProductsByCategory,
 } from "../services/products/product";
 import { DOMAIN } from "../utils/settings/config";
-import { createComment } from "../services/comments";
+import { createComment, getComments } from "../services/comments";
 export default function ProductDetail() {
   const [product, setProduct] = useState([]);
+  const [comments, setComments] = useState([]);
   const { id: productId } = useParams();
   const [reload, setReload] = useState(false);
   const [openAdd, setOpenAdd] = useState(false);
@@ -40,11 +41,22 @@ export default function ProductDetail() {
     }));
     // Ở đây bạn có thể gửi giá trị rating lên server hoặc xử lý nó theo ý muốn
   };
+
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
     try {
       console.log("comment", review);
       await createComment(review);
+
+      setReview({
+        idProduct: productId,
+        rating: rating,
+        username: "",
+        phone: "",
+        content: ""
+      });
+      setOpenAdd(false);
+      setReload()
     } catch (error) {
       console.log(error);
     }
@@ -66,11 +78,11 @@ export default function ProductDetail() {
     price: "",
     capacity: "",
     color: "",
-    idProduct: '',
-    idProductDetail: "",
+    id_Product: '',
+    id_Product_detail: "",
     nameCategory: "",
     imageProductDetail: '',
-    idGift: '',
+    id_Promotion: '',
     gift: '',
     imageGift: '',
     discount: '',
@@ -81,18 +93,21 @@ export default function ProductDetail() {
       try {
         const productsDetailsData = await getProductDetail(productId);
         console.log("product", productsDetailsData);
-        setSelectedProduct({
-          ...selectedProduct,
-          idProduct: productsDetailsData[0].id,
-          name: productsDetailsData[0].name,
-          capacity: productsDetailsData[0].capacity,
-          nameCategory: productsDetailsData[0].Categorie.name,
-          gift: productsDetailsData[0].product_promotion[0].gift,
-          imageGift: productsDetailsData[0].product_promotion[0].image,
-          discount: productsDetailsData[0].product_detail[0].discount
-        });
+        if (productsDetailsData && productsDetailsData.length > 0) {
+          const productDetails = productsDetailsData[0];
 
-
+          setSelectedProduct({
+            ...selectedProduct,
+            id_Product: productDetails.id,
+            name: productDetails.name,
+            capacity: productDetails.capacity,
+            nameCategory: productDetails.Categorie.name,
+            gift: productDetails.product_promotion[0]?.gift || null,
+            id_Promotion: productDetails.product_promotion[0]?.id || null,
+            imageGift: productDetails.product_promotion[0]?.image || null,
+            discount: productDetails.product_detail[0]?.discount || null,
+          });     // Rest of your code...
+        }
         const allDetail = productsDetailsData.reduce(
           (acc, curr) => [
             ...acc,
@@ -123,6 +138,12 @@ export default function ProductDetail() {
       }
     };
     fetchProductsDetails();
+    const fetchComments = async () => {
+      const listcomments = await getComments(productId);
+      setComments(listcomments);
+      console.log("123", listcomments);
+    };
+    fetchComments();
   }, [productId, reload]);
 
   useEffect(() => {
@@ -135,7 +156,7 @@ export default function ProductDetail() {
     setSelectedProduct({
       ...selectedProduct,
       color: isActivePhone.color,
-      idProductDetail: isActivePhone.id,
+      id_Product_detail: isActivePhone.id,
       price: isActivePhone.price,
       imageProductDetail: isActivePhone.image,
     });
@@ -170,17 +191,13 @@ export default function ProductDetail() {
 
   console.log("sadv", selectedOption);
 
-  const saveToLocalStorage = () => {
-    // Lưu thông tin sản phẩm được chọn vào localStorage
-    localStorage.setItem("selectedProduct", JSON.stringify(selectedProduct));
-    alert("Product details saved to LocalStorage!");
-  };
   console.log("product", product);
   console.log("dung luong", selectedOption);
   console.log(isActivePhone);
 
   console.log("local", selectedProduct);
   const navigate = useNavigate();
+
   const addToCart = () => {
 
     const storedCart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -538,6 +555,11 @@ export default function ProductDetail() {
                   Mua Ngay
                 </button>
               </div>
+              {/* {item.product_promotion || item.product_promotion.map((gift) => (
+                <div key={gift.id}>
+                  <p>{gift.name}</p>
+                </div>
+              ))} */}
             </div>
           </div>
 
@@ -590,125 +612,103 @@ export default function ProductDetail() {
 
                   {/* list danh gia */}
                   <div className="px-5 my-4">
-                    {item.comments && item.comments.map((comment) => (
-                      <div key={comment.id} className="flex  mb-5">
-                        <div className="rounded-full w-[45px] h-[45px] overflow-hidden border border-solid border-gray-500 flex items-center mr-3">
-                          {/* <img
+                    {comments.length === 0 ? (
+                      <p className="text-lg">Sản phẩm này chưa có đánh giá.</p>
+                    ) : (
+                      comments.map((comment) => (
+                        <div key={comment.id} className="flex  mb-5">
+                          <div className="rounded-full w-[45px] h-[45px] overflow-hidden border border-solid border-gray-500 flex items-center mr-3">
+                            {/* <img
                         src="https://www.vhv.rs/dpng/d/421-4213525_png-file-svg-single-user-icon-png-transparent.png"
                         alt=""
                         className="w-[80%] h-[80%] mx-auto"
                       /> */}
-                          <svg
-                            className="w-[80%] h-[80%] mx-auto"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g
-                              id="SVGRepo_tracerCarrier"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            ></g>
-                            <g id="SVGRepo_iconCarrier">
-                              {" "}
-                              <circle
-                                cx="12"
-                                cy="6"
-                                r="4"
-                                fill="#1C274C"
-                              ></circle>{" "}
-                              <path
-                                d="M20 17.5C20 19.9853 20 22 12 22C4 22 4 19.9853 4 17.5C4 15.0147 7.58172 13 12 13C16.4183 13 20 15.0147 20 17.5Z"
-                                fill="#1C274C"
-                              ></path>{" "}
-                            </g>
-                          </svg>
-                        </div>
-                        <div>
-                          <p className="font-semibold text-lg">{comment.username}</p>
-                          <div className="flex mb-2 mt-2 ">
                             <svg
-                              className="w-4 h-4 text-yellow-300 me-1"
-                              aria-hidden="true"
+                              className="w-[80%] h-[80%] mx-auto"
+                              viewBox="0 0 24 24"
+                              fill="none"
                               xmlns="http://www.w3.org/2000/svg"
-                              fill="currentColor"
-                              viewBox="0 0 22 20"
                             >
-                              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                            </svg>
-                            <svg
-                              className="w-4 h-4 text-yellow-300 me-1"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="currentColor"
-                              viewBox="0 0 22 20"
-                            >
-                              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                            </svg>
-                            <svg
-                              className="w-4 h-4 text-yellow-300 me-1"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="currentColor"
-                              viewBox="0 0 22 20"
-                            >
-                              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                            </svg>
-                            <svg
-                              className="w-4 h-4 text-yellow-300 me-1"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="currentColor"
-                              viewBox="0 0 22 20"
-                            >
-                              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                            </svg>
-                            <svg
-                              className="w-4 h-4 text-gray-300 me-1 dark:text-gray-500"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="currentColor"
-                              viewBox="0 0 22 20"
-                            >
-                              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                              <g
+                                id="SVGRepo_tracerCarrier"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              ></g>
+                              <g id="SVGRepo_iconCarrier">
+                                {" "}
+                                <circle
+                                  cx="12"
+                                  cy="6"
+                                  r="4"
+                                  fill="#1C274C"
+                                ></circle>{" "}
+                                <path
+                                  d="M20 17.5C20 19.9853 20 22 12 22C4 22 4 19.9853 4 17.5C4 15.0147 7.58172 13 12 13C16.4183 13 20 15.0147 20 17.5Z"
+                                  fill="#1C274C"
+                                ></path>{" "}
+                              </g>
                             </svg>
                           </div>
-                          <div>{comment.content}</div>
-                          <div className="flex items-center">
-                            <div className="flex items-center text-blue-500 font-medium mr-2">
-                              <svg
-                                className="w-[20px] h-[30px] mr-1"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                <g
-                                  id="SVGRepo_tracerCarrier"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                ></g>
-                                <g id="SVGRepo_iconCarrier">
-                                  <path
-                                    fill-rule="evenodd"
-                                    clip-rule="evenodd"
-                                    d="M12.444 1.35396C11.6474 0.955692 10.6814 1.33507 10.3687 2.16892L7.807 9.00001L4 9.00001C2.34315 9.00001 1 10.3432 1 12V20C1 21.6569 2.34315 23 4 23H18.3737C19.7948 23 21.0208 22.003 21.3107 20.6119L22.9773 12.6119C23.3654 10.7489 21.9433 9.00001 20.0404 9.00001H14.8874L15.6259 6.7846C16.2554 4.89615 15.4005 2.8322 13.62 1.94198L12.444 1.35396ZM9.67966 9.70225L12.0463 3.39119L12.7256 3.73083C13.6158 4.17595 14.0433 5.20792 13.7285 6.15215L12.9901 8.36755C12.5584 9.66261 13.5223 11 14.8874 11H20.0404C20.6747 11 21.1487 11.583 21.0194 12.204L20.8535 13H17C16.4477 13 16 13.4477 16 14C16 14.5523 16.4477 15 17 15H20.4369L20.0202 17H17C16.4477 17 16 17.4477 16 18C16 18.5523 16.4477 19 17 19H19.6035L19.3527 20.204C19.2561 20.6677 18.8474 21 18.3737 21H8V10.9907C8.75416 10.9179 9.40973 10.4221 9.67966 9.70225ZM6 11H4C3.44772 11 3 11.4477 3 12V20C3 20.5523 3.44772 21 4 21H6V11Z"
-                                    fill="#1640D6"
-                                  ></path>
-                                </g>
-                              </svg>
+                          <div>
+                            <p className="font-semibold text-lg">{comment.username}</p>
+                            <div className="flex mb-2 mt-2 ">
+                              {Array.from({ length: 5 }).map((_, index) => (
+                                <svg
+                                  key={index}
+                                  className={`w-6 h-6  ${index < comment.rating
+                                    ? "text-yellow-500"
+                                    : "text-gray-400"
+                                    } me-1`}
+                                  aria-hidden="true"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="currentColor"
+                                  viewBox="0 0 22 20"
 
-                              <p>Thích</p>
+                                >
+                                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                                </svg>
+
+                              ))}
                             </div>
-                            <p className="mr-2 text-gray-400">|</p>
-                            <p className="text-gray-400">
-                              {moment(comment.createdAt).format("DD-MM-YYYY hh:mm:ss")}
-                            </p>
+
+                            <hr />
+                            <div>{comment.content}</div>
+                            <hr />
+                            <div className="flex items-center">
+                              <div className="flex items-center text-blue-500 font-medium mr-2">
+                                <svg
+                                  className="w-[20px] h-[30px] mr-1"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                  <g
+                                    id="SVGRepo_tracerCarrier"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                  ></g>
+                                  <g id="SVGRepo_iconCarrier">
+                                    <path
+                                      fill-rule="evenodd"
+                                      clip-rule="evenodd"
+                                      d="M12.444 1.35396C11.6474 0.955692 10.6814 1.33507 10.3687 2.16892L7.807 9.00001L4 9.00001C2.34315 9.00001 1 10.3432 1 12V20C1 21.6569 2.34315 23 4 23H18.3737C19.7948 23 21.0208 22.003 21.3107 20.6119L22.9773 12.6119C23.3654 10.7489 21.9433 9.00001 20.0404 9.00001H14.8874L15.6259 6.7846C16.2554 4.89615 15.4005 2.8322 13.62 1.94198L12.444 1.35396ZM9.67966 9.70225L12.0463 3.39119L12.7256 3.73083C13.6158 4.17595 14.0433 5.20792 13.7285 6.15215L12.9901 8.36755C12.5584 9.66261 13.5223 11 14.8874 11H20.0404C20.6747 11 21.1487 11.583 21.0194 12.204L20.8535 13H17C16.4477 13 16 13.4477 16 14C16 14.5523 16.4477 15 17 15H20.4369L20.0202 17H17C16.4477 17 16 17.4477 16 18C16 18.5523 16.4477 19 17 19H19.6035L19.3527 20.204C19.2561 20.6677 18.8474 21 18.3737 21H8V10.9907C8.75416 10.9179 9.40973 10.4221 9.67966 9.70225ZM6 11H4C3.44772 11 3 11.4477 3 12V20C3 20.5523 3.44772 21 4 21H6V11Z"
+                                      fill="#1640D6"
+                                    ></path>
+                                  </g>
+                                </svg>
+
+                                <p>Thích</p>
+                              </div>
+                              <p className="mr-2 text-gray-400">|</p>
+                              <p className="text-gray-400">
+                                {moment(comment.createdAt).format("DD-MM-YYYY hh:mm:ss")}
+                              </p>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      )))}
 
 
                   </div>

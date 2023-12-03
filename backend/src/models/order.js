@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
     status: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: 'chờ sử lý'
+      defaultValue: 'chờ_xử_lý'
     }
   }, {
     sequelize,

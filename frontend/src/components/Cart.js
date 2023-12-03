@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { DOMAIN } from "../utils/settings/config";
 import { NavLink } from "react-router-dom";
+import { createOrder } from "../services/order";
 export default function Cart() {
   // const [order, setOrder] = useState([])
   const [order, setOrder] = useState({
@@ -15,18 +16,18 @@ export default function Cart() {
       },
     ],
   });
-  const handleChangeReview = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setOrder((prevCategory) => ({
       ...prevCategory,
       [name]: value,
     }));
-    // Ở đây bạn có thể gửi giá trị rating lên server hoặc xử lý nó theo ý muốn
+    setOrder((prevOrder) => ({
+      ...prevOrder,
+      total: formatPrice(calculateTotal() + 20000),
+    }));
   };
-  //   setOrder((prevOrder) => ({
-  //     ...prevOrder,
-  //     total: calculateTotal(),
-  //   }));
+
   const [totalDetail, settotalDetail] = useState();
   const [cart, setCart] = useState([]);
   useEffect(() => {
@@ -36,8 +37,8 @@ export default function Cart() {
     setCart(storedCart);
   }, []);
   const updateOrderDetails = (cart) => {
-    const updatedOrderDetails = cart.map((product,index) => ({
-        ...cart[index],
+    const updatedOrderDetails = cart.map((product, index) => ({
+      ...cart[index],
       totalDetail: formatPrice(product.price * (product.quantity || 1)),
     }));
 
@@ -75,6 +76,10 @@ export default function Cart() {
     localStorage.setItem("cart", JSON.stringify(updatedCart));
     updateOrderDetails(updatedCart);
   };
+  function clearLocalStorage() {
+    localStorage.removeItem('cart');
+    // Thêm các khóa khác nếu cần thiết
+  }
   const calculateTotal = () => {
     return cart.reduce((total, product) => {
       return total + product.price * (product.quantity || 1);
@@ -83,8 +88,18 @@ export default function Cart() {
   function formatPrice(price) {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const orderfinal = await createOrder(order);
+      console.log("final", orderfinal);
+      setOrder([]);
+      clearLocalStorage();
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-  //   const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
   console.log("này lấy từ localstorage", cart);
   console.log("này lấy để up lên db", order);
   return (
@@ -102,7 +117,7 @@ export default function Cart() {
               // xmlns:xlink="http://www.w3.org/1999/xlink"
               viewBox="0 0 72 72"
               enable-background="new 0 0 72 72"
-              // xml:space="preserve"
+            // xml:space="preserve"
             >
               <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
               <g
@@ -321,40 +336,12 @@ export default function Cart() {
                     <p className="py-2 px-2 text-sm">
                       Tặng ngay bộ sạc dự phòng giá lên tới dưới 1 tỉ đồng
                     </p>
-                    {/* <p className="py-2 px-2 text-sm">
-                      Giảm ngay 800,000đ áp dụng đến 27/11 Khuyến mãi chỉ áp
-                      dụng trên loại đơn hàng Trả góp.
-                    </p> */}
                   </div>
                 </div>
               </div>
             ))}
 
-            {/* <div className="mt-5">
-              <p className="text-gray-500">Khuyến mãi theo sản phẩm</p>
-              <div className="border border-gray-200 rounded-lg">
-                <p className="py-2 px-2 text-sm">
-                  Tặng ngay bộ sạc dự phòng giá lên tới dưới 1 tỉ đồng
-                </p>
-                <p className="py-2 px-2 text-sm">
-                  Giảm ngay 800,000đ áp dụng đến 27/11 Khuyến mãi chỉ áp dụng
-                  trên loại đơn hàng Trả góp.
-                </p>
-              </div>
-            </div> */}
-            {/* <div className="mt-5">
-              <p className="text-gray-500">Khuyến mãi thanh toán</p>
-              <div className="border border-gray-200 rounded-lg">
-                <p className="py-2 px-2 text-sm">
-                  Nhập mã FPTSHOP200 giảm 1% tối đa 200.000 đồng khi thanh toán
-                  100% qua ZaloPay
-                </p>
-                <p className="py-2 px-2 text-sm">
-                  Giảm ngay 5% tối đa 200.000 đồng khi thanh toán trả góp 6/12
-                  tháng qua Kredivo
-                </p>
-              </div>
-            </div> */}
+
           </div>
           <div className="h-[30px] rounded-t-2xl bg-red-400 bg-[url('https://fptshop.com.vn/estore-images/bggiftpromotion.png')] flex items-center px-4 mt-5 font-semibold text-base text-white ">
             Khuyến mãi theo đơn hàng
@@ -436,80 +423,96 @@ export default function Cart() {
             <div className="py-2 px-2 bg-gray-200 rounded-2xl mt-4">
               <div className="p-3 ">
                 <p>Thông tin người nhận hàng</p>
-                <div className=" mt-2 grid grid-cols-2 gap-4">
-                  <input
-                    type="text"
-                    name="fullname"
-                    value={order.fullname}
-                    onChange={handleChangeReview}
-                    className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2"
-                    placeholder="Nhập họ và tên"
-                  />
-                  <input
-                    name="phone"
-                    value={order.phone}
-                    onChange={handleChangeReview}
-                    type="text"
-                    className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2"
-                    placeholder="Nhập số điện thoại"
-                  />
-                  <input
-                    type="text"
-                    name="email"
-                    value={order.email}
-                    onChange={handleChangeReview}
-                    className="col-span-2 border rounded-lg xl:h-[50px] sm:h-[30px] px-2"
-                    placeholder="Nhập địa chỉ email"
-                  />
-                </div>
+                <form onSubmit={handleSubmit}>
+                  <div className=" mt-2 grid grid-cols-2 gap-4">
+
+                    <input
+                      type="text"
+                      name="fullname"
+                      value={order.fullname}
+                      onChange={handleChange}
+                      className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2"
+                      placeholder="Nhập họ và tên"
+                      required
+                    />
+                    <input
+                      type="text"
+                      name="address"
+                      value={order.address}
+                      onChange={handleChange}
+                      className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2"
+                      placeholder="Địa chỉ..."
+                      required
+                    />
+                    <input
+                      name="phone"
+                      value={order.phone}
+                      onChange={handleChange}
+                      type="text"
+                      className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2"
+                      placeholder="Nhập số điện thoại"
+                      required
+                    />
+                    <input
+                      type="text"
+                      name="email"
+                      value={order.email}
+                      onChange={handleChange}
+                      className="col-span-2 border rounded-lg xl:h-[50px] sm:h-[30px] px-2"
+                      placeholder="Nhập địa chỉ email"
+                      required
+                    />
+                  </div>
+                  <div className="rounded-2xl bg-white py-5 px-4 mt-5 ">
+                    <div className="flex gap-4  justify-between items-start">
+                      <div className="flex-1">
+                        <div className="flex justify-between">
+                          <p>Tổng tiền:</p>
+                          <p>
+                            {formatPrice(`${calculateTotal()} ₫`)}
+                            {/* {calculateTotal()}đ */}
+                          </p>
+                        </div>
+                        <div className="flex justify-between">
+                          <p>Phí giao hàng</p>
+                          <p>20.000 ₫</p>
+                        </div>
+                        <div className="flex justify-between">
+                          <p>Giảm giá voucher</p>
+                          <p>0đ</p>
+                        </div>
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex justify-between ">
+                          <p>Cần thanh toán ({cart.length} sản phẩm)</p>
+                          <p className="text-red-500 text-lg font-semibold">
+                            {formatPrice(`${calculateTotal() + 20000} ₫`)}
+                            {/* {calculateTotal() + 20000} */}
+                          </p>
+                        </div>
+                        <div className="mt-2">
+                          <button
+
+                            // onClick={() => {
+                            //   setOrder((prevOrder) => ({
+                            //     ...prevOrder,
+                            //     total: formatPrice(calculateTotal() + 20000),
+                            //   }));
+                            // }}
+                            className="font-medium text-lg text-center bg-red-500 text-white w-full rounded-full py-2"
+                          >
+                            Hoàn tất đặt hàng
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
-          <div className="rounded-2xl bg-white py-5 px-4 mt-5 ">
-            <div className="flex gap-4  justify-between items-start">
-              <div className="flex-1">
-                <div className="flex justify-between">
-                  <p>Tổng tiền:</p>
-                  <p>
-                    {formatPrice(`${calculateTotal()} ₫`)}
-                    {/* {calculateTotal()}đ */}
-                  </p>
-                </div>
-                <div className="flex justify-between">
-                  <p>Phí giao hàng</p>
-                  <p>20.000 ₫</p>
-                </div>
-                <div className="flex justify-between">
-                  <p>Giảm giá voucher</p>
-                  <p>0đ</p>
-                </div>
-              </div>
-              <div className="flex-1">
-                <div className="flex justify-between ">
-                  <p>Cần thanh toán ({cart.length} sản phẩm)</p>
-                  <p className="text-red-500 text-lg font-semibold">
-                    {formatPrice(`${calculateTotal() + 20000} ₫`)}
-                    {/* {calculateTotal() + 20000} */}
-                  </p>
-                </div>
-                <div className="mt-2">
-                  <button
-                    onClick={() => {
-                      setOrder((prevOrder) => ({
-                        ...prevOrder,
-                        total: formatPrice(calculateTotal() + 20000),
-                       
-                        // order_details.totalDetail:
-                      }));
-                    }}
-                    className="font-medium text-lg text-center bg-red-500 text-white w-full rounded-full py-2"
-                  >
-                    Hoàn tất đặt hàng
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+
+
         </div>
       ) : (
         <div className="flex flex-col rounded-lg md:max-w-[900px] max-w-screen-lg pt-4 mx-auto ">

@@ -148,6 +148,7 @@ export default function Home() {
   };
   return (
     <section className="mt-5">
+
       {/* có gì mới */}
       <div>
         <h1 className="text-3xl leading-4 font-bold	text-center">Có gì mới</h1>
@@ -729,9 +730,9 @@ export default function Home() {
                 </p>
                 <NavLink to="/listproducts/1" >
 
-                <button class="rounded-full bg-sky-300 px-4 py-2">
-                  Mua ngay
-                </button>
+                  <button class="rounded-full bg-sky-300 px-4 py-2">
+                    Mua ngay
+                  </button>
 
                 </NavLink>
               </div>
@@ -747,7 +748,7 @@ export default function Home() {
               <div className="bg-red-500 border rounded-3xl flex items-center justify-between px-10">
                 <div className="text-white">
 
-                <p className="text-xl font-medium uppercase pb-3">Oppo</p>
+                  <p className="text-xl font-medium uppercase pb-3">Oppo</p>
 
                   <p className="text-sm">Phản hồi tức thì</p>
                   <p className="text-3xl">Giữ nhịp vui cuộc sống</p>
@@ -766,7 +767,7 @@ export default function Home() {
               <div className="bg-black border rounded-3xl flex items-center justify-between ">
                 <div className="text-white pl-10">
 
-                <p className="text-xl font-medium uppercase pb-3">Redmi</p>
+                  <p className="text-xl font-medium uppercase pb-3">Redmi</p>
                   <p className="text-2xl">Sống bật chất</p>
                   <button className="rounded-full bg-sky-300 px-3 py-1 text-black my-2">
                     Mua ngay
