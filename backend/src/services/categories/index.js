@@ -31,24 +31,6 @@ const getCategoryByName = async (name) => {
         console.log(error);
     }
 };
-// const getProductByCategory = async (id) => {
-//     try {
-//         const listProducts = await Categorie.findAll({
-//             where: {
-//                 id,
-//             },
-//             include: [
-//                 { model: Product, as: "products" }
-//             ],
-//             raw: true,
-//             nest: true
-
-//         });
-//         return listProducts;
-//     } catch (error) {
-//         console.log(error);
-//     }
-// };
 
 const getCategoryById = async (id) => {
     try {

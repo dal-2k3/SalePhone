@@ -1,4 +1,6 @@
 const { Order } = require("../../models");
+const { Product } = require("../../models");
+const { Product_detail } = require("../../models");
 const { Order_detail } = require("../../models");
 
 
@@ -12,7 +14,10 @@ const createOrder = async (data) => {
 };
 const getAllOrders = async () => {
     try {
-        const order = await Order.findAll()
+        const order = await Order.findAll({
+              order: [['createdAt', 'DESC']],
+        }
+        )
         return order;
     } catch (error) {
         console.log(error);
@@ -42,7 +47,7 @@ const getOrderByPhone = async (phone) => {
         console.log(error);
     }
 };
-const updateOrder = async (id, data) => {
+const updateOrder = async (id,data) => {
     try {
         const order = await Order.update(data, {
             where: {
@@ -76,6 +81,18 @@ const createOrderDetail = async (data) => {
         console.log(error);
     }
 };
+const getOrderDetailByOrder = async (id_Order) => {
+    try {
+        const orderDetail = await Order_detail.findOne({
+            where:{
+                id_Order,
+            }
+        });
+        return orderDetail;
+    } catch (error) {
+        console.log(error);
+    }
+};
 const getOrderDetail = async (id_Order) => {
     try {
         const orderDetail = await Order_detail.findAll({
@@ -84,14 +101,17 @@ const getOrderDetail = async (id_Order) => {
             },
             include: [
                 {
-                    model: product,
+                    model: Order,
                 },
                 {
-                    model: product_detail,
+                    model: Product,
                 },
                 {
-                    model: product_promotion,
-                }
+                    model: Product_detail,
+                },
+                // {
+                //     model: Promotion,
+                // }
             ]
 
         });
@@ -110,6 +130,6 @@ module.exports = {
     deleteOrder,
     // order_detail
     createOrderDetail,
-    getOrderDetail
-
+    getOrderDetail,
+    getOrderDetailByOrder,
 }

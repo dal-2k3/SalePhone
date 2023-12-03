@@ -20,7 +20,7 @@ export default function ListProducts() {
   const cancelButtonRef = useRef(null);
   const [categories, setCategories] = useState([]);
   const [product, setProduct] = useState({
-    idCategory: "1",
+    idCategory: "",
     name: "",
     capacity: "",
     parameter: "",
@@ -148,12 +148,10 @@ export default function ListProducts() {
           formData.append(`giftImage`, promotion.giftImage);
         });
       }
-
       await AddProducts(formData);
-      setOpenAdd(false);
-      setReload((prevReload) => !prevReload);
+
       setProduct({
-        idCategory: "1",
+        idCategory: "",
         name: "",
         capacity: "",
         parameter: "",
@@ -162,6 +160,8 @@ export default function ListProducts() {
         ],
         promotions: [{ gift: "", giftImage: "" }],
       });
+      setOpenAdd(false);
+      setReload((prevReload) => !prevReload);
     } catch (error) {
       console.log(error);
     }
@@ -284,7 +284,7 @@ export default function ListProducts() {
                                 <select
                                   id="idCategory"
                                   name="idCategory"
-                                  value={product.idCategory}
+                                  // value={product.idCategory}
                                   onChange={(event) =>
                                     handleChange("idCategory", event)
                                   }
@@ -684,7 +684,7 @@ export default function ListProducts() {
                   </td>
 
                   {!item.product_promotion ||
-                  item.product_promotion.length === 0 ? (
+                    item.product_promotion.length === 0 ? (
                     <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
                       <p className="inline-flex rounded-full bg-red-300 bg-opacity-0 py-1 px-3 text-sm font-medium text-orange-600">
                         Không có quà tặng nha..
@@ -695,20 +695,20 @@ export default function ListProducts() {
                       className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11"
                     >
 
-                      { item.product_promotion.map((promotion, index) => (
-                      <div className="flex flex-col gap-4 sm:flex-row sm:items-center pb-3">
-                        <div className="w-12 rounded-md">
-                          <img
-                            className="max-w-full"
-                            src={`${DOMAIN}${promotion.image}`}
-                            alt=""
-                          />
+                      {item.product_promotion.map((promotion, index) => (
+                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center pb-3">
+                          <div className="w-12 rounded-md">
+                            <img
+                              className="max-w-full"
+                              src={`${DOMAIN}${promotion.image}`}
+                              alt=""
+                            />
+                          </div>
+                          <b className="text-xs text-black dark:text-white">
+                            {promotion.gift}
+                          </b>
                         </div>
-                        <b className="text-xs text-black dark:text-white">
-                          {promotion.gift}
-                        </b>
-                      </div>
-                      ))} 
+                      ))}
                     </td>
                   )}
 

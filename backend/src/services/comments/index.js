@@ -12,9 +12,25 @@ const createComment = async (data) => {
 const getCommentPrivate = async () => {
     try {
         const comment = await Comment.findAll({
-            where: {       
+            order: [['createdAt', 'DESC']],
+            where: {
                 status: "private",
-            }
+            },
+
+        });
+        return comment;
+    } catch (error) {
+        console.log(error);
+    }
+};
+const getComment = async (idProduct) => {
+    try {
+        const comment = await Comment.findAll({
+            order: [['createdAt', 'DESC']],
+            where: {
+                idProduct,
+                status: "public",
+            },
         });
         return comment;
     } catch (error) {
@@ -24,6 +40,7 @@ const getCommentPrivate = async () => {
 const getCommentPublic = async () => {
     try {
         const comment = await Comment.findAll({
+            order: [['createdAt', 'DESC']],
             where: {
                 status: "public",
             }
@@ -60,6 +77,7 @@ const deleteComments = async (id) => {
 };
 module.exports = {
     createComment,
+    getComment,
     getCommentPublic,
     getCommentPrivate,
     updateComment,

@@ -3,7 +3,7 @@ const { createCategory, getCategory, deleteCategory, getCategoryById, updateCate
 const categoriesRouter = express.Router();
 const multer = require('multer');
 const path = require('path');
-const { getProductByCategory } = require('../../services/products');
+const { getProductByCategory, getIdCategory } = require('../../services/products');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -47,25 +47,14 @@ categoriesRouter.get('/all', async (req, res) => {
     }
     res.status(200).send(listcategory);
 });
-// categoriesRouter.get('/get/:id', async (req, res) => {
-//     const { id } = req.params;
-//     const idcategory = await getProductByCategory(id);
-//     if (!idcategory) {
-//         return res.status(500).send(`Category ${id} is no00t exists in db`);
-//     }
-//     res.status(200).send(idcategory);
-// });
+
 categoriesRouter.delete('/:id', async (req, res) => {
     const { id } = req.params;
-    const idcategoryExist = await getCategoryById(id);
-    if (!idcategoryExist) {
-        return res.status(500).send(`Category ${id} is not exists in db`);
-    }
-    const idcategoryExistProducts = await getProductByCategory(id);
+    const idcategoryExistProducts = await getIdCategory(id);
     if (idcategoryExistProducts) {
         return res.status(500).send(`This category has products available`);
     }
-    const categoryDelete = await deleteCategory(id);
+    await deleteCategory(id);
     res.status(200).send(`delete Category id successfully`);
 });
 
