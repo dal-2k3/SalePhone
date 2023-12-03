@@ -1,5 +1,10 @@
 import { Fragment, useEffect, useRef, useState } from "react";
-import { NavLink, unstable_HistoryRouter, useNavigate, useParams } from "react-router-dom";
+import {
+  NavLink,
+  unstable_HistoryRouter,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import { Dialog, Transition } from "@headlessui/react";
 import moment from "moment";
 import {
@@ -30,8 +35,7 @@ export default function ProductDetail() {
     rating: rating,
     username: "",
     phone: "",
-    content: ""
-
+    content: "",
   });
   const handleChangeReview = (e) => {
     const { name, value } = e.target;
@@ -78,6 +82,7 @@ export default function ProductDetail() {
     price: "",
     capacity: "",
     color: "",
+
     id_Product: '',
     id_Product_detail: "",
     nameCategory: "",
@@ -88,6 +93,7 @@ export default function ProductDetail() {
     discount: '',
   });
   //  get list Products details
+  const [viewRating, setViewRating] = useState([]);
   useEffect(() => {
     const fetchProductsDetails = async () => {
       try {
@@ -95,6 +101,7 @@ export default function ProductDetail() {
         console.log("product", productsDetailsData);
         if (productsDetailsData && productsDetailsData.length > 0) {
           const productDetails = productsDetailsData[0];
+
 
           setSelectedProduct({
             ...selectedProduct,
@@ -147,7 +154,6 @@ export default function ProductDetail() {
   }, [productId, reload]);
 
   useEffect(() => {
-
     if (!productDetail) return;
     setisActivePhone(productDetail[0]);
   }, [productDetail]);
@@ -188,6 +194,9 @@ export default function ProductDetail() {
 
     setisActivePhone(productDetail[index + 1]);
   };
+  function formatPrice(price) {
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  }
 
   console.log("sadv", selectedOption);
 
@@ -196,11 +205,11 @@ export default function ProductDetail() {
   console.log(isActivePhone);
 
   console.log("local", selectedProduct);
+  console.log("viewRating", viewRating);
   const navigate = useNavigate();
 
   const addToCart = () => {
-
-    const storedCart = JSON.parse(localStorage.getItem('cart')) || [];
+    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     const existingIndex = storedCart.findIndex(
       (product) =>
         product.name === selectedProduct.name &&
@@ -210,19 +219,20 @@ export default function ProductDetail() {
 
     if (existingIndex !== -1) {
       // Nếu sản phẩm đã tồn tại trong giỏ hàng, tăng số lượng lên
-      storedCart[existingIndex].quantity = (storedCart[existingIndex].quantity || 1) + 1;
+      storedCart[existingIndex].quantity =
+        (storedCart[existingIndex].quantity || 1) + 1;
     } else {
       // Nếu sản phẩm chưa tồn tại trong giỏ hàng, thêm mới vào
       storedCart.push({ ...selectedProduct, quantity: 1 });
     }
 
-    localStorage.setItem('cart', JSON.stringify(storedCart));
-    alert('Product added to cart!');
-    navigate('/cart')
+    localStorage.setItem("cart", JSON.stringify(storedCart));
+    // alert("Product added to cart!");
+    navigate("/cart");
   };
 
   useEffect(() => {
-    const storedProduct = localStorage.getItem('selectedProduct');
+    const storedProduct = localStorage.getItem("selectedProduct");
 
     if (storedProduct) {
       setSelectedProduct(JSON.parse(storedProduct));
@@ -230,7 +240,7 @@ export default function ProductDetail() {
   }, []);
 
   return (
-    <div>
+    <div className="pt-20">
       {product.map((item) => (
         <div className="grid max-w-screen-xl  px-4 pt-20 pb-8 mx-auto lg:gap-8  lg:py-16 lg:pt-10 ">
           {/* modal */}
@@ -302,11 +312,13 @@ export default function ProductDetail() {
                         <form onSubmit={handleReviewSubmit}>
                           <div className="">
                             <div className="flex items-center justify-center h-300">
-                              {isActivePhone && <img
-                                src={`${DOMAIN}${isActivePhone.image}`}
-                                alt={`${isActivePhone.image}`}
-                                width={'100px'}
-                              />}
+                              {isActivePhone && (
+                                <img
+                                  src={`${DOMAIN}${isActivePhone.image}`}
+                                  alt={`${isActivePhone.image}`}
+                                  width={"100px"}
+                                />
+                              )}
                             </div>
                             <p className="font-medium text-xl text-center">
                               Iphone 15 Pro Max 512G
@@ -339,7 +351,6 @@ export default function ProductDetail() {
                                 rows="10"
                                 required
                               ></textarea>
-
                             </div>
                             <hr className=" border-solid border-[1.5px] my-5" />
                             <div>
@@ -360,7 +371,7 @@ export default function ProductDetail() {
                                 </div>
                                 <div>
                                   <label htmlFor="" className="font-normal">
-                                    Số điện thoại:
+                                    Số điện thoại mua hàng:
                                   </label>
 
                                   <input
@@ -392,7 +403,7 @@ export default function ProductDetail() {
           </Transition.Root>
           <div className="flex w-[100%] px-5">
             <div className="w-[45%] border border-solid py-8 rounded-2xl h-auto mr-5">
-              <div className="relative mb-4 h-[200px] flex items-center justify-center">
+              <div className="relative mb-4 h-[400px] flex items-center justify-center">
                 {isActivePhone && (
                   <img
                     src={`${DOMAIN}${isActivePhone.image}`}
@@ -427,8 +438,8 @@ export default function ProductDetail() {
                     productDetail.findIndex(
                       (item) => item.id === isActivePhone.id
                     ) +
-                    1 ===
-                    productDetail.length
+                      1 ===
+                      productDetail.length
                   }
                   className="absolute top-1/2 right-4 -translate-y-1/2 p-2 bg-cyan-100 bg-opacity-50 rounded-full"
                 >
@@ -458,45 +469,74 @@ export default function ProductDetail() {
                       key={index}
                       src={`${DOMAIN}${detail.image}`}
                       alt={`Thumbnail ${index + 1}`}
-                      className={`w-12 h-12 rounded-md cursor-pointer ${isActivePhone.id === detail.id
-                        ? "border-2 border-blue-500"
-                        : ""
-                        }`}
+                      className={`w-12 h-12 rounded-md cursor-pointer ${
+                        isActivePhone.id === detail.id
+                          ? "border-2 border-blue-500"
+                          : ""
+                      }`}
                       onClick={() => setisActivePhone(detail)}
                     />
                   ))}
               </div>
             </div>
 
-            <div className=" w-[40%]   h-auto ">
+            <div className=" w-[55%]   h-auto ">
               <div>
                 <p className="font-bold text-xl   ">
                   {item.name} {item.capacity}
                 </p>
               </div>
-              <div className="flex items-center ">
-                <p className="text-[#fd475a] font-bold mr-2 text-xl">
-                  {isActivePhone ? isActivePhone.price : 0}
+              <div className="flex items-center my-2">
+                <p className="text-[#fd475a] font-bold mr-2 text-2xl">
+                  {isActivePhone ? `${formatPrice(isActivePhone.price)} đ` : 0}
                 </p>
                 <p className="text-gray-500 font-bold line-through mr-2">
-                  {isActivePhone ? isActivePhone.discount : 0}
+                  {isActivePhone
+                    ? `${formatPrice(isActivePhone.discount)} đ`
+                    : 0}
                 </p>
                 <p className="mr-2">|</p>
                 <p className="text-base italic text-gray-700 ">
                   Giá đã bao gồm VAT
                 </p>
               </div>
-
+              <div className="rounded-lg bg-red-500 flex justify-center items-center uppercase">
+                <svg
+                  fill="#fff"
+                  version="1.1"
+                  id="Layer_1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  // xmlns:xlink="http://www.w3.org/1999/xlink"
+                  width="45px"
+                  height="45px"
+                  viewBox="0 0 256 140"
+                  enable-background="new 0 0 256 140"
+                  // xml:space="preserve"
+                  stroke="#fff"
+                >
+                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                  <g
+                    id="SVGRepo_tracerCarrier"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></g>
+                  <g id="SVGRepo_iconCarrier">
+                    {" "}
+                    <path d="M103.123,97.792c-11.112,0-20.104,8.992-20.104,20.104S92.011,138,103.123,138c11.112,0,20.104-8.992,20.104-20.104 S114.235,97.792,103.123,97.792z M103.123,125.597c-4.221,0-7.7-3.479-7.7-7.7c0-4.221,3.479-7.7,7.7-7.7c4.221,0,7.7,3.479,7.7,7.7 C110.823,122.117,107.344,125.597,103.123,125.597z M215.766,97.936c-11.112,0-20.104,8.992-20.104,20.104 s8.992,20.104,20.104,20.104c11.112,0,20.104-8.992,20.104-20.104S226.878,97.936,215.766,97.936z M215.766,125.74 c-4.221,0-7.7-3.479-7.7-7.7c0-4.221,3.479-7.7,7.7-7.7c4.221,0,7.7,3.479,7.7,7.7C223.467,122.261,219.987,125.74,215.766,125.74z M57,106.678c0,3.898,3.486,7.24,7.384,7.24h10.438c0.804,0,1.593-1.009,1.74-1.74c2.193-12.574,13.33-21.259,26.562-21.259 s24.198,8.721,26.391,21.295c0.146,0.804,0.682,1.463,1.486,1.463h20v-111H57V106.678z M252.26,99.132h-4.349V79.997 c0-6.433-4.801-11.307-11.307-11.307h-20.875c-0.439,0-0.956-0.233-1.249-0.525l-32.532-31.665c-1.462-1.462-2.829-2.747-4.949-2.82 h-19v80h30c0.804,0,1.489-0.768,1.635-1.499c2.193-12.574,12.899-22.115,26.131-22.115c13.232,0,24.198,9.577,26.391,22.151 c0.146,0.804,1.471,1.704,2.275,1.704h1.74c4.167,0,7.828-3.751,7.828-7.845v-5.41C254,99.86,253.138,99.132,252.26,99.132z M199.203,68.689H168.76c-0.877,0-1.74-0.862-1.74-1.74L167,44.364c0-0.877,0.882-1.769,1.76-1.769h6.089 c0.439,0,1.325,0.483,1.691,0.775l23.534,22.71C200.95,67.176,200.592,68.689,199.203,68.689z M47,49.678H14v-8h33V49.678z M47,71.678H2v8h45V71.678z M47,56.678H9v8h38V56.678z"></path>{" "}
+                  </g>
+                </svg>
+                <p className="text-white">Miễn phí vận chuyển</p>
+              </div>
               {/* //capacity */}
               <div>
-                <div className="xl:flex mt-4 justify-center">
-
+                <div className="xl:flex mt-4 justify-center bg-gray-100 rounded-lg">
                   {filteredArray.flat().map((item) => (
                     <NavLink
                       key={item.id}
                       to={`/product_detail/${item.id}`}
-                      className={`flex-1 px-5 hover:bg-gray-300 rounded-sm ${selectedOption === item.capacity ? "bg-gray-300" : ""
-                        }`}
+                      className={`flex-1 px-5 hover:bg-gray-300 rounded-md py-2 ${
+                        selectedOption === item.capacity ? "bg-gray-300" : ""
+                      }`}
                       onClick={() => handleSelectOption(item.capacity)}
                     >
                       <div className="">
@@ -517,66 +557,227 @@ export default function ProductDetail() {
               </div>
               {/* color */}
               <div>
-                <div className="max-w-md mx-auto mt-8 flex">
+                <div className="max-w-md  mt-8 flex">
                   {isActivePhone &&
                     productDetail.map((detail, index) => (
                       <div
                         key={index}
                         onClick={() => {
                           setisActivePhone(detail);
-
                         }}
-                        // onChange={}
-                        className={`items-center mx-4 cursor-pointer p-1 ${isActivePhone.id === detail.id
-                          ? "border-2 border-red-300"
-                          : "border"
-                          }`}
+                        className="items-center mx-4 cursor-pointer p-1 flex flex-col "
+                        // className={`items-center mx-4 cursor-pointer p-1 flex flex-col ${
+                        //   isActivePhone.id === detail.id
+                        //     ? "border-2 border-red-300"
+                        //     : "border"
+                        // }`}
                       >
                         <div
-                          className={`w-12 h-12 rounded-full `}
+                          className={`w-14 h-14 rounded-lg ${
+                            isActivePhone.id === detail.id
+                              ? "border-2 border-red-300"
+                              : ""
+                          }`}
                           style={{ backgroundColor: detail.color }}
                         >
                           <img
-                            src={` ${DOMAIN}${detail.image}`}
+                            src={`${DOMAIN}${detail.image}`}
                             alt={`Color ${detail.color}`}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover py-1 px-1"
                           />
                         </div>
                         <div className="ml-2">
-                          <p>{detail.color}</p>
+                          <p
+                          // className={`${
+                          //   isActivePhone.id === detail.id
+                          //     ? "text-red-300"
+                          //     : ""
+                          // }`}
+                          >
+                            {detail.color}
+                          </p>
                         </div>
                       </div>
                     ))}
                 </div>
               </div>
+              <div className="mt-3">
+                <div className="text-center bg-red-500 py-1  rounded-t-lg text-white uppercase text-sm ">
+                  ưu đãi đặc biệt
+                </div>
+                <div className="flex items-center justify-center py-2 bg-white rounded-b-lg border">
+                  <svg
+                    fill="#D71313"
+                    width="20px"
+                    height="20px"
+                    viewBox="0 0 512 512"
+                    version="1.1"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                    <g
+                      id="SVGRepo_tracerCarrier"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    ></g>
+                    <g id="SVGRepo_iconCarrier">
+                      {" "}
+                      <g id="gift_box-box_-heart-love-valentine">
+                        {" "}
+                        <path d="M408,160h-64c15.55-0.021,28.483-12.719,28.504-28.269c0.021-15.55-12.568-28.139-28.118-28.118 c0.023-17.486-15.9-31.228-34.048-27.504C297.124,78.82,288,91.085,288,104.575v5.667c-4.256-3.838-9.831-6.242-16-6.242h-32 c-6.169,0-11.744,2.404-16,6.242v-5.667c0-13.491-9.124-25.755-22.339-28.467c-18.148-3.724-34.071,10.018-34.048,27.504 c-15.549-0.021-28.138,12.568-28.118,28.118C139.517,147.281,152.45,159.979,168,160h-64c-17.673,0-32,14.327-32,32v8 c0,17.673,14.327,32,32,32h96v16H96v161.28c0,16.966,13.754,30.72,30.72,30.72H200c8.837,0,16-7.163,16-16V168h80v256 c0,8.837,7.163,16,16,16h73.28c16.966,0,30.72-13.754,30.72-30.72V248H312v-16h96c17.673,0,32-14.327,32-32v-8 C440,174.327,425.673,160,408,160z M232,152v-24c0-4.41,3.586-8,8-8h32c4.414,0,8,3.59,8,8v24H232z"></path>{" "}
+                      </g>{" "}
+                      <g id="Layer_1"></g>{" "}
+                    </g>
+                  </svg>
+                  <p>Bảo hành lên tới 2 năm</p>
+                </div>
+              </div>
+              <div className="mt-3 p-3 bg-gray-100 border ">
+                <p className="text-lg pb-1">Khuyến mãi đặc biệt</p>
+                <hr className="border mb-1" />
+                <div>
+                  {item.product_promotion.map((promotion) => (
+                    <div className="flex pb-2 items-center " key={promotion.id}>
+                      <svg
+                        width="20px"
+                        height="20px"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g
+                          id="SVGRepo_tracerCarrier"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        ></g>
+                        <g id="SVGRepo_iconCarrier">
+                          {" "}
+                          <path
+                            d="M3 12L9 18L21 6"
+                            stroke="#36AE7C"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          ></path>{" "}
+                        </g>
+                      </svg>
+                      <div className="pl-2 w-[100px] h-auto">
+                        {" "}
+                        <img
+                          src={`${DOMAIN}${promotion.image}`}
+                          alt="anh khuyen mai"
+                        />
+                      </div>
+                      <p className="pl-2">Tặng ngay 1 {promotion.gift} trị giá 2.000.000 đ</p>
+                    </div>
+                  ))}
 
+                  <div className="flex pb-2">
+                    <svg
+                      width="20px"
+                      height="20px"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                      <g
+                        id="SVGRepo_tracerCarrier"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      ></g>
+                      <g id="SVGRepo_iconCarrier">
+                        {" "}
+                        <path
+                          d="M3 12L9 18L21 6"
+                          stroke="#36AE7C"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        ></path>{" "}
+                      </g>
+                    </svg>
+                    <p>Giảm ngay 500,000đ áp dụng đến 04/12</p>
+                  </div>
+                  <div className="flex">
+                    <svg
+                      width="20px"
+                      height="20px"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                      <g
+                        id="SVGRepo_tracerCarrier"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      ></g>
+                      <g id="SVGRepo_iconCarrier">
+                        {" "}
+                        <path
+                          d="M3 12L9 18L21 6"
+                          stroke="#36AE7C"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        ></path>{" "}
+                      </g>
+                    </svg>
+                    <p>
+                      Mua Sim MobiFone Chất Chơi 1T kèm máy điện thoại giảm ngay
+                      100.000đ, có ngay 5GB data/ ngày
+                    </p>
+                  </div>
+                </div>
+              </div>
+              {/* mua ngay */}
               <div>
-                <button onClick={addToCart} className="bg-orange-500 text-white font-semibold w-full rounded-lg mt-6 py-2 px-4">
+                <button
+                  onClick={addToCart}
+                  className="bg-orange-500 text-white font-semibold w-full rounded-lg mt-6 py-2 px-4"
+                >
                   Mua Ngay
                 </button>
               </div>
-              {/* {item.product_promotion || item.product_promotion.map((gift) => (
-                <div key={gift.id}>
-                  <p>{gift.name}</p>
+              {/* tư vấn  */}
+              <div className="flex mt-4 items-center">
+                <div className="flex bg-blue-50 px-2 py-1 items-center mr-5 rounded">
+                  <img
+                    src="https://www.mainguyen.vn/static/images/icons/toolbar/ico-zalo.png"
+                    alt=""
+                    className="pr-2 w-[40px] h-[30px]"
+                  />
+                  <p>Chat tư vấn ngay</p>
                 </div>
-              ))} */}
+                <div>
+                  <p>
+                    Gọi <span className="text-red-500">0981.200.888</span> để
+                    được tư vấn mua hàng
+                  </p>
+                </div>
+              </div>
+              {/* san pham tang kem  */}
             </div>
           </div>
 
           {/* parameter review */}
 
-          <div div >
+          <div div>
             <div className="flex mt-20   justify-center ">
               <button
-                className={`py-2 px-4 font-bold text-2xl ${activeTab === 1 ? "text-cyan-600" : "text-black"
-                  }`}
+                className={`py-2 px-4 font-bold text-2xl ${
+                  activeTab === 1 ? "text-cyan-600" : "text-black"
+                }`}
                 onClick={() => changeTab(1)}
               >
                 Thông tin sản phẩm
               </button>
               <button
-                className={`py-2 px-4  font-bold text-2xl ${activeTab === 2 ? "text-cyan-600 " : "text-black"
-                  }`}
+                className={`py-2 px-4  font-bold text-2xl ${
+                  activeTab === 2 ? "text-cyan-600 " : "text-black"
+                }`}
                 onClick={() => changeTab(2)}
               >
                 Đánh giá sản phẩm
@@ -588,8 +789,6 @@ export default function ProductDetail() {
               {activeTab === 1 && (
                 <div className="p-4 bg-gray-100">
                   <div dangerouslySetInnerHTML={{ __html: item.parameter }} />
-
-
                 </div>
               )}
               {activeTab === 2 && (

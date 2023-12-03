@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const EditUserModal = ({ user, onSave, onCancel }) => {
   const [editedUser, setEditedUser] = useState({ ...user });
@@ -9,7 +9,6 @@ const EditUserModal = ({ user, onSave, onCancel }) => {
 
   const handleSave = () => {
     onSave(editedUser);
-
   };
 
   return (
@@ -24,84 +23,93 @@ const EditUserModal = ({ user, onSave, onCancel }) => {
               <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                 Username
               </label>
-              <input className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+              <input
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
                                                              focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
                                                               dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400
                                                                dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 px-12"
-                type='text'
+                type="text"
                 value={editedUser.username}
-                name='username'
+                name="username"
                 disabled
                 onChange={handleInputChange}
-
-                placeholder='username'
+                placeholder="username"
               />
               <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                 Email
               </label>
-              <input className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+              <input
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
                                                              focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
                                                               dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400
                                                                dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 "
-                type='email'
+                type="email"
                 value={editedUser.email}
                 onChange={handleInputChange}
-                name='email'
-                placeholder='email'
+                name="email"
+                placeholder="email"
               />
               <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                 Password
               </label>
-              <input className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+              <input
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
                                                              focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
                                                               dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400
                                                                dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 "
-                type='password'
+                type="password"
                 value={editedUser.password}
                 onChange={handleInputChange}
-                name='password'
-                placeholder='password'
+                name="password"
+                placeholder="password"
               />
               <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                 Phone
               </label>
-              <input className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+              <input
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
                                                              focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
                                                               dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400
                                                                dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 "
-                type='number'
+                type="number"
                 value={editedUser.phone}
                 onChange={handleInputChange}
-                name='phone'
-                placeholder='phone'
+                name="phone"
+                placeholder="phone"
               />
               <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                 Address
               </label>
-              <input className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+              <input
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
                                                              focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
                                                               dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400
                                                                dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 "
-                type='text'
+                type="text"
                 value={editedUser.address}
                 onChange={handleInputChange}
-                name='address'
-                placeholder='address'
+                name="address"
+                placeholder="address"
               />
               <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                 Status
               </label>
-              <select data-te-select-init className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+              <select
+                data-te-select-init
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
                                                              focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
                                                               dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400
                                                                dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 "
-                name="status" onChange={handleInputChange}
+                name="status"
+                onChange={handleInputChange}
               >
-                <option onChange={handleInputChange} name="status" >active</option>
-                <option onChange={handleInputChange} name="status"  >inactive</option>
-
+                <option onChange={handleInputChange} name="status">
+                  active
+                </option>
+                <option onChange={handleInputChange} name="status">
+                  inactive
+                </option>
               </select>
-
             </form>
           </div>
           <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
