@@ -12,7 +12,7 @@ import {
   getProductsByCategory,
 } from "../services/products/product";
 import { DOMAIN } from "../utils/settings/config";
-import { createComment } from "../services/comments";
+import { createComment, getComments } from "../services/comments";
 export default function ProductDetail() {
   const [product, setProduct] = useState([]);
   const { id: productId } = useParams();
@@ -20,8 +20,9 @@ export default function ProductDetail() {
   const [openAdd, setOpenAdd] = useState(false);
   const cancelButtonRef = useRef(null);
   const [selectedOption, setSelectedOption] = useState("");
-
+  const [comments, setComments] = useState([]);
   const [rating, setRating] = useState(0);
+  
   const handleChangeStar = (value) => {
     setRating(value);
     setReview((prevReview) => ({
@@ -49,6 +50,16 @@ export default function ProductDetail() {
     try {
       console.log("comment", review);
       await createComment(review);
+
+      setReview({
+        idProduct: productId,
+        rating: rating,
+        username: "",
+        phone: "",
+        content: ""
+      });
+      setOpenAdd(false);
+      setReload()
     } catch (error) {
       console.log(error);
     }
@@ -100,12 +111,8 @@ export default function ProductDetail() {
             gift: productDetails.product_promotion[0]?.gift || null,
             imageGift: productDetails.product_promotion[0]?.image || null,
             discount: productDetails.product_detail[0]?.discount || null,
-            // quantityDB: productDetails.product_detail[0]?.quantity || null,
           });
         }
-        // const starsArray = Array(4).fill(null);
-        // const starsArray = Array(productsDetailsData[0].comment.rating).fill(null);
-        // setViewRating(Array(productsDetailsData[0].comment.rating).fill(null))
 
         const allDetail = productsDetailsData.reduce(
           (acc, curr) => [
@@ -140,6 +147,7 @@ export default function ProductDetail() {
   }, [productId, reload]);
 
   useEffect(() => {
+    
     if (!productDetail) return;
     setisActivePhone(productDetail[0]);
   }, [productDetail]);
@@ -811,7 +819,7 @@ export default function ProductDetail() {
 
           {/* parameter review */}
 
-          <div div>
+          <div >
             <div className="flex mt-20   justify-center ">
               <button
                 className={`py-2 px-4 font-bold text-2xl ${
@@ -858,8 +866,10 @@ export default function ProductDetail() {
 
                   {/* list danh gia */}
                   <div className="px-5 my-4">
-                    {item.comments &&
-                      item.comments.map((comment) => (
+                    {comments.length === 0 ? (
+                      <p className="text-lg">Sản phẩm này chưa có đánh giá.</p>
+                    ) : (
+                      comments.map((comment) => (
                         <div key={comment.id} className="flex  mb-5">
                           <div className="rounded-full w-[45px] h-[45px] overflow-hidden border border-solid border-gray-500 flex items-center mr-3">
                             {/* <img
@@ -895,74 +905,30 @@ export default function ProductDetail() {
                             </svg>
                           </div>
                           <div>
-                            <p className="font-semibold text-lg">
-                              {comment.username}
-                            </p>
+                            <p className="font-semibold text-lg">{comment.username}</p>
                             <div className="flex mb-2 mt-2 ">
                               {Array.from({ length: 5 }).map((_, index) => (
                                 <svg
                                   key={index}
-                                  className={`w-8 h-8 ${
-                                    index < comment.rating
-                                      ? "text-yellow-300"
-                                      : "text-gray-300"
-                                  } me-1`}
+                                  className={`w-6 h-6  ${index < comment.rating
+                                    ? "text-yellow-500"
+                                    : "text-gray-400"
+                                    } me-1`}
                                   aria-hidden="true"
                                   xmlns="http://www.w3.org/2000/svg"
                                   fill="currentColor"
                                   viewBox="0 0 22 20"
+
                                 >
                                   <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
                                 </svg>
-                              ))}
 
-                              {/* <svg
-                              className="w-4 h-4 text-yellow-300 me-1"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="currentColor"
-                              viewBox="0 0 22 20"
-                            >
-                              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                            </svg>
-                            <svg
-                              className="w-4 h-4 text-yellow-300 me-1"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="currentColor"
-                              viewBox="0 0 22 20"
-                            >
-                              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                            </svg>
-                            <svg
-                              className="w-4 h-4 text-yellow-300 me-1"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="currentColor"
-                              viewBox="0 0 22 20"
-                            >
-                              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                            </svg>
-                            <svg
-                              className="w-4 h-4 text-yellow-300 me-1"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="currentColor"
-                              viewBox="0 0 22 20"
-                            >
-                              <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                            </svg> */}
-                              {/* <svg
-                                className="w-4 h-4 text-gray-300 me-1 dark:text-gray-500"
-                                aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="currentColor"
-                                viewBox="0 0 22 20"
-                              >
-                                <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                              </svg> */}
+                              ))}
                             </div>
+
+                            <hr />
                             <div>{comment.content}</div>
+                            <hr />
                             <div className="flex items-center">
                               <div className="flex items-center text-blue-500 font-medium mr-2">
                                 <svg
@@ -971,10 +937,7 @@ export default function ProductDetail() {
                                   fill="none"
                                   xmlns="http://www.w3.org/2000/svg"
                                 >
-                                  <g
-                                    id="SVGRepo_bgCarrier"
-                                    stroke-width="0"
-                                  ></g>
+                                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                                   <g
                                     id="SVGRepo_tracerCarrier"
                                     stroke-linecap="round"
@@ -994,14 +957,14 @@ export default function ProductDetail() {
                               </div>
                               <p className="mr-2 text-gray-400">|</p>
                               <p className="text-gray-400">
-                                {moment(comment.createdAt).format(
-                                  "DD-MM-YYYY hh:mm:ss"
-                                )}
+                                {moment(comment.createdAt).format("DD-MM-YYYY hh:mm:ss")}
                               </p>
                             </div>
                           </div>
                         </div>
-                      ))}
+                      )))}
+
+
                   </div>
                 </div>
               )}

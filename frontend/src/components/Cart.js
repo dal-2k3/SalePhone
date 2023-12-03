@@ -559,43 +559,42 @@ export default function Cart() {
                 <p>Thông tin người nhận hàng</p>
                 <form onSubmit={handleSubmit}>
                   <div className=" mt-2 grid grid-cols-2 gap-4">
-
-                    <input
-                      type="text"
-                      name="fullname"
-                      value={order.fullname}
-                      onChange={handleChange}
-                      className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2"
-                      placeholder="Nhập họ và tên"
-                      required
-                    />
-                    <input
-                      type="text"
-                      name="address"
-                      value={order.address}
-                      onChange={handleChange}
-                      className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2"
-                      placeholder="Địa chỉ..."
-                      required
-                    />
-                    <input
-                      name="phone"
-                      value={order.phone}
-                      onChange={handleChange}
-                      type="text"
-                      className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2"
-                      placeholder="Nhập số điện thoại"
-                      required
-                    />
-                    <input
-                      type="text"
-                      name="email"
-                      value={order.email}
-                      onChange={handleChange}
-                      className="col-span-2 border rounded-lg xl:h-[50px] sm:h-[30px] px-2"
-                      placeholder="Nhập địa chỉ email"
-                      required
-                    />
+                    <div>
+                      <label className="block">Họ và tên:</label>
+                      <input
+                        type="text"
+                        name="fullname"
+                        value={order.fullname}
+                        onChange={handleChange}
+                        className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2 w-full"
+                        placeholder="Nhập họ và tên"
+                        required
+                      />
+                    </div>
+                    <div> 
+                    <label className="block">Số điện thoại:</label>
+                      <input
+                        name="phone"
+                        value={order.phone}
+                        onChange={handleChange}
+                        type="text"
+                        className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2 w-full"
+                        placeholder="Nhập số điện thoại"
+                        required
+                      />
+                    </div>
+                    <div className="col-span-2">
+                    <label className="block">Email:</label>
+                      <input
+                        type="text"
+                        name="email"
+                        value={order.email}
+                        onChange={handleChange}
+                        className="col-span-2 border rounded-lg xl:h-[50px] sm:h-[30px] px-2 w-full"
+                        placeholder="Nhập địa chỉ email"
+                        required
+                      />
+                    </div>
                      <div className="col-span-2 border rounded-lg   px-2">
                     <div className="flex flex-col gap-4">
                       <div className="flex items-center gap-4">
@@ -623,7 +622,7 @@ export default function Cart() {
                           label="Xã"
                         />
                       </div>
-                      <InputReadOnly
+                      {/* <InputReadOnly
                         name="address"
                         onChange={handleChange}
                         label="Địa chỉ chính xác"
@@ -649,17 +648,20 @@ export default function Cart() {
                               )?.province_name
                             : ""
                         }`}
-                      />
+                      /> */}
                     </div>
                   </div>
-                  <input
-                    type="text"
-                    name="email"
-                    value={soNha}
-                    onChange={handleChangeSoNha}
-                    className="col-span-2 border rounded-lg xl:h-[50px] sm:h-[30px] px-2"
-                    placeholder="Nhập địa chỉ / số nhà"
-                  />
+                  <div className="col-span-2">
+                  <label className="block">Số nhà/ tên đường:</label>
+                    <input
+                      type="text"
+                      name="soNha"
+                      value={soNha}
+                      onChange={handleChangeSoNha}
+                      className=" border rounded-lg xl:h-[50px] sm:h-[30px] px-2 w-full"
+                      placeholder="Nhập địa chỉ / số nhà"
+                    />
+                  </div>
                   </div>
                   <div className="rounded-2xl bg-white py-5 px-4 mt-5 ">
                     <div className="flex gap-4  justify-between items-start">
