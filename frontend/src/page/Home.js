@@ -149,15 +149,15 @@ export default function Home() {
   // BACK_TOP
 
   return (
-    <section className="mt-5 sm:w-full">
-      <div className="lg:grid max-w-[95%] lg:grid-cols-3 mx-auto lg:gap-4  sm:grid sm:grid-flow-row sm:grid-row-3 py-20 ">
-        <div className="lg:col-span-2">
+    <section className="mt-[89px] sm:w-full">
+      <div className="lg:grid max-w-[95%] mx-auto lg:grid-cols-3  lg:gap-5 md:gap-6 md:py-10 md:grid   py-14 ">
+        <div className="lg:col-span-2 xl:h-[100%] xl:w-[100%]  ">
           <div
             id="indicators-carousel"
-            className="relative w-full h-full"
+            className="relative w-full h-full "
             data-carousel="static"
           >
-            <div className="relative lg:h-full overflow-hidden rounded-lg sm:h-96 ">
+            <div className="relative lg:h-full md:h-[200px] overflow-hidden rounded-lg  ">
               <div
                 class="hidden duration-700 ease-in-out "
                 data-carousel-item="active"
@@ -291,17 +291,21 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="lg:col-span-1  lg:grid grid-rows-2 grid-flow-col gap-4">
+        <div className="lg:col-span-1  lg:grid grid-rows-2 grid-flow-col gap-3 xl:h-[100%] md:flex justify-between   ">
           <div className="bg-red-500 border rounded-3xl flex items-center justify-between px-10">
-            <div className="text-white py-2">
-              <p className="text-xl font-medium uppercase">Oppo</p>
-              <p className="text-sm">Phản hồi tức thì</p>
-              <p className="text-2xl mb-1">Giữ nhịp vui cuộc sống</p>
-              <button class="py-1 px-3 rounded-full bg-blue-400 text-white font-bold transition duration-500 transform hover:bg-blue-300 hover:scale-110 active:bg-blue-700 active:scale-98 focus:outline-none">
+            <div className="text-white h-full  w-full">
+              <p className=" font-medium my-1 uppercase xl:text-[22px] lg:text-[18px]">
+                Oppo
+              </p>
+              <p className="text-sm my-1 ">Phản hồi tức thì</p>
+              <p className="text-2xl my-1 xl:text-[22px] lg:text-[15px] ">
+                Giữ nhịp vui cuộc sống
+              </p>
+              <button class="py-1 px-3 rounded-full bg-blue-400 text-white font-medium transition duration-500 transform hover:bg-blue-300 hover:scale-110 active:bg-blue-700 active:scale-98 focus:outline-none text-[15px] my-1">
                 Mua ngay
               </button>
             </div>
-            <div className="w-[120px] h-[120px]">
+            <div className="w-[70px] h-[100px]  ">
               <img
                 src="https://www.oppo.com/content/dam/oppo/product-asset-library/find/find-n2-series/global/find-n2-flip/v1/assets/images-pet-en-keepFlow-1.png.webp"
                 alt=""
@@ -309,17 +313,21 @@ export default function Home() {
               />
             </div>
           </div>
-          <div className="bg-yellow-300 border rounded-3xl flex items-center justify-between px-10 sm:mt-2 ">
-            <div className="text-white py-2">
-              <p className="text-xl font-medium uppercase ">SAMSUNG</p>
+          <div className="bg-yellow-300 border rounded-3xl flex items-center justify-between px-10  ">
+            <div className="text-white h-full  w-full">
+              <p className="text-xl font-medium uppercase xl:text-[22px] lg:text-[18px] my-1">
+                SAMSUNG
+              </p>
 
-              <p className="text-sm">GALAXY S23 ULTRA </p>
-              <p className="text-2xl mb-1 ">“Tân vương của điện thoại camera”</p>
-              <button class="py-1 px-3 rounded-full bg-blue-400 text-white font-bold transition duration-500 transform hover:bg-blue-300 hover:scale-110 active:bg-blue-700 active:scale-98 focus:outline-none">
+              <p className="text-sm my-1">GALAXY S23 ULTRA </p>
+              <p className="text-2xl xl:text-[22px] lg:text-[15px] my-1">
+                “Tân vương điện thoại
+              </p>
+              <button class="py-1 px-3 rounded-full bg-blue-400 text-white font-medium transition duration-500 transform hover:bg-blue-300 hover:scale-110 active:bg-blue-700 active:scale-98 focus:outline-none text-[15px] my-1">
                 Mua ngay
               </button>
             </div>
-            <div className="w-[120px] h-[120px]">
+            <div className="w-[70px] h-[100px]">
               <img
                 src="https://www.pngall.com/wp-content/uploads/13/Galaxy-S23-Ultra-PNG-HD-Image.png"
                 alt=""
@@ -358,10 +366,10 @@ export default function Home() {
       </div>
       {/* có gì mới */}
       <div className="bg-gray-100 ">
-        <h1 className="text-3xl leading-4 font-bold	text-center pt-20 text-red-500">
+        <h1 className="text-3xl leading-4 font-bold	text-center py-8 text-red-500">
           Có gì mới
         </h1>
-        <div className="grid max-w-[95%]  px-4 pt-20 pb-8 mx-auto lg:gap-8  lg:py-16 lg:pt-10">
+        <div className="grid max-w-[95%]  px-4  mx-auto lg:gap-8  lg:py-16 ">
           <div className=" grid grid-cols-2 gap-4">
             <div className="row-span-1 border">
               <a href="">

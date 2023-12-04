@@ -2,12 +2,12 @@ import React from "react";
 
 export default function Header() {
   return (
-    <header className="w-full fixed top-0 left-0 right-0 z-1">
+    <header className="w-full  fixed top-0 left-0 right-0 z-1">
       <nav
-        className=" border-gray-200 py-2 dark:bg-gray-900  bg-[url('https://media.istockphoto.com/id/1278318280/vi/vec-to/thi%E1%BA%BFt-k%E1%BA%BF-banner-m%C3%B9a-%C4%91%C3%B4ng-nh%E1%BB%AFng-b%C3%B4ng-tuy%E1%BA%BFt-tr%E1%BA%AFng-l%E1%BA%A1nh-trong-thi%E1%BA%BFt-k%E1%BA%BF-n%E1%BB%81n-m%C3%A0u-xanh-nh%E1%BB%AFng-b%C3%B4ng.jpg?s=1024x1024&w=is&k=20&c=J4QUfMKXiSV7mGJYBSZDv2ZjOUGg7raHkGh73lwr6G0=')] "
+        className=" border-gray-200 py-6 dark:bg-gray-900  bg-[url('https://media.istockphoto.com/id/1278318280/vi/vec-to/thi%E1%BA%BFt-k%E1%BA%BF-banner-m%C3%B9a-%C4%91%C3%B4ng-nh%E1%BB%AFng-b%C3%B4ng-tuy%E1%BA%BFt-tr%E1%BA%AFng-l%E1%BA%A1nh-trong-thi%E1%BA%BFt-k%E1%BA%BF-n%E1%BB%81n-m%C3%A0u-xanh-nh%E1%BB%AFng-b%C3%B4ng.jpg?s=1024x1024&w=is&k=20&c=J4QUfMKXiSV7mGJYBSZDv2ZjOUGg7raHkGh73lwr6G0=')] "
         // style={{ background: "#f589a9" }}
       >
-        <div className="flex flex-wrap items-center justify-between max-w-screen-xl px-4 mx-auto">
+        <div className="flex flex-wrap items-center justify-between max-w-[1300px] px-4 mx-auto lg:justify-start xl:justify-between lg:gap-4">
           <a href="#" className="flex items-center">
             <img
               src="/image/logo.png"
@@ -18,20 +18,20 @@ export default function Header() {
               Landwind
             </span> */}
           </a>
-          <div className="flex items-center lg:order-2">
+          <div className="flex items-center lg:order-2  ">
             <div className="hidden sm:inline-block">
               <div class="relative">
                 <input
                   type="text"
-                  class="border border-solid border-gray-300 rounded-2xl p-4 w-full py-2 pl-8 pr-4  focus:outline-none focus:border-blue-500"
+                  class="border border-solid border-gray-300 rounded-2xl  text-[14px] font-medium  focus:outline-none focus:border-blue-500 inline-block w-[190px]"
                   placeholder="Tìm kiếm sản phẩm"
                 />
                 <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                   <svg
-                    height="32px"
+                    height="28px"
                     version="1.1"
                     viewBox="0 0 32 32"
-                    width="32px"
+                    width="28px"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <title />
@@ -55,7 +55,7 @@ export default function Header() {
                 </div>
               </div>
             </div>
-            <div className="mx-3 w-12 h-12  text-center rounded-full border border-gray-300 text-gray-700 text-lg cursor-pointer flex items-center justify-center">
+            <div className="mx-3  w-10 h-10 xl:w-10 xl:h-10 text-center rounded-full border border-gray-300 text-gray-700 text-lg cursor-pointer flex items-center justify-center">
               <svg
                 viewBox="0 0 32 32"
                 xmlns="http://www.w3.org/2000/svg"
@@ -69,7 +69,7 @@ export default function Header() {
                 </g>
               </svg>
             </div>
-            <div className=" mr-3 w-12 h-12 leading-12 text-center rounded-full border border-gray-300 text-gray-700 text-lg cursor-pointer flex items-center justify-center">
+            <div className=" mr-2 w-10 h-10 xl:w-10 xl:h-10 leading-12 text-center rounded-full border border-gray-300 text-gray-700 text-lg cursor-pointer flex items-center justify-center">
               <svg
                 class="feather feather-shopping-cart"
                 fill="none"
@@ -91,7 +91,7 @@ export default function Header() {
             {/* <!-- <a href="#" className="text-gray-800 dark:text-white hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 sm:mr-2 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">Log in</a> --> */}
             <a
               href="https://themesberg.com/product/tailwind-css/landing-page"
-              className="text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 sm:mr-2 lg:mr-0 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-purple-800"
+              className="text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-7 lg:px-4 py-2 lg:py-2.5 sm:mr-2 lg:mr-0 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-purple-800 "
             >
               Kiếm tra đơn hàng
             </a>
@@ -126,14 +126,15 @@ export default function Header() {
                   d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
                   clip-rule="evenodd"
                 ></path>
+                space-x-24
               </svg>
             </button>
           </div>
           <div
-            className="items-center justify-between hidden w-full lg:flex lg:w-auto lg:order-1"
+            className="items-center justify-between hidden w-full  lg:flex lg:w-auto lg:order-1"
             id="mobile-menu-2"
           >
-            <ul className="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
+            <ul className="flex flex-col mt-4 xl:text-[17px] lg:text-[14px] text-lg lg:flex-row xl:space-x-8 lg:space-x-2 lg:mt-0">
               <li>
                 <a
                   href="#"
