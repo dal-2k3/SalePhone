@@ -181,7 +181,7 @@ export default function Home() {
   }
   return (
     <section className="mt-5 sm:w-full">
-      <div className="lg:grid max-w-[95%] lg:grid-cols-3 mx-auto lg:gap-4  sm:grid sm:grid-flow-row sm:grid-row-3 py-20 ">
+      <div className="lg:grid max-w-[95%] lg:grid-cols-3 mx-auto lg:gap-4  sm:grid sm:grid-flow-row sm:grid-row-3 pt-12 ">
         <div className="lg:col-span-2">
           <div
             id="indicators-carousel"
@@ -365,20 +365,22 @@ export default function Home() {
       {/* THƯƠNG HIỆU  */}
       <div className="bg-gray-100 mt-4  ">
         <div className="grid max-w-[95%]  px-4  mx-auto">
-          <h1 className="text-3xl leading-4 font-medium py-5 text-red-500 text-center">
-            Danh mục thịnh hành
-          </h1>
-          <div className="flex flex-wrap mx-auto items-center w-full justify-between pb-20 ">
+          <div>
+            <h1 className="text-3xl  font-medium py-5 text-red-500 text-center">
+              Danh mục thịnh hành
+            </h1>
+          </div>
+          <div className="flex flex-wrap mx-auto items-center w-full justify-between pb-5 ">
             {categories.map((item) => (
               <NavLink
-                className=" px-4 w-[150px] h-[60px] my-5 flex-col drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)]"
+                className=" px-4 flex-1 flex-col drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)]"
                 to={`/listproducts/${item.id}`}
               >
                 <div className="p-4 bg-white h-[100px] rounded-lg ">
                   <img
                     src={`${DOMAIN}${item.logo}`}
                     alt=""
-                    className="w-full h-full "
+                    className="w-full h-full object-cover"
                   />
                 </div>
                 <p className="text-center font-medium mt-2 text-lg">
@@ -391,10 +393,12 @@ export default function Home() {
       </div>
       {/* có gì mới */}
       <div className="bg-gray-100 ">
-        <h1 className="text-3xl leading-4 font-bold	text-center pt-20 text-red-500">
-          Có gì mới
-        </h1>
-        <div className="grid max-w-[95%]  px-4 pt-20 pb-8 mx-auto lg:gap-8  lg:py-16 lg:pt-10">
+        <div>
+          <h1 className="text-3xl py-5 font-bold	text-center text-red-500">
+            Có gì mới
+          </h1>
+        </div>
+        <div className="grid max-w-[95%]  px-4   mx-auto">
           <div className=" grid grid-cols-2 gap-4">
             <div className="row-span-1 border">
               <a href="">
@@ -513,7 +517,7 @@ export default function Home() {
 
       {/* samsung */}
       <div className="bg-gray-100">
-        <div className=" grid max-w-[100%]  pt-20  mx-auto lg:gap-8  lg:py-0 lg:pt-10">
+        <div className=" grid max-w-[100%]  mx-auto lg:gap-8  lg:pt-10">
           <div className="relative">
             <img
               src="https://www.didongmy.com/vnt_upload/news/12_2022/tinh-nang-moi-cua-galaxy-s23-man-hinh-oled-didongmy.jpg"
@@ -529,9 +533,9 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="grid  max-w-[95%] px-4  mx-auto lg:gap-8  lg:py-16 lg:pt bg-gray-100">
+        <div className="grid  max-w-[95%] px-4  mx-auto lg:gap-8 py-5 bg-gray-100">
           <div class="grid grid-cols-5 gap-4 xl:px-[100px]">
-          {filteredArraySamsung.slice(0, 4).map((item) => (
+            {filteredArraySamsung.slice(0, 4).map((item) => (
               <div
                 key={item.id}
                 class="row-span-1  border border-solid rounded-3xl bg-white  shadow-lg"
@@ -545,13 +549,13 @@ export default function Home() {
                       <NavLink to={`/product_detail/${item.id}`}>
                         <div className="mb-4 relative overflow-hidden transition-transform duration-500 ease-in-out transform-gpu group-hover:-translate-y-3">
                           <img
-                          className="max-h-[200px]"
+                            className="max-h-[200px]"
                             src={`${DOMAIN}${detail.image}`}
                             alt={`${detail.image}`}
                           />
                         </div>
                       </NavLink>
-                      <div className="flex items-center lg:absolute top-[230px] left-0 rounded-xl bg-red-500">
+                      <div className="flex items-center lg:absolute top-[200px] left-0 rounded-r-xl bg-red-600">
                         <svg
                           height="20px"
                           width="20px"
@@ -598,7 +602,7 @@ export default function Home() {
                           </g>
                         </svg>
                         <p className=" px-1 py-1  text-white text-xs">
-                          Giảm{" "}
+                          Giảm
                           {formatPrice(`${detail.discount - detail.price} ₫`)}
                         </p>
                       </div>
@@ -613,10 +617,10 @@ export default function Home() {
                         </div>
                         <div className="mb-2 flex text-center items-center justify-center gap-1">
                           <span className="text-red-500 text-[18px] font-medium">
-                          {formatPrice(`${detail.price} ₫`)}
+                            {formatPrice(`${detail.price} ₫`)}
                           </span>
                           <span className="text-sm text-gray-500 line-through">
-                          {formatPrice(`${detail.discount} ₫`)}
+                            {formatPrice(`${detail.discount} ₫`)}
                           </span>
                         </div>
                         <div className="mb-4"></div>
@@ -630,7 +634,7 @@ export default function Home() {
                   ))}
               </div>
             ))}
-            
+
             {/* <div class="row-span-1  border border-solid rounded-3xl bg-white shadow-lg">
               <div className="py-8 flex flex-col items-center lg:relative ">
                 <div className="mb-4  ">
@@ -848,8 +852,10 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="bg-gray-100">
-        <div className="grid  max-w-[95%] px-4  mx-auto lg:gap-8  lg:py-16 lg:pt bg-gray-100">
+      <div className="bg-gray-100" 
+      // style={{ backgroundColor: "#f0f4f7" }}
+      >
+        <div className="grid  max-w-[95%] px-4  mx-auto lg:gap-8 py-5 bg-gray-100">
           <div class="grid grid-cols-5 gap-4 xl:px-[100px]">
             {filteredArrayIphone.slice(0, 4).map((item) => (
               <div
@@ -865,13 +871,13 @@ export default function Home() {
                       <NavLink to={`/product_detail/${item.id}`}>
                         <div className="mb-4 relative overflow-hidden transition-transform duration-500 ease-in-out transform-gpu group-hover:-translate-y-3">
                           <img
-                          className="max-h-[200px]"
+                            className="max-h-[200px]"
                             src={`${DOMAIN}${detail.image}`}
                             alt={`${detail.image}`}
                           />
                         </div>
                       </NavLink>
-                      <div className="flex items-center lg:absolute top-[230px] left-0 rounded-xl bg-red-500">
+                      <div className="flex items-center lg:absolute top-[200px] left-0 rounded-r-xl bg-red-600">
                         <svg
                           height="20px"
                           width="20px"
@@ -933,10 +939,10 @@ export default function Home() {
                         </div>
                         <div className="mb-2 flex text-center items-center justify-center gap-1">
                           <span className="text-red-500 text-[18px] font-medium">
-                          {formatPrice(`${detail.price} ₫`)}
+                            {formatPrice(`${detail.price} ₫`)}
                           </span>
                           <span className="text-sm text-gray-500 line-through">
-                          {formatPrice(`${detail.discount} ₫`)}
+                            {formatPrice(`${detail.discount} ₫`)}
                           </span>
                         </div>
                         <div className="mb-4"></div>
@@ -955,7 +961,7 @@ export default function Home() {
               <div className="py-8 flex flex-col items-center lg:relative ">
                 <div className="mb-4  ">
                   <img
-                  className="max-h-[200px]"
+                    className="max-h-[200px]"
                     src="https://cdn.hoanghamobile.com/i/productlist/ts/Uploads/2023/02/02/s23-xang.png"
                     alt=""
                     style={{ visibility: "hidden" }}
@@ -988,8 +994,9 @@ export default function Home() {
 
           <div className="text-center">
             <button
+            style={{backgroundColor: '#fac57d'}}
               type="button"
-              className="py-2.5 px-5 text-sm font-medium text-white focus:outline-none bg-blue-500 rounded-full border border-gray-200  focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+              className="py-2.5 px-5 text-sm font-medium text-white focus:outline-none  rounded-full border border-gray-200  focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
             >
               Xem tất cả
             </button>
@@ -999,10 +1006,12 @@ export default function Home() {
 
       {/* banner */}
       <div>
-        <h1 className="text-3xl leading-4 font-bold	text-center mt-10 text-red-500">
-          Điện thoại nào phù hợp với bạn?
-        </h1>
-        <div className="grid  px-4 pt-20 pb-8 mx-auto lg:gap-8  lg:py-16 lg:pt-10">
+        <div>
+          <h1 className="text-3xl py-5 font-bold	text-center text-red-500">
+            Điện thoại nào phù hợp với bạn?
+          </h1>
+        </div>
+        <div className="grid  px-4  pb-5 mx-auto lg:gap-8  ">
           <div className="grid grid-cols-2 gap-4">
             <div className="row-span-1 ">
               <a href="">
@@ -1032,10 +1041,12 @@ export default function Home() {
 
       {/* ưa thích */}
       <div>
-        <h1 className="text-3xl leading-4 font-bold	text-center mt-10 text-red-500">
-          Có thể bạn sẽ thích
-        </h1>
-        <div className="flex flex-row overflow-hidden px-4  max-w-[95%] mx-auto lg:gap-8 lg:py-16 lg:pt mt-5 relative xl:px-[50px] ">
+        <div>
+          <h1 className="text-3xl py-5 font-bold	text-center text-red-500">
+            Có thể bạn sẽ thích
+          </h1>
+        </div>
+        <div className="flex flex-row overflow-hidden px-4  max-w-[95%] mx-auto lg:gap-8  pb-5 relative xl:px-[50px] ">
           <button
             className="absolute left-[0px] top-1/2 transform -translate-y-1/2 "
             onClick={prevSlide}
@@ -1094,7 +1105,7 @@ export default function Home() {
                   <div className="mb-4 relative overflow-hidden transition-transform duration-500 ease-in-out transform-gpu group-hover:-translate-y-3">
                     <img src={product.image} alt="" className="transform-gpu" />
                   </div>
-                  <div className="flex items-center lg:absolute top-[230px] left-0 rounded-xl bg-red-500">
+                  <div className="flex items-center lg:absolute top-[200px] left-0 rounded-r-xl bg-red-600">
                     <svg
                       height="20px"
                       width="20px"
@@ -1192,7 +1203,7 @@ export default function Home() {
       </div>
       {/* banner  */}
       <div className="mb-28">
-        <div className=" grid max-w-[95%]  pt-20  mx-auto lg:gap-8  lg:py-0 lg:pt-10 ">
+        <div className=" grid max-w-[95%]  mx-auto lg:gap-8  lg:pt-5 ">
           <div className="grid grid-cols-4 gap-4">
             <div className="col-span-1 bg-gray-100 border rounded-3xl group ">
               <div className="px-6 py-6 ">
@@ -1275,5 +1286,3 @@ export default function Home() {
     </section>
   );
 }
-
-

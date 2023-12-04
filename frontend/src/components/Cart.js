@@ -10,12 +10,28 @@ import {
 import Select from "./Select";
 import InputReadOnly from "./InputReadOnly";
 import * as yup from "yup";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 const schema = yup.object().shape({
-  soNha: yup.string().required("Địa chỉ / số nhà không được để trống"),
+  fullname: yup.string().required("Họ và tên không được để trống"),
+  phone: yup
+    .string()
+    .matches(/^[0-9]{10}$/, "Vui lòng nhập đúng số điện thoại")
+    .required("Số điện thoại không được để trống"),
+  email: yup
+    .string()
+    .email("Email không đúng")
+    .required("Email không được để trống"),
 });
 
-
 export default function Cart() {
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
   const [order, setOrder] = useState({
     fullname: "",
     phone: "",
@@ -29,12 +45,11 @@ export default function Cart() {
     ],
   });
 
-
   const [soNha, setSoNha] = useState("");
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setOrder((prevCategory) => ({
-      ...prevCategory,
+    setOrder((prevOrder) => ({
+      ...prevOrder,
       [name]: value,
     }));
   };
@@ -43,12 +58,6 @@ export default function Cart() {
     setSoNha(diaChi);
   };
   console.log("dia chi:", soNha);
-
-  //   setOrder((prevOrder) => ({
-  //     ...prevOrder,
-  //     total: formatPrice(calculateTotal() + 20000),
-  //   }));
-  // };
 
   const [totalDetail, settotalDetail] = useState();
   const [cart, setCart] = useState([]);
@@ -121,7 +130,7 @@ export default function Cart() {
     updateOrderDetails(updatedCart);
   };
   function clearLocalStorage() {
-    localStorage.removeItem('cart');
+    localStorage.removeItem("cart");
     // Thêm các khóa khác nếu cần thiết
   }
   const calculateTotal = () => {
@@ -132,8 +141,16 @@ export default function Cart() {
   function formatPrice(price) {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  useEffect(() => {
+    setOrder((prevOrder) => ({
+      ...prevOrder,
+      total: formatPrice(calculateTotal() + 20000),
+    }));
+  }, [cart]);
+  const onSubmit = async (e) => {
+    // e.preventDefault();
+    alert("hihihi");
+    console.log("tuiiiiiiiiiiiii dat hang duoc roi");
     try {
       const orderfinal = await createOrder(order);
       console.log("final", orderfinal);
@@ -142,8 +159,7 @@ export default function Cart() {
     } catch (error) {
       console.log(error);
     }
-  }
-
+  };
 
   console.log("này lấy từ localstorage", cart);
   console.log("này lấy để up lên db", order);
@@ -245,7 +261,7 @@ export default function Cart() {
               // xmlns:xlink="http://www.w3.org/1999/xlink"
               viewBox="0 0 72 72"
               enable-background="new 0 0 72 72"
-            // xml:space="preserve"
+              // xml:space="preserve"
             >
               <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
               <g
@@ -474,8 +490,6 @@ export default function Cart() {
                 </div>
               </div>
             ))}
-
-
           </div>
           <div className="h-[30px] rounded-t-2xl bg-red-400 bg-[url('https://fptshop.com.vn/estore-images/bggiftpromotion.png')] flex items-center px-4 mt-5 font-semibold text-base text-white ">
             Khuyến mãi theo đơn hàng
@@ -557,11 +571,31 @@ export default function Cart() {
             <div className="py-4 px-2 bg-gray-200 rounded-2xl mt-4 ">
               <div className="p-3 ">
                 <p>Thông tin người nhận hàng</p>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit(onSubmit)}>
                   <div className=" mt-2 grid grid-cols-2 gap-4">
                     <div>
                       <label className="block">Họ và tên:</label>
-                      <input
+                      <Controller
+                        name="fullname"
+                        control={control}
+                        render={({ field }) => (
+                          <input
+                            type="text"
+                            value={field.value}
+                            onChange={(e) => {
+                              field.onChange(e);
+                              setOrder((prevOrder) => ({
+                                ...prevOrder,
+                                fullname: e.target.value,
+                              }));
+                            }}
+                            className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2 w-full"
+                            placeholder="Nhập họ và tên"
+                          />
+                        )}
+                      />
+                      <p className="text-red-500">{errors.fullname?.message}</p>
+                      {/* <input
                         type="text"
                         name="fullname"
                         value={order.fullname}
@@ -569,60 +603,91 @@ export default function Cart() {
                         className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2 w-full"
                         placeholder="Nhập họ và tên"
                         required
-                      />
+                      /> */}
                     </div>
-                    <div> 
-                    <label className="block">Số điện thoại:</label>
-                      <input
+                    <div>
+                      <label className="block">Số điện thoại:</label>
+                      <Controller
+                        name="phone"
+                        control={control}
+                        render={({ field }) => (
+                          <input
+                            type="text"
+                            value={field.value}
+                            onChange={(e) => {
+                              field.onChange(e);
+                              setOrder((prevOrder) => ({
+                                ...prevOrder,
+                                phone: e.target.value,
+                              }));
+                            }}
+                            className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2 w-full"
+                            placeholder="Nhập họ và tên"
+                          />
+                        )}
+                      />
+                      <p className="text-red-500">{errors.phone?.message}</p>
+                      {/* <input
                         name="phone"
                         value={order.phone}
                         onChange={handleChange}
                         type="text"
                         className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2 w-full"
                         placeholder="Nhập số điện thoại"
-                        required
-                      />
+                      
+                      /> */}
                     </div>
                     <div className="col-span-2">
-                    <label className="block">Email:</label>
-                      <input
-                        type="text"
+                      <label className="block">Email:</label>
+                      <Controller
                         name="email"
-                        value={order.email}
-                        onChange={handleChange}
-                        className="col-span-2 border rounded-lg xl:h-[50px] sm:h-[30px] px-2 w-full"
-                        placeholder="Nhập địa chỉ email"
-                        required
+                        control={control}
+                        render={({ field }) => (
+                          <input
+                            type="text"
+                            value={field.value}
+                            onChange={(e) => {
+                              field.onChange(e);
+                              setOrder((prevOrder) => ({
+                                ...prevOrder,
+                                email: e.target.value,
+                              }));
+                            }}
+                            className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2 w-full"
+                            placeholder="Nhập họ và tên"
+                          />
+                        )}
                       />
+                      <p className="text-red-500">{errors.email?.message}</p>
                     </div>
-                     <div className="col-span-2 border rounded-lg   px-2">
-                    <div className="flex flex-col gap-4">
-                      <div className="flex items-center gap-4">
-                        <Select
-                          type="province"
-                          value={province}
-                          setValue={setProvince}
-                          options={provinces}
-                          label="Tỉnh/Thành phố"
-                        />
-                        <Select
-                          type="district"
-                          reset={reset}
-                          value={district}
-                          setValue={setDistrict}
-                          options={districts}
-                          label="Quận/Huyện"
-                        />
-                        <Select
-                          reset={reset}
-                          type="ward"
-                          value={ward}
-                          setValue={setWard}
-                          options={wards}
-                          label="Xã"
-                        />
-                      </div>
-                      {/* <InputReadOnly
+                    <div className="col-span-2 border rounded-lg   px-2">
+                      <div className="flex flex-col gap-4">
+                        <div className="flex items-center gap-4">
+                          <Select
+                            type="province"
+                            value={province}
+                            setValue={setProvince}
+                            options={provinces}
+                            label="Tỉnh/Thành phố"
+                          />
+                          <Select
+                            type="district"
+                            reset={reset}
+                            value={district}
+                            setValue={setDistrict}
+                            options={districts}
+                            label="Quận/Huyện"
+                          />
+                          <Select
+                            reset={reset}
+                            type="ward"
+                            value={ward}
+                            setValue={setWard}
+                            options={wards}
+                            label="Xã"
+                          />
+                        </div>
+                        {/* <InputReadOnly
                         name="address"
                         onChange={handleChange}
                         label="Địa chỉ chính xác"
@@ -649,19 +714,19 @@ export default function Cart() {
                             : ""
                         }`}
                       /> */}
+                      </div>
                     </div>
-                  </div>
-                  <div className="col-span-2">
-                  <label className="block">Số nhà/ tên đường:</label>
-                    <input
-                      type="text"
-                      name="soNha"
-                      value={soNha}
-                      onChange={handleChangeSoNha}
-                      className=" border rounded-lg xl:h-[50px] sm:h-[30px] px-2 w-full"
-                      placeholder="Nhập địa chỉ / số nhà"
-                    />
-                  </div>
+                    <div className="col-span-2">
+                      <label className="block">Số nhà/ tên đường:</label>
+                      <input
+                        type="text"
+                        name="soNha"
+                        value={soNha}
+                        onChange={handleChangeSoNha}
+                        className=" border rounded-lg xl:h-[50px] sm:h-[30px] px-2 w-full"
+                        placeholder="Nhập địa chỉ / số nhà"
+                      />
+                    </div>
                   </div>
                   <div className="rounded-2xl bg-white py-5 px-4 mt-5 ">
                     <div className="flex gap-4  justify-between items-start">
@@ -692,6 +757,7 @@ export default function Cart() {
                         </div>
                         <div className="mt-2">
                           <button
+                            type="submit"
                             className="font-medium text-lg text-center bg-red-500 text-white w-full rounded-full py-2"
                           >
                             Hoàn tất đặt hàng
@@ -701,12 +767,9 @@ export default function Cart() {
                     </div>
                   </div>
                 </form>
-
               </div>
             </div>
           </div>
-
-
         </div>
       ) : (
         <div className="flex flex-col rounded-lg md:max-w-[900px] max-w-screen-lg pt-4 mx-auto ">
