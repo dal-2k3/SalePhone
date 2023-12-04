@@ -1,76 +1,126 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 
-class Contact extends Component {
-  render() {
-    return (
-      <div className="bg-gray-100 flex items-center justify-center pt-10 ">
-        <div className="w-4/5 mt-8">
+const Contact = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: '',
+  });
 
-          <div className="mb-2 text-center">
-            <h1 style={{ fontSize: '24px' }}>Giới thiệu SalePhone</h1>
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Xử lý dữ liệu gửi đi ở đây (ví dụ: gửi đến API hoặc xử lý ở phía máy chủ)
+    console.log('Submitted data:', formData);
+  };
+
+  return (
+    <div className="bg-gray-100">
+      <div className="container mx-auto pt-16">
+        <header className="bg-white py-4 border-b border-gray-300">
+          <div className="flex justify-between items-center">
+            <div className="flex space-x-4 pl-10">
+              <h2 className="text-3xl font-semibold mb-2"> Liên hệ </h2>
+            </div>
           </div>
-          <div className="mb-2">
-            <h5 className="text-lg font-bold mb-2" style={{ fontSize: '16px' }}>
-               Giới thiệu chung
-            </h5>
-            <p className="text-xs " style={{ fontSize: '14px', lineHeight:'1.3rem'}}>
-            SalePhone được thành lập với sứ mệnh đem lại trải nghiệm mua sắm tuyệt vời nhất cho khách hàng trong lĩnh vực điện thoại di động. Với đội ngũ nhân viên chuyên nghiệp và nhiệt huyết, chúng tôi cam kết mang đến sự hài lòng và tin tưởng cho mỗi khách hàng.
-            Chúng tôi tự hào là đối tác của những thương hiệu hàng đầu trong ngành công nghiệp di động, cung cấp một bộ sưu tập đa dạng của các dòng sản phẩm mới nhất và tiên tiến nhất. SalePhone không chỉ là nơi để mua sắm điện thoại, mà còn là địa điểm lý tưởng để tìm kiếm các phụ kiện độc đáo và chất lượng.
-            Tại SalePhone, chúng tôi coi trọng việc tạo ra một môi trường mua sắm trực tuyến và offline thuận lợi và an tâm. Đội ngũ chăm sóc khách hàng của chúng tôi luôn sẵn sàng hỗ trợ bạn từ việc chọn lựa sản phẩm đến sau khi mua hàng, để đảm bảo mọi trải nghiệm của bạn là không thể nào quên.
-            Chất lượng và sự đáng tin cậy là tôn chỉ hàng đầu của SalePhone. Chúng tôi cam kết cung cấp sản phẩm chính hãng và dịch vụ xuất sắc, giúp bạn hoàn toàn yên tâm với mỗi giao dịch.
-            Hãy đến với SalePhone, nơi mà sự lựa chọn thông minh và thú vị bắt đầu. Cùng chúng tôi khám phá thế giới không ngừng đổi mới của công nghệ di động!
-            </p>
-          </div>
-          <div className="mb-2">
-            <h5 className="text-lg font-bold mb-2" style={{ fontSize: '16px' }}>
-               Sự Đa Dạng Đẳng Cấp - Chất Lượng Đỉnh Cao
-            </h5>
-            <p className="text-xs " style={{ fontSize: '14px' }}>
-              SalePhone là nơi bạn có thể tìm thấy sự đa dạng độc đáo của thế giới điện thoại di động, từ những chiếc smartphone tiên tiến đến những chiếc điện thoại giá trung bình với hiệu suất vô song. Chúng tôi chọn lựa cẩn thận từ những thương hiệu hàng đầu để đảm bảo rằng bạn chỉ nhận được sự đẳng cấp và chất lượng tốt nhất. SalePhone là điểm đến cho những người yêu thích sự đa dạng và độc đáo trong điện thoại di động. Chúng tôi liên tục cập nhật danh mục sản phẩm để đáp ứng đa dạng nhu cầu của khách hàng. Từ những chiếc smartphone cao cấp cho đến những mẫu giá trung bình, mỗi sản phẩm đều được chọn lựa kỹ lưỡng để đảm bảo sự đa dạng không ngừng.
-            </p>
+        </header>
+        <main className="grid grid-cols-12 gap-8 p-8">
+          {/* Cột trái */}
+          <div className="col-span-8">
+            {/* Tin nổi bật */}
+            <div className="mb-8">
+              <form
+                className="bg-white p-6 rounded-md shadow-md mb-4"
+                onSubmit={handleSubmit}
+              >
+                <h2 className="text-xl font-semibold mb-4">Liên hệ chúng tôi</h2>
+                <div className="mb-4">
+                  <label htmlFor="name" className="block text-gray-600">
+                    Họ và tên:
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="w-full border border-gray-300 p-2 rounded-md"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label htmlFor="email" className="block text-gray-600">
+                    Email:
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="w-full border border-gray-300 p-2 rounded-md"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label htmlFor="message" className="block text-gray-600">
+                    Nội dung:
+                  </label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    rows="4"
+                    className="w-full border border-gray-300 p-2 rounded-md"
+                    required
+                  ></textarea>
+                </div>
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+                >
+                  Gửi
+                </button>
+              </form>
+            </div>
+            {/* Tin khác */}
+            <div className="grid grid-cols-2 gap-4">
+              
+            </div>
           </div>
 
-          <div className="mb-0.5">
-            <h5 className="text-lg font-bold mb-2" style={{ fontSize: '16px' }}>
-               Giá Trị Tốt Nhất - Ưu Đãi Không Ngừng
-            </h5>
-            <p className="text-xs" style={{ fontSize: '14px' }}>
-              Tại SalePhone, chúng tôi cam kết mang lại giá trị tốt nhất cho mỗi sản phẩm. Bạn sẽ không chỉ mua được điện thoại chính hãng với giá hợp lý mà còn được trải nghiệm những ưu đãi và khuyến mãi đặc biệt chỉ có tại cửa hàng của chúng tôi. Hãy đảm bảo theo dõi chúng tôi để không bỏ lỡ những cơ hội vàng!
-            </p>
-          </div>
+          {/* Cột phải */}
+          <div className="col-span-4">
+            <iframe
+              width="460"
+              height="350"
+              src="https://www.openstreetmap.org/export/embed.html?bbox=108.10229301452638%2C16.03302758803864%2C108.21267127990724%2C16.089444193336433&amp;layer=mapnik"
+              className="border-1 border-solid border-black"
+            ></iframe>
 
-          <div className="mb-0.5">
-            <h5 className="text-lg font-bold mb-2" style={{ fontSize: '16px' }}>
-               Trải Nghiệm Mua Sắm An Toàn và Thuận Tiện
-            </h5>
-            <p className="text-xs" style={{ fontSize: '14px' }}>
-            Ở SalePhone, chúng tôi không chỉ tập trung vào việc mang đến những sản phẩm hàng đầu với công nghệ tiên tiến, mà còn chú trọng đến hiệu suất. Dù bạn là người theo đuổi công nghệ mới nhất hay đang tìm kiếm sự ổn định và tiện ích, chúng tôi cam kết mang đến trải nghiệm vượt trội mỗi khi sử dụng điện thoại của chúng tôi. Chúng tôi đặt sự an toàn và thuận tiện của bạn lên hàng đầu. Hệ thống thanh toán an toàn và bảo mật cao cấp của chúng tôi đảm bảo rằng mọi giao dịch của bạn đều được bảo vệ. Bạn có thể yên tâm mua sắm trực tuyến và chờ đợi sản phẩm yêu thích của mình được giao đến cửa nhà.
-            </p>
+            {/* Thông tin liên hệ */}
+            <div className="bg-white p-4 rounded-md shadow-md mb-4">
+              <h2 className="text-xl font-semibold mb-4">Thông tin liên hệ</h2>
+              <p className="text-gray-600">
+                <strong>Địa chỉ:</strong> 137 Nguyễn Thị Thập, Liên chiểu, Đà Nẵng
+              </p>
+              <p className="text-gray-600">
+                <strong>Email:</strong> salephone@gmail.com
+              </p>
+              <p className="text-gray-600">
+                <strong>Điện thoại:</strong> (+84) 123456789
+              </p>
+            </div>
           </div>
-
-          <div className="mb-0.5">
-            <h5 className="text-lg font-bold mb-2" style={{ fontSize: '16px' }}>
-               Đội Ngũ Chăm Sóc Khách Hàng Tận Tâm
-            </h5>
-            <p className="text-xs" style={{ fontSize: '14px' }}>
-              SalePhone không chỉ là nơi mua sắm, mà còn là nơi bạn có thể đặt niềm tin. Đội ngũ chăm sóc khách hàng của chúng tôi luôn sẵn sàng hỗ trợ bạn 24/7, từ việc tư vấn chọn mua đến giải quyết mọi vấn đề. Chúng tôi chắc chắn bạn sẽ có trải nghiệm mua sắm tuyệt vời nhất.
-            </p>
-          </div>
-
-          <div className="">
-            <h5 className="text-lg font-bold mb-2" style={{ fontSize: '16px' }}>
-               Liên Hệ Với Chúng Tôi:
-            </h5>
-            <p className="text-xs" style={{ fontSize: '14px' }}>
-              Địa chỉ cửa hàng: 137 Nguyễn Thị Thập<br />
-              Hotline: (+84) 123456789<br />
-              Email: salephone@gmail.com
-            </p>
-          </div>
-        </div>
+        </main>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 export default Contact;

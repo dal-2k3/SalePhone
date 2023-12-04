@@ -62,31 +62,8 @@ const NewsLayout = () => {
       <div className="container mx-auto pt-16">
         <header className="bg-white py-4 border-b border-gray-300">
           <div className="flex justify-between items-center">
-            <div className="flex space-x-4 pl-10">
-              <div className="cursor-pointer text-gray-600 hover:text-black transition duration-300">
-                Mới nhất
-              </div>
-              <div className="cursor-pointer text-gray-600 hover:text-black transition duration-300">
-                Sản phẩm mới
-              </div>
-              <div className="cursor-pointer text-gray-600 hover:text-black transition duration-300">
-                Đánh giá
-              </div>
-              <div className="cursor-pointer text-gray-600 hover:text-black transition duration-300">
-                Mẹo hay
-              </div>
-              <div className="cursor-pointer text-gray-600 hover:text-black transition duration-300">
-                Tư vấn
-              </div>
-              <div className="cursor-pointer text-gray-600 hover:text-black transition duration-300">
-                Sự kiện
-              </div>
-              <div className="cursor-pointer text-gray-600 hover:text-black transition duration-300">
-                Stories
-              </div>
-              <div className="cursor-pointer text-gray-600 hover:text-black transition duration-300">
-                Khuyến mãi
-              </div>
+            <div className=" text-2xl font-bold flex space-x-4 pl-10">
+              <h2>TIN CÔNG NGHỆ</h2>
             </div>
           </div>
         </header>
