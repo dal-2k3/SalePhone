@@ -1,18 +1,17 @@
 const ItemsContainer = () => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-6 sm:px-8 px-5 py-10">
-      <div className="flex flex-col gap-5">
-        <h2 className="text-[18px] text-pink-500 uppercase">Salephone</h2>
-        {/* <div className="">
-          <img src="../../public/image/logo.png" alt="" className="" />
-        </div> */}
+    <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-6 sm:px-8 px-5 py-5">
+      <div className="flex flex-col gap-3">
+        <a className="w-[200px] h-[100px]">
+          <img src="/image/SP.png" alt="" className="w-full h-full" />
+        </a>
         <p className="my-4">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed, deleniti
-          dolores vel ipsa reiciendis corporis similique dolor earum aut itaque.
+          SalePhone - Website Cửa Hàng Điện Thoại tập trung vào tối ưu hóa trải
+          nghiệm mua sắm trực tuyến và ứng dụng di động.
         </p>
       </div>
       <div>
-        <li className="text-[18px] list-none font-semibold text-pink-500 py-2 uppercase">
+        <li className="text-[17px] list-none font-semibold text-white py-2 uppercase">
           Chính sách
         </li>
         <li className="my-4 list-none ">Chính sách bảo hành</li>
@@ -21,7 +20,7 @@ const ItemsContainer = () => {
         <li className="my-4 list-none">Chính sách khui hộp</li>
       </div>
       <div>
-        <li className="text-[18px] list-none font-semibold text-pink-500 py-2 uppercase">
+        <li className="text-[17px] list-none font-semibold text-white py-2 uppercase">
           Tra Cứu thông tin
         </li>
         <li className="my-4 list-none">Tra cứu hóa đơn điện tử</li>
@@ -29,7 +28,7 @@ const ItemsContainer = () => {
         <li className="my-4 list-none">Trung tâm bảo hàng</li>
       </div>
       <div>
-        <li className="text-[18px] list-none font-semibold text-pink-500 py-2 uppercase">
+        <li className="text-[17px] list-none font-semibold text-white py-2 uppercase">
           Tư vấn đặt hàng
         </li>
         <li className="my-4 list-none">Phương thức thanh toán</li>
