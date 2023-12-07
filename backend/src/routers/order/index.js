@@ -22,7 +22,7 @@ orderRouter.post('/', async (req, res) => {
                 quantity: detail.quantity,
             });
         });
-        res.status(200).json({ message: 'Order and details added successfully' });
+        res.status(200).json( newOrder);
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: 'Error adding order and order details', error });

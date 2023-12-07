@@ -1,12 +1,14 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { DOMAIN } from "../utils/settings/config";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { createOrder } from "../services/order";
 import {
   apiGetPublicDistrict,
   apiGetPublicProvinces,
   apiGetPublicWard,
 } from "./app";
+import { Dialog, Transition } from "@headlessui/react";
+
 import Select from "./Select";
 import InputReadOnly from "./InputReadOnly";
 import * as yup from "yup";
@@ -25,6 +27,10 @@ const schema = yup.object().shape({
 });
 
 export default function Cart() {
+  const [openAdd, setOpenAdd] = useState(false);
+  const cancelButtonRef = useRef(null);
+
+  const [reload, setReload] = useState(false);
   const {
     handleSubmit,
     control,
@@ -32,6 +38,7 @@ export default function Cart() {
   } = useForm({
     resolver: yupResolver(schema),
   });
+  const [orderSuccess, setOrderSuccess] = useState({});
   const [order, setOrder] = useState({
     fullname: "",
     phone: "",
@@ -59,14 +66,14 @@ export default function Cart() {
   };
   console.log("dia chi:", soNha);
 
-  const [totalDetail, settotalDetail] = useState();
+
   const [cart, setCart] = useState([]);
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     updateOrderDetails(storedCart);
     // setOrder({ ...order, order_details: updatedOrderDetails, });
     setCart(storedCart);
-  }, []);
+  }, [reload]);
   const updateOrderDetails = (cart) => {
     const updatedOrderDetails = cart.map((product, index) => ({
       ...cart[index],
@@ -144,18 +151,22 @@ export default function Cart() {
   useEffect(() => {
     setOrder((prevOrder) => ({
       ...prevOrder,
-      total: formatPrice(calculateTotal() + 20000),
+      total: formatPrice(calculateTotal()),
     }));
   }, [cart]);
+  const navigate = useNavigate();
   const onSubmit = async (e) => {
     // e.preventDefault();
-    alert("hihihi");
-    console.log("tuiiiiiiiiiiiii dat hang duoc roi");
+    // alert("hihihi");
+    setOpenAdd(true);
+    console.log("tuiiiiiiiiiiiii dat hang duoc roi", e);
     try {
       const orderfinal = await createOrder(order);
-      console.log("final", orderfinal);
-      setOrder([]);
-      clearLocalStorage();
+      setOrderSuccess(orderfinal);
+      console.log("final", orderfinal.id);
+      // setOrder([]);
+      // clearLocalStorage()
+      setReload(!reload);
     } catch (error) {
       console.log(error);
     }
@@ -163,7 +174,7 @@ export default function Cart() {
 
   console.log("này lấy từ localstorage", cart);
   console.log("này lấy để up lên db", order);
-
+  console.log("setOrderSuccess", orderSuccess);
   const [address, setAddress] = useState("");
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
@@ -174,7 +185,12 @@ export default function Cart() {
   const [ward, setWard] = useState("");
 
   const [reset, setReset] = useState(false);
+  const closeModal = () => {
+    setOpenAdd(false)
+    clearLocalStorage()
+    setReload(!reload);
 
+  }
   // get tỉnh
   useEffect(() => {
     const fetchPublicProvince = async () => {
@@ -247,9 +263,240 @@ export default function Cart() {
   }, [soNha]);
   console.log("address", address);
   return (
-    <div className="w-full bg-gray-100 py-20">
-      <div className="rounded-lg md:max-w-[900px] max-w-screen-lg pt-4 mx-auto ">
-        <NavLink to="/listproducts/1">
+    <div className="w-full bg-gray-100 py-16">
+      <Transition.Root show={openAdd} as={Fragment}>
+        <Dialog
+          as="div"
+          className=" relative z-50"
+          // initialFocus={cancelButtonRef}
+          onClose={setOpenAdd}
+        >
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+            <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0 xl:pt-20 ">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                enterTo="opacity-100 translate-y-0 sm:scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+              >
+                <Dialog.Panel className="relative transform overflow-hidden mt-32 rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-screen-md ">
+                  <div className="absolute top-2 right-2 ">
+                    <button
+                      type="button"
+                      onClick={closeModal}
+                      // ref={cancelButtonRef}
+                      className=""
+                    >
+                      <svg
+                        width="22px"
+                        height="22px"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g
+                          id="SVGRepo_tracerCarrier"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        ></g>
+                        <g id="SVGRepo_iconCarrier">
+                          {" "}
+                          <path
+                            d="M20.7457 3.32851C20.3552 2.93798 19.722 2.93798 19.3315 3.32851L12.0371 10.6229L4.74275 3.32851C4.35223 2.93798 3.71906 2.93798 3.32854 3.32851C2.93801 3.71903 2.93801 4.3522 3.32854 4.74272L10.6229 12.0371L3.32856 19.3314C2.93803 19.722 2.93803 20.3551 3.32856 20.7457C3.71908 21.1362 4.35225 21.1362 4.74277 20.7457L12.0371 13.4513L19.3315 20.7457C19.722 21.1362 20.3552 21.1362 20.7457 20.7457C21.1362 20.3551 21.1362 19.722 20.7457 19.3315L13.4513 12.0371L20.7457 4.74272C21.1362 4.3522 21.1362 3.71903 20.7457 3.32851Z"
+                            fill="#B31312"
+                          ></path>{" "}
+                        </g>
+                      </svg>
+                    </button>
+                  </div>{" "}
+                  <div className="w-5/5 mx-auto p-8 bg-white ">
+                    {/* <hr className=" border-solid border-[1.5px] my-5" /> */}
+                    <div className="">
+                      <div className="w-full ">
+                        <div className="flex-col flex items-center justify-center">
+                          <svg
+                            fill="#49be25"
+                            width="120px"
+                            height="120px"
+                            viewBox="0 0 36 36"
+                            version="1.1"
+                            preserveAspectRatio="xMidYMid meet"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g
+                              id="SVGRepo_tracerCarrier"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            ></g>
+                            <g id="SVGRepo_iconCarrier">
+                              {" "}
+                              <title>success-standard-line</title>{" "}
+                              <path
+                                class="clr-i-outline clr-i-outline-path-1"
+                                d="M18,2A16,16,0,1,0,34,18,16,16,0,0,0,18,2Zm0,30A14,14,0,1,1,32,18,14,14,0,0,1,18,32Z"
+                              ></path>
+                              <path
+                                class="clr-i-outline clr-i-outline-path-2"
+                                d="M28,12.1a1,1,0,0,0-1.41,0L15.49,23.15l-6-6A1,1,0,0,0,8,18.53L15.49,26,28,13.52A1,1,0,0,0,28,12.1Z"
+                              ></path>{" "}
+                              <rect
+                                x="0"
+                                y="0"
+                                width="36"
+                                height="36"
+                                fill-opacity="0"
+                              ></rect>{" "}
+                            </g>
+                          </svg>
+                          <p className="text-2xl text-red-600">
+                            Cảm ơn bạn đã đặt hàng thành công
+                          </p>
+                          <p>
+                            Nhân viên SalePhone sẽ liên hệ với quý khách trong
+                            thời gian sớm nhất
+                          </p>
+                        </div>
+                      </div>
+                      <div className="bg-gray-100 rounded-md my-2">
+                        <div className="flex p-3">
+                          <div className="pr-10 ">
+                            <p className="py-1">Mã đơn hàng</p>
+                            <p className="py-1">Họ và tên</p>
+                            <p className="py-1">Số điện thoại</p>
+                            <p className="py-1">Hình thức thanh toán</p>
+                            {/* <p>Nhận hàng tại nhà</p> */}
+                          </div>
+                          <div>
+                            <p className="py-1">{orderSuccess.id}</p>
+                            <p className="py-1">{orderSuccess.fullname}</p>
+                            <p className="py-1">{orderSuccess.phone}</p>
+                            <p className="py-1">Nhận hàng tại nhà</p>
+                            {/* <p>Nhận hàng tại nhà</p> */}
+                          </div>
+                        </div>
+                      </div>
+                      <p className="text-2xl font-medium ">
+                        Thông tin đơn hàng
+                      </p>
+                      <div className="bg-gray-50 rounded-md my-2">
+                        {order.order_details.map((item, index) => (
+                          <div>
+                            <div className="flex p-3 gap-4">
+                              <div className="p-2 border rounded-md bg-white">
+                                <div className="w-[100px] h-[100px]">
+                                  <img
+                                    className="w-full h-full "
+                                    src={`${DOMAIN}${item.imageProductDetail}`}
+                                    alt=""
+                                  />
+                                </div>
+                              </div>
+                              <div className="flex-1">
+                                <p className="text-xl font-medium pb-1">
+                                  Điện thoại {item.name} {item.capacity}{" "}
+                                  {item.color}
+                                </p>
+                                <div className="flex justify-between">
+                                  <p className="text-gray-500">
+                                    Số lượng: {item.quantity}
+                                  </p>
+                                  <div>
+                                    <p className="font-medium text-red-600">
+                                      {formatPrice(`${item.totalDetail}`)}đ
+                                    </p>
+                                    <p className=" text-gray-500 line-through">
+                                      {formatPrice(
+                                        `${
+                                          item.discount * (item.quantity || 1)
+                                        }`
+                                      )}
+                                      đ
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="p-3">
+                              <p className="text-lg font-normal">
+                                Khuyến mãi kèm theo
+                              </p>
+                              <div className="border border-gray-200 rounded-lg flex items-center p-3">
+                                <div className="rounded-full w-20 h-20  border flex items-center justify-center ">
+                                  <img
+                                    className="w-[80%] h-[80%] my-auto mx-auto"
+                                    src={`${DOMAIN}${item.imageGift}`}
+                                    alt=""
+                                  />
+                                </div>
+                                <p className="py-2 px-2 text-sm">
+                                  Tặng ngay bộ {item.gift} giá lên tới dưới 1 tỉ
+                                  đồng
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      {/* <div className="bg-gray-200 rounded-md my-2"></div> */}
+                      <div className="bg-gray-100 rounded-md my-2">
+                        <div className="p-3">
+                          <div className="flex justify-between">
+                            <p>Tổng tiền:</p>
+                            <p>{formatPrice(`${calculateTotal()}đ`)}</p>
+                          </div>
+                          <div className="flex justify-between">
+                            <p>Phí giao hàng:</p>
+                            <p>0đ</p>
+                          </div>
+                          <div className="flex justify-between">
+                            <p>Giảm giá voucher:</p>
+                            <p>0đ</p>
+                          </div>
+                          <hr className=" border-dotted border-[1.5px] my-2 border-gray-400" />
+                          <div className="flex justify-between">
+                            <p className="text-xl font-medium ">Thành tiền</p>
+                            <p className="text-red-600 text-xl font-medium">
+                              {formatPrice(`${calculateTotal()}đ`)}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex-col flex  items-center justify-center">
+                      <button
+                        type="button"
+                        // onClick={handleSave}
+                        className="bg-green-400 rounded-full  text-white py-2 px-10  mb-4 "
+                      >
+                        Về trang chủ
+                      </button>
+                    </div>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition.Root>
+      <div className="rounded-lg md:max-w-[900px] max-w-screen-lg  mx-auto ">
+        <NavLink to="/">
           <div className="flex items-center text-blue-600 ">
             <svg
               width="20px"
@@ -303,7 +550,7 @@ export default function Cart() {
                         Điện thoại {product.name} {product.capacity}{" "}
                         {product.color}
                       </p>
-                      <p>số lượng trong kho: {product.quantityDB}</p>
+                      {/* <p>số lượng trong kho: {product.quantityDB}</p> */}
                       <div>
                         <button onClick={() => removeFromCart(index)}>
                           <svg
@@ -622,7 +869,7 @@ export default function Cart() {
                               }));
                             }}
                             className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2 w-full"
-                            placeholder="Nhập họ và tên"
+                            placeholder="Nhập số điện thoại"
                           />
                         )}
                       />
@@ -654,7 +901,7 @@ export default function Cart() {
                               }));
                             }}
                             className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2 w-full"
-                            placeholder="Nhập họ và tên"
+                            placeholder="Nhập email của bạn"
                           />
                         )}
                       />
@@ -740,7 +987,7 @@ export default function Cart() {
                         </div>
                         <div className="flex justify-between">
                           <p>Phí giao hàng</p>
-                          <p>20.000 ₫</p>
+                          <p>0₫</p>
                         </div>
                         <div className="flex justify-between">
                           <p>Giảm giá voucher</p>
@@ -751,7 +998,7 @@ export default function Cart() {
                         <div className="flex justify-between ">
                           <p>Cần thanh toán ({cart.length} sản phẩm)</p>
                           <p className="text-red-500 text-lg font-semibold">
-                            {formatPrice(`${calculateTotal() + 20000} ₫`)}
+                            {formatPrice(`${calculateTotal()} ₫`)}
                             {/* {calculateTotal() + 20000} */}
                           </p>
                         </div>

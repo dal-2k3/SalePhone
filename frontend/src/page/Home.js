@@ -323,24 +323,39 @@ export default function Home() {
         </div>
 
         <div className="lg:col-span-1  lg:grid grid-rows-2 grid-flow-col gap-4">
-          <div className="bg-red-500 border rounded-3xl flex items-center justify-between px-10">
+          <div
+            className=" bg-gradient-to-r from-red-700 to-rose-300
+                     hover:from-pink-300 hover:to-slate-300 text-yellow-100 
+                     border rounded-3xl flex items-center justify-between px-10
+                     shadow-lg transform transition-all 
+                      duration-500 ease-in-out hover:scale-10 hover:brightness-10 
+                      hover:animate-pulse active:animate-bounce
+                     "
+          >
             <div className="text-white py-2">
               <p className="text-xl font-medium uppercase">Oppo</p>
               <p className="text-sm">Phản hồi tức thì</p>
               <p className="text-2xl mb-1">Giữ nhịp vui cuộc sống</p>
-              <button class="py-1 px-3 rounded-full bg-blue-400 text-white font-bold transition duration-500 transform hover:bg-blue-300 hover:scale-110 active:bg-blue-700 active:scale-98 focus:outline-none">
+              <button class="py-1 px-3 rounded-full bg-green-600 text-white font-bold transition duration-500 transform hover:bg-green-400 hover:scale-110 active:bg-blue-700 active:scale-98 focus:outline-none">
                 Mua ngay
               </button>
             </div>
             <div className="w-[120px] h-[120px]">
               <img
-                src="https://www.oppo.com/content/dam/oppo/product-asset-library/find/find-n2-series/global/find-n2-flip/v1/assets/images-pet-en-keepFlow-1.png.webp"
+                src="https://cdn.hoanghamobile.com/i/preview/Uploads/2023/03/20/tim-n-flip.png"
                 alt=""
                 className="w-full h-full object-cover"
               />
             </div>
           </div>
-          <div className="bg-yellow-300 border rounded-3xl flex items-center justify-between px-10 sm:mt-2 ">
+          <div
+            className=" border bg-gradient-to-r from-yellow-300 to-pink-200
+                     hover:from-pink-300 hover:to-slate-300 text-yellow-100
+                      hover:text-black rounded-3xl flex items-center justify-between px-10 sm:mt-2 
+                      shadow-lg transform transition-all 
+                      duration-500 ease-in-out hover:scale-10 hover:brightness-10 
+                      hover:animate-pulse active:animate-bounce"
+          >
             <div className="text-white py-2">
               <p className="text-xl font-medium uppercase ">SAMSUNG</p>
 
@@ -348,7 +363,7 @@ export default function Home() {
               <p className="text-2xl mb-1 ">
                 “Tân vương của điện thoại camera”
               </p>
-              <button class="py-1 px-3 rounded-full bg-blue-400 text-white font-bold transition duration-500 transform hover:bg-blue-300 hover:scale-110 active:bg-blue-700 active:scale-98 focus:outline-none">
+              <button class="py-1 px-3 rounded-full bg-green-600 text-white font-bold transition duration-500 transform hover:bg-green-400 hover:scale-110 active:bg-blue-700 active:scale-98 focus:outline-none">
                 Mua ngay
               </button>
             </div>
@@ -400,115 +415,189 @@ export default function Home() {
         </div>
         <div className="grid max-w-[95%]  px-4   mx-auto">
           <div className=" grid grid-cols-2 gap-4">
-            <div className="row-span-1 border">
-              <a href="">
-                <div className="relative inline-block border-box w-full h-full pointer ">
-                  <img
-                    className="h-full"
-                    src="https://images.samsung.com/is/image/samsung/assets/vn/2307/pcd/PCD_B5_Whats-new_684X684_pc_alt.jpg?$684_684_JPG$"
-                    alt=""
-                  />
-                  <div className="absolute inline-block top-[24px] left-[24px] z-600">
-                    <span className="bg-cyan-500 h-20 px-6 py-2 rounded-full text-xs leading-4 font-semibold text-black  shadow-text-white animate-badge-appear">
+            <div className="row-span-1 border rounded-2xl bg-[url('https://scontent.fhan5-10.fna.fbcdn.net/v/t1.15752-9/367975501_896566588753771_871931902031188617_n.png?_nc_cat=111&ccb=1-7&_nc_sid=8cd0a2&_nc_ohc=aIv05RlaqiAAX-pjYO-&_nc_ht=scontent.fhan5-10.fna&oh=03_AdRr4xtaaCgX0Au0bhgq4bFOsc2Zi6tqIW8K8H4UOGdVyg&oe=6594C166')] bg-center ">
+
+            </div>
+            <div class="col-span-1 grid grid-cols-2  gap-2  ">
+              {/* <div className="row-span-1 border bg-white  relative rounded-3xl overflow-hidden group duration-1000">
+                <div className="flex flex-col items-center pt-5 pb-14  px-5  ">
+                  <div className="absolute inline-block top-[24px] left-[24px] z-600 ">
+                    <span
+                      style={{ backgroundColor: "#c9d8a1", color: "#a81817" }}
+                      className=" h-20 px-3 py-2 rounded-full text-xs leading-4 font-semibold text-black  shadow-text-white animate-badge-appear"
+                    >
                       Mới
                     </span>
                   </div>
-                  <div className="absolute text-center z-600 bottom-0 mb-20 left-1/2 transform -translate-x-1/2">
-                    <span className="font-bold texl-2xl leading-5 ">
-                      Iphone Galaxy
+                  <a href="" className="block">
+                    <div className=" inline-block h-full w-full">
+                      <img
+                        className="max-h-[200px] object-cover"
+                        src="http://localhost:8000/uploads/1701421845672-aaaa.png"
+                        alt=""
+                      />
+                    </div>
+                  </a>
+                  <div class="absolute bottom-5 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 translate-y-1 transition duration-[1500ms]">
+                    <button
+                      style={{ backgroundColor: "#c56058", color: "#fff" }}
+                      className="bg-green-500 text-white py-2 px-4 rounded-full"
+                    >
+                      Mua ngay
+                    </button>
+                  </div>
+                  <div className=" text-center ">
+                    <span className="font-bold texl-2xl ">
+                      Samsung Galaxy Z Fold4 5G (256G) - Chính hãng VN/A
                     </span>
                   </div>
                 </div>
-              </a>
-            </div>
-            <div class="col-span-1 grid grid-cols-2 grid-rows-2 gap-4 border ">
-              <div className="row-span-1 bg-cyan-300">
-                <a href="">
-                  <div className="relative inline-block border-box w-full h-full pointer ">
-                    <img
-                      className="h-full"
-                      src="https://images.samsung.com/is/image/samsung/assets/vn/2307/pcd/PCD_B5_Whats-new_684X684_pc_alt.jpg?$684_684_JPG$"
-                      alt=""
-                    />
-                    <div className="absolute inline-block top-[24px] left-[24px] z-600">
-                      <span className="bg-cyan-500 h-20 px-6 py-2 rounded-full text-xs leading-4 font-semibold text-black  shadow-text-white animate-badge-appear">
-                        Mới
-                      </span>
-                    </div>
-                    <div className="absolute text-center z-600 bottom-0 mb-10 left-1/2 transform -translate-x-1/2">
-                      <span className="font-bold texl-2xl leading-5 ">
-                        Iphone Galaxy
-                      </span>
-                    </div>
+              </div> */}
+              {filteredArrayIphone.slice(0,4).map((item) => (
+                <div className="row-span-1 border bg-white  relative rounded-3xl overflow-hidden group duration-1000">
+                {item.product_detail &&
+                  item.product_detail.map((detail, index) => (
+                    <div className="flex flex-col items-center pt-5 pb-14  px-5  ">
+                  <div className="absolute inline-block top-[24px] left-[24px] z-600 ">
+                    <span
+                      style={{ backgroundColor: "#c9d8a1", color: "#a81817" }}
+                      className=" h-20 px-3 py-2 rounded-full text-xs leading-4 font-semibold text-black  shadow-text-white animate-badge-appear"
+                    >
+                      Mới
+                    </span>
                   </div>
-                </a>
-              </div>
-              <div className="row-span-1 bg-cyan-300">
-                {" "}
-                <a href="">
-                  <div className="relative inline-block border-box w-full h-full pointer ">
-                    <img
-                      className="h-full"
-                      src="https://images.samsung.com/is/image/samsung/assets/vn/2307/pcd/PCD_B5_Whats-new_684X684_pc_alt.jpg?$684_684_JPG$"
-                      alt=""
-                    />
-                    <div className="absolute inline-block top-[24px] left-[24px] z-600">
-                      <span className="bg-cyan-500 h-20 px-6 py-2 rounded-full text-xs leading-4 font-semibold text-black  shadow-text-white animate-badge-appear">
-                        Mới
-                      </span>
+                  <NavLink to={`/product_detail/${item.id}`}>
+                    <div className=" inline-block h-full w-full">
+                      <img
+                        className="max-h-[200px] object-cover"
+                        src={`${DOMAIN}${detail.image}`}
+                        alt=""
+                      />
                     </div>
-                    <div className="absolute text-center z-600 bottom-0 mb-10 left-1/2 transform -translate-x-1/2">
-                      <span className="font-bold texl-2xl leading-5 ">
-                        Iphone Galaxy
-                      </span>
-                    </div>
+                  </NavLink>
+                  <div class="absolute bottom-5 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 translate-y-1 transition duration-[1500ms]">
+                    <button
+                      style={{ backgroundColor: "#c56058", color: "#fff" }}
+                      className="bg-green-500 text-white py-2 px-4 rounded-full"
+                    >
+                      Mua ngay
+                    </button>
                   </div>
-                </a>
-              </div>
-              <div className="row-span-1 bg-cyan-300">
-                {" "}
-                <a href="">
-                  <div className="relative inline-block border-box w-full h-full pointer ">
-                    <img
-                      className="h-full"
-                      src="https://images.samsung.com/is/image/samsung/assets/vn/2307/pcd/PCD_B5_Whats-new_684X684_pc_alt.jpg?$684_684_JPG$"
-                      alt=""
-                    />
-                    <div className="absolute inline-block top-[24px] left-[24px] z-600">
-                      <span className="bg-cyan-500 h-20 px-6 py-2 rounded-full text-xs leading-4 font-semibold text-black  shadow-text-white animate-badge-appear">
-                        Mới
-                      </span>
-                    </div>
-                    <div className="absolute text-center z-600 bottom-0 mb-10 left-1/2 transform -translate-x-1/2">
-                      <span className="font-bold texl-2xl leading-5 ">
-                        Iphone Galaxy
-                      </span>
-                    </div>
+                  <div className=" text-center ">
+                    <span className="font-bold texl-2xl ">
+                    {item.name} ({item.capacity}) - Chính hãng VN/A
+                    </span>
                   </div>
-                </a>
-              </div>
-              <div className="row-span-1 bg-cyan-300">
-                {" "}
-                <a href="">
-                  <div className="relative inline-block border-box w-full h-full pointer ">
-                    <img
-                      className="h-full"
-                      src="https://images.samsung.com/is/image/samsung/assets/vn/2307/pcd/PCD_B5_Whats-new_684X684_pc_alt.jpg?$684_684_JPG$"
-                      alt=""
-                    />
-                    <div className="absolute inline-block top-[24px] left-[24px] z-600">
-                      <span className="bg-cyan-500 h-20 px-6 py-2 rounded-full text-xs leading-4 font-semibold text-black  shadow-text-white animate-badge-appear">
-                        Mới
-                      </span>
-                    </div>
-                    <div className="absolute text-center z-600 bottom-0 mb-10 left-1/2 transform -translate-x-1/2">
-                      <span className="font-bold texl-2xl leading-5 ">
-                        Iphone Galaxy
-                      </span>
-                    </div>
+                </div>
+                  ))}
+                </div>
+              ))}
+
+
+
+              {/* <div className="row-span-1 border bg-white  relative rounded-3xl overflow-hidden group duration-1000">
+                <div className="flex flex-col items-center pt-5 pb-14  px-5  ">
+                  <div className="absolute inline-block top-[24px] left-[24px] z-600 ">
+                    <span
+                      style={{ backgroundColor: "#c9d8a1", color: "#a81817" }}
+                      className=" h-20 px-3 py-2 rounded-full text-xs leading-4 font-semibold text-black  shadow-text-white animate-badge-appear"
+                    >
+                      Mới
+                    </span>
                   </div>
-                </a>
+                  <a href="" className="block">
+                    <div className=" inline-block h-full w-full">
+                      <img
+                        className="max-h-[200px] object-cover"
+                        src="http://localhost:8000/uploads/1701342216128-iphone-12-xanh-la-new-2-200x200.jpg"
+                        alt=""
+                      />
+                    </div>
+                  </a>
+                  <div class="absolute bottom-5 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 translate-y-1 transition duration-[1500ms]">
+                    <button
+                      style={{ backgroundColor: "#c56058", color: "#fff" }}
+                      className="bg-green-500 text-white py-2 px-4 rounded-full"
+                    >
+                      Mua ngay
+                    </button>
+                  </div>
+                  <div className=" text-center ">
+                    <span className="font-bold texl-2xl ">
+                    Iphone 15 Pro Max (512G) - Chính hãng VN/A
+                    </span>
+                  </div>
+                </div>
               </div>
+              <div className="row-span-1 border bg-white  relative rounded-3xl overflow-hidden group duration-1000">
+                <div className="flex flex-col items-center pt-5 pb-14  px-5  ">
+                  <div className="absolute inline-block top-[24px] left-[24px] z-600 ">
+                    <span
+                      style={{ backgroundColor: "#c9d8a1", color: "#a81817" }}
+                      className=" h-20 px-3 py-2 rounded-full text-xs leading-4 font-semibold text-black  shadow-text-white animate-badge-appear"
+                    >
+                      Mới
+                    </span>
+                  </div>
+                  <a href="" className="block">
+                    <div className=" inline-block h-full w-full">
+                      <img
+                        className="max-h-[200px] object-cover"
+                        src="http://localhost:8000/uploads/1701341887621-samsung-galaxy-z-flip5-xanh-mint-thumb-200x200.jpg"
+                        alt=""
+                      />
+                    </div>
+                  </a>
+                  <div class="absolute bottom-5 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 translate-y-1 transition duration-[1500ms]">
+                    <button
+                      style={{ backgroundColor: "#c56058", color: "#fff" }}
+                      className="bg-green-500 text-white py-2 px-4 rounded-full"
+                    >
+                      Mua ngay
+                    </button>
+                  </div>
+                  <div className=" text-center ">
+                    <span className="font-bold texl-2xl ">
+                    Samsung Galaxy Z Flip5 5G (512G) - Chính hãng VN/A
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div className="row-span-1 border bg-white  relative rounded-3xl overflow-hidden group duration-1000">
+                <div className="flex flex-col items-center pt-5 pb-14  px-5  ">
+                  <div className="absolute inline-block top-[24px] left-[24px] z-600 ">
+                    <span
+                      style={{ backgroundColor: "#c9d8a1", color: "#a81817" }}
+                      className=" h-20 px-3 py-2 rounded-full text-xs leading-4 font-semibold text-black  shadow-text-white animate-badge-appear"
+                    >
+                      Mới
+                    </span>
+                  </div>
+                  <a href="" className="block">
+                    <div className=" inline-block h-full w-full">
+                      <img
+                        className="max-h-[200px] object-cover"
+                        src="http://localhost:8000/uploads/1701341236087-iphone-12-den-new-2-200x200.jpg"
+                        alt=""
+                      />
+                    </div>
+                  </a>
+                  <div class="absolute bottom-5 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 translate-y-1 transition duration-[1500ms]">
+                    <button
+                      style={{ backgroundColor: "#c56058", color: "#fff" }}
+                      className="bg-green-500 text-white py-2 px-4 rounded-full"
+                    >
+                      Mua ngay
+                    </button>
+                  </div>
+                  <div className=" text-center ">
+                    <span className="font-bold texl-2xl ">
+                    Iphone 15 Pro (128G) - Chính hãng VN/A
+                    </span>
+                  </div>
+                </div>
+              </div> */}
+              
             </div>
             {/* <div class="row-span-2 col-span-2 bg-cyan-300">03</div> */}
           </div>
@@ -520,17 +609,18 @@ export default function Home() {
         <div className=" grid max-w-[100%]  mx-auto lg:gap-8  lg:pt-10">
           <div className="relative">
             <img
-              src="https://www.didongmy.com/vnt_upload/news/12_2022/tinh-nang-moi-cua-galaxy-s23-man-hinh-oled-didongmy.jpg"
+              src="https://img.global.news.samsung.com/vn/wp-content/uploads/2021/11/M52-Master-KV.png"
               alt=""
-              className="w-full h-[500px] object-cover  "
+              className="w-full h-[500px]  "
             />
+{/*             
             <div className="absolute bottom-[200px] left-[50px]">
               <a href="">
                 <button class="py-2 px-5 rounded-full bg-blue-400 text-white font-bold transition duration-500 transform hover:bg-blue-300 hover:scale-110 active:bg-blue-700 active:scale-98 focus:outline-none">
                   Mua ngay
                 </button>
               </a>
-            </div>
+            </div> */}
           </div>
         </div>
         <div className="grid  max-w-[95%] px-4  mx-auto lg:gap-8 py-5 bg-gray-100">
@@ -818,7 +908,8 @@ export default function Home() {
           <div className="text-center">
             <button
               type="button"
-              className="py-2.5 px-5 text-sm font-medium text-white focus:outline-none bg-blue-500 rounded-full border border-gray-200  focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+              style={{ background: "#008e49" }}
+              className="py-2.5 px-5 text-sm font-semibold text-white focus:outline-none rounded-full border border-gray-200  focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
             >
               Xem tất cả
             </button>
@@ -852,8 +943,9 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="bg-gray-100" 
-      // style={{ backgroundColor: "#f0f4f7" }}
+      <div
+        className="bg-gray-100"
+        // style={{ backgroundColor: "#f0f4f7" }}
       >
         <div className="grid  max-w-[95%] px-4  mx-auto lg:gap-8 py-5 bg-gray-100">
           <div class="grid grid-cols-5 gap-4 xl:px-[100px]">
@@ -994,9 +1086,9 @@ export default function Home() {
 
           <div className="text-center">
             <button
-            style={{backgroundColor: '#fac57d'}}
               type="button"
-              className="py-2.5 px-5 text-sm font-medium text-white focus:outline-none  rounded-full border border-gray-200  focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+              style={{ background: "#008e49" }}
+              className="py-2.5 px-5 text-sm font-semibold text-white focus:outline-none rounded-full border border-gray-200  focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
             >
               Xem tất cả
             </button>
@@ -1202,7 +1294,7 @@ export default function Home() {
         </div>
       </div>
       {/* banner  */}
-      <div className="mb-28">
+      <div className="mb-10">
         <div className=" grid max-w-[95%]  mx-auto lg:gap-8  lg:pt-5 ">
           <div className="grid grid-cols-4 gap-4">
             <div className="col-span-1 bg-gray-100 border rounded-3xl group ">

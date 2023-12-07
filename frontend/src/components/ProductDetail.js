@@ -56,10 +56,10 @@ export default function ProductDetail() {
         rating: rating,
         username: "",
         phone: "",
-        content: ""
+        content: "",
       });
       setOpenAdd(false);
-      setReload()
+      setReload();
     } catch (error) {
       console.log(error);
     }
@@ -80,10 +80,10 @@ export default function ProductDetail() {
     name: "",
     price: "",
     capacity: "",
-    quantityDB: '',
+    quantityDB: "",
     color: "",
-    idProduct: "",
-    idProductDetail: "",
+    id_Product: "",
+    id_Product_detail: "",
     nameCategory: "",
     imageProductDetail: "",
     id_Promotion: "",
@@ -103,7 +103,7 @@ export default function ProductDetail() {
 
           setSelectedProduct({
             ...selectedProduct,
-            idProduct: productDetails.id,
+            id_Product: productDetails.id,
             name: productDetails.name,
             capacity: productDetails.capacity,
             nameCategory: productDetails.Categorie.name,
@@ -153,7 +153,6 @@ export default function ProductDetail() {
   }, [productId, reload]);
 
   useEffect(() => {
-
     if (!productDetail) return;
     setisActivePhone(productDetail[0]);
   }, [productDetail]);
@@ -162,10 +161,10 @@ export default function ProductDetail() {
     setSelectedProduct({
       ...selectedProduct,
       color: isActivePhone.color,
-      idProductDetail: isActivePhone.id,
+      id_Product_detail: isActivePhone.id,
       price: isActivePhone.price,
       imageProductDetail: isActivePhone.image,
-      quantityDB: isActivePhone.quantity
+      quantityDB: isActivePhone.quantity,
     });
   }, [isActivePhone]);
 
@@ -219,14 +218,15 @@ export default function ProductDetail() {
     console.log(existingIndex);
     if (existingIndex !== -1) {
       // Nếu sản phẩm đã tồn tại trong giỏ hàng, tăng số lượng lên
-      if (storedCart[existingIndex].quantity == storedCart[existingIndex].quantityDB) {
-        // navigate("/cart");
-      }
-      else {
+      if (
+        storedCart[existingIndex].quantity ==
+        storedCart[existingIndex].quantityDB
+      ) {
+        navigate("/cart");
+      } else {
         storedCart[existingIndex].quantity =
           (storedCart[existingIndex].quantity || 1) + 1;
       }
-
     } else {
       // Nếu sản phẩm chưa tồn tại trong giỏ hàng, thêm mới vào
       storedCart.push({ ...selectedProduct, quantity: 1 });
@@ -234,7 +234,7 @@ export default function ProductDetail() {
 
     localStorage.setItem("cart", JSON.stringify(storedCart));
     // alert("Product added to cart!");
-    // navigate("/cart");
+    navigate("/cart");
     console.log("local", selectedProduct);
   };
 
@@ -249,7 +249,7 @@ export default function ProductDetail() {
   return (
     <div className="pt-20">
       {product.map((item) => (
-        <div className="grid max-w-screen-xl  px-4 pt-20 pb-8 mx-auto lg:gap-8  lg:py-16 lg:pt-10 ">
+        <div className="grid max-w-screen-xl  px-4  pb-8 mx-auto lg:gap-8  ">
           {/* modal */}
           <Transition.Root show={openAdd} as={Fragment}>
             <Dialog
@@ -445,8 +445,8 @@ export default function ProductDetail() {
                     productDetail.findIndex(
                       (item) => item.id === isActivePhone.id
                     ) +
-                    1 ===
-                    productDetail.length
+                      1 ===
+                      productDetail.length
                   }
                   className="absolute top-1/2 right-4 -translate-y-1/2 p-2 bg-cyan-100 bg-opacity-50 rounded-full"
                 >
@@ -476,10 +476,11 @@ export default function ProductDetail() {
                       key={index}
                       src={`${DOMAIN}${detail.image}`}
                       alt={`Thumbnail ${index + 1}`}
-                      className={`w-12 h-12 rounded-md cursor-pointer ${isActivePhone.id === detail.id
-                        ? "border-2 border-blue-500"
-                        : ""
-                        }`}
+                      className={`w-12 h-12 rounded-md cursor-pointer ${
+                        isActivePhone.id === detail.id
+                          ? "border-2 border-blue-500"
+                          : ""
+                      }`}
                       onClick={() => setisActivePhone(detail)}
                     />
                   ))}
@@ -531,7 +532,9 @@ export default function ProductDetail() {
                   </svg>
                   <div className="pl-2">
                     <p>TT gói sản phẩm:</p>
-                    <p className="text-sm text-gray-700">{item.name}, cáp sạc USB-C</p>
+                    <p className="text-sm text-gray-700">
+                      {item.name}, cáp sạc USB-C
+                    </p>
                   </div>
                 </div>
               </div>
@@ -540,7 +543,7 @@ export default function ProductDetail() {
             <div className=" w-[55%]   h-auto ">
               <div>
                 <p className="font-bold text-xl   ">
-                  {item.name} {item.capacity}
+                  {item.name} ({item.capacity}) - Chính hãng VN/A
                 </p>
               </div>
               <div className="flex items-center my-2">
@@ -557,7 +560,15 @@ export default function ProductDetail() {
                   Giá đã bao gồm VAT
                 </p>
               </div>
-              <div className="rounded-lg bg-red-500 flex justify-center items-center uppercase">
+              <p className="text-gray-500 mb-2">
+                Trong kho: {isActivePhone ? isActivePhone.quantity : 0}
+              </p>
+              <div
+                style={{
+                  backgroundColor: '#e46175'
+                }}
+                className="rounded-lg flex justify-center items-center uppercase"
+              >
                 <svg
                   fill="#fff"
                   version="1.1"
@@ -591,8 +602,9 @@ export default function ProductDetail() {
                     <NavLink
                       key={item.id}
                       to={`/product_detail/${item.id}`}
-                      className={`flex-1 px-5 hover:bg-gray-300 rounded-md py-2 ${selectedOption === item.capacity ? "bg-gray-300" : ""
-                        }`}
+                      className={`flex-1 px-5 hover:bg-gray-300 rounded-md py-2 ${
+                        selectedOption === item.capacity ? "bg-gray-300" : ""
+                      }`}
                       onClick={() => handleSelectOption(item.capacity)}
                     >
                       <div className="">
@@ -622,17 +634,18 @@ export default function ProductDetail() {
                           setisActivePhone(detail);
                         }}
                         className="items-center mx-4 cursor-pointer p-1 flex flex-col "
-                      // className={`items-center mx-4 cursor-pointer p-1 flex flex-col ${
-                      //   isActivePhone.id === detail.id
-                      //     ? "border-2 border-red-300"
-                      //     : "border"
-                      // }`}
+                        // className={`items-center mx-4 cursor-pointer p-1 flex flex-col ${
+                        //   isActivePhone.id === detail.id
+                        //     ? "border-2 border-red-300"
+                        //     : "border"
+                        // }`}
                       >
                         <div
-                          className={`w-14 h-14 rounded-lg ${isActivePhone.id === detail.id
-                            ? "border-2 border-red-300"
-                            : ""
-                            }`}
+                          className={`w-14 h-14 rounded-lg ${
+                            isActivePhone.id === detail.id
+                              ? "border-2 border-red-300"
+                              : ""
+                          }`}
                           style={{ backgroundColor: detail.color }}
                         >
                           <img
@@ -656,9 +669,11 @@ export default function ProductDetail() {
                     ))}
                 </div>
               </div>
-              <p>số lượng: {isActivePhone ? isActivePhone.quantity : 0}</p>
+
               <div className="mt-3">
-                <div className="text-center bg-red-500 py-1  rounded-t-lg text-white uppercase text-sm ">
+                <div style={{
+                  backgroundColor: '#e46175'
+                }} className="text-center  rounded-t-lg text-white uppercase text-sm ">
                   ưu đãi đặc biệt
                 </div>
                 <div className="flex items-center justify-center py-2 bg-white rounded-b-lg border">
@@ -794,6 +809,7 @@ export default function ProductDetail() {
               <div>
                 <button
                   onClick={addToCart}
+                  style={{ backgroundColor: "#ea4033" }}
                   className="bg-orange-500 text-white font-semibold w-full rounded-lg mt-6 py-2 px-4"
                 >
                   Mua Ngay
@@ -825,15 +841,17 @@ export default function ProductDetail() {
           <div>
             <div className="flex mt-20   justify-center ">
               <button
-                className={`py-2 px-4 font-bold text-2xl ${activeTab === 1 ? "text-cyan-600" : "text-black"
-                  }`}
+                className={`py-2 px-4 font-bold text-2xl ${
+                  activeTab === 1 ? "text-cyan-600" : "text-black"
+                }`}
                 onClick={() => changeTab(1)}
               >
                 Thông tin sản phẩm
               </button>
               <button
-                className={`py-2 px-4  font-bold text-2xl ${activeTab === 2 ? "text-cyan-600 " : "text-black"
-                  }`}
+                className={`py-2 px-4  font-bold text-2xl ${
+                  activeTab === 2 ? "text-cyan-600 " : "text-black"
+                }`}
                 onClick={() => changeTab(2)}
               >
                 Đánh giá sản phẩm
@@ -906,24 +924,25 @@ export default function ProductDetail() {
                             </svg>
                           </div>
                           <div>
-                            <p className="font-semibold text-lg">{comment.username}</p>
+                            <p className="font-semibold text-lg">
+                              {comment.username}
+                            </p>
                             <div className="flex mb-2 mt-2 ">
                               {Array.from({ length: 5 }).map((_, index) => (
                                 <svg
                                   key={index}
-                                  className={`w-6 h-6  ${index < comment.rating
-                                    ? "text-yellow-500"
-                                    : "text-gray-400"
-                                    } me-1`}
+                                  className={`w-6 h-6  ${
+                                    index < comment.rating
+                                      ? "text-yellow-500"
+                                      : "text-gray-400"
+                                  } me-1`}
                                   aria-hidden="true"
                                   xmlns="http://www.w3.org/2000/svg"
                                   fill="currentColor"
                                   viewBox="0 0 22 20"
-
                                 >
                                   <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
                                 </svg>
-
                               ))}
                             </div>
 
@@ -938,7 +957,10 @@ export default function ProductDetail() {
                                   fill="none"
                                   xmlns="http://www.w3.org/2000/svg"
                                 >
-                                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                  <g
+                                    id="SVGRepo_bgCarrier"
+                                    stroke-width="0"
+                                  ></g>
                                   <g
                                     id="SVGRepo_tracerCarrier"
                                     stroke-linecap="round"
@@ -958,14 +980,15 @@ export default function ProductDetail() {
                               </div>
                               <p className="mr-2 text-gray-400">|</p>
                               <p className="text-gray-400">
-                                {moment(comment.createdAt).format("DD-MM-YYYY hh:mm:ss")}
+                                {moment(comment.createdAt).format(
+                                  "DD-MM-YYYY hh:mm:ss"
+                                )}
                               </p>
                             </div>
                           </div>
                         </div>
-                      )))}
-
-
+                      ))
+                    )}
                   </div>
                 </div>
               )}
