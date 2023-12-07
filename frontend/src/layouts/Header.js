@@ -6,7 +6,7 @@ export default function Header() {
 
     <header className="w-full fixed top-0 left-0 right-0 z-1">
       <nav
-        className=" border-gray-200 py-2 dark:bg-gray-900  "
+        className=" border-gray-200 dark:bg-gray-900  "
       style={{ background: "#008e49" }}
       >
 
@@ -14,8 +14,10 @@ export default function Header() {
           <NavLink to="/">
             <a href="#" className="flex items-center">
               <img
-                src="/image/logo.png"
-                className="h-6 mr-3 sm:h-9"
+                src="/image/SP2.png"
+                width='100px'
+                // height='150px'
+                className=" mr-3 h-[50px] w-[90px] "
                 alt="SalePhone Logo"
               />
           </a>

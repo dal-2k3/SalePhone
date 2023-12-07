@@ -1,65 +1,44 @@
 import React from "react";
+import ItemsContainer from "./ItemsContainer";
+import SocialIcons from "./SocialIcons";
+import { Icons } from "./Menus";
 
-export default function Footer() {
+const Footer = () => {
   return (
-    <div>
-      <footer className="bg-gray-900 text-white p-8">
-        <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Phần 1: Thông tin liên hệ */}
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Liên hệ</h2>
-            <p>Địa chỉ: 137 Nguyễn Thị Thập</p>
-            <p>Email: salephone@gmail.com</p>
-            <p>Điện thoại: (+84) 456-7890</p>
-          </div>
-
-          {/* Phần 2: Liên kết */}
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Liên kết hữu ích</h2>
-            <ul>
-              <li>
-                <a href="#">Về chúng tôi</a>
-              </li>
-              <li>
-                <a href="#">Chính sách bảo mật</a>
-              </li>
-              <li>
-                <a href="#">Điều khoản sử dụng</a>
-              </li>
-              {/* Thêm các liên kết khác cần thiết */}
-            </ul>
-          </div>
-
-          {/* Phần 3: Đăng ký nhận tin */}
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Đăng ký nhận tin</h2>
-            <p>Nhận thông báo về sản phẩm mới và khuyến mãi.</p>
-            <form className="mt-4">
-              <input
-                type="email"
-                placeholder="Nhập địa chỉ email của bạn"
-                className="w-full p-2 border rounded"
-              />
-              <button
-                type="submit"
-                className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-              >
-                Đăng ký
-              </button>
-            </form>
-          </div>
-
-          {/* Phần 4: Logo */}
-          <div className="flex items-center justify-center md:col-span-2 lg:col-span-1">
-            <img src="/logo.png" alt="Logo" className="w-24 h-24" />
-          </div>
+    <footer className="bg-[#294f38] text-white">
+      <div className="md:flex md:justify-between md:items-center sm:px-12 px-4 bg-[#ffffff19] py-3">
+        <h1
+          className="lg:text-3xl text-3xl md:mb-0 mb-6 lg:leading-normal font-semibold
+         md:w-2/5"
+        >
+          Tư vấn mua hàng, nhận ưu đãi đặc biệt <span className="text-teal-400">Miễn phí</span> 
+        </h1>
+        <div>
+          <input
+            type="text"
+            placeholder="Nhập email của bạn..."
+            className="text-gray-800
+           sm:w-72 w-full lg:mr-3 lg:mb-0 mb-4 py-2.5 rounded-lg px-2 focus:outline-none"
+          />
+          <button
+            className="bg-teal-400 hover:bg-teal-500 duration-300 px-5 py-2.5 
+           rounded-lg  text-white md:w-auto w-full"
+          >
+            Đăng kí
+          </button>
         </div>
-
-        {/* Phần chân trang nhỏ */}
-        <div className="mt-8 text-center">
-          <p>&copy; 2023 SalePhone.</p>
-        </div>
-      </footer>
-    </div>
+      </div>
+      <ItemsContainer />
+      <div
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10
+      text-center pt-2 text-gray-400 text-sm pb-8"
+      >
+        <span>© 2023 Appy. Đã đăng ký Bản quyền.</span>
+        <span>Điều khoản · Chính sách bảo mật</span>
+        <SocialIcons Icons={Icons} />
+      </div>
+    </footer>
   );
-}
+};
+
+export default Footer;
