@@ -1,6 +1,9 @@
 import Login from "../components/Auth/Login";
 import Cart from "../components/Cart";
+import Contact from "../components/Contact";
 import ListProducts from "../components/ListProducts";
+import NewsLayout from "../components/New";
+import NotFound from "../components/NotFound";
 import ProductDetail from "../components/ProductDetail";
 import { Example } from "../components/address";
 
@@ -32,8 +35,18 @@ const publicRoutes = [
         path: "/login",
         component: Login
     },
-
-
+    {
+        path: "/notfound",
+        component: NotFound
+    },
+    {
+        path: "/news",
+        component: NewsLayout
+    },
+    {
+        path: "/contact",
+        component: Contact
+    },
 
 ]
 export default publicRoutes;

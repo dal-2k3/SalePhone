@@ -294,7 +294,7 @@ export default function ListProducts() {
                                 <select
                                   id="idCategory"
                                   name="idCategory"
-                                  // value={product.idCategory}
+                                  value={product.idCategory}
                                   onChange={(event) =>
                                     handleChange("idCategory", event)
                                   }
@@ -667,7 +667,7 @@ export default function ListProducts() {
                           </div>
 
                           <b className="text-xs text-black dark:text-white">
-                            {item.name} {item.capacity}
+                            {item.name} 
                           </b>
                         </div>
                       </td>
