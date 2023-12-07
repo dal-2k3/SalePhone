@@ -4,10 +4,10 @@ import { NavLink } from "react-router-dom";
 export default function Header() {
   return (
 
-    <header className="w-full fixed top-0 left-0 right-0 z-1">
+    <header className="w-full top-0 left-0 right-0 z-1">
       <nav
-        className=" border-gray-200 py-2 dark:bg-gray-900  bg-[url('https://media.istockphoto.com/id/1278318280/vi/vec-to/thi%E1%BA%BFt-k%E1%BA%BF-banner-m%C3%B9a-%C4%91%C3%B4ng-nh%E1%BB%AFng-b%C3%B4ng-tuy%E1%BA%BFt-tr%E1%BA%AFng-l%E1%BA%A1nh-trong-thi%E1%BA%BFt-k%E1%BA%BF-n%E1%BB%81n-m%C3%A0u-xanh-nh%E1%BB%AFng-b%C3%B4ng.jpg?s=1024x1024&w=is&k=20&c=J4QUfMKXiSV7mGJYBSZDv2ZjOUGg7raHkGh73lwr6G0=')] "
-      // style={{ background: "#f589a9" }}
+        className=" border-gray-200 py-2 dark:bg-gray-900 "
+        style={{ background: "#008e49" }}
       >
 
         <div className="flex flex-wrap items-center justify-between max-w-screen-xl px-4 mx-auto">
@@ -18,9 +18,9 @@ export default function Header() {
                 className="h-6 mr-3 sm:h-9"
                 alt="SalePhone Logo"
               />
-          </a>
+            </a>
           </NavLink>
-            {/* <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
+          {/* <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
               Landwind
             </span> */}
           <div className="flex items-center lg:order-2">

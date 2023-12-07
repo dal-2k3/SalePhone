@@ -323,24 +323,35 @@ export default function Home() {
         </div>
 
         <div className="lg:col-span-1  lg:grid grid-rows-2 grid-flow-col gap-4">
-          <div className="bg-red-500 border rounded-3xl flex items-center justify-between px-10">
+          <div className=" bg-gradient-to-r from-red-700 to-rose-300
+                     hover:from-pink-300 hover:to-slate-300 text-yellow-100 
+                     border rounded-3xl flex items-center justify-between px-10
+                     shadow-lg transform transition-all 
+                      duration-500 ease-in-out hover:scale-10 hover:brightness-10 
+                      hover:animate-pulse active:animate-bounce
+                     ">
             <div className="text-white py-2">
               <p className="text-xl font-medium uppercase">Oppo</p>
               <p className="text-sm">Phản hồi tức thì</p>
               <p className="text-2xl mb-1">Giữ nhịp vui cuộc sống</p>
-              <button class="py-1 px-3 rounded-full bg-blue-400 text-white font-bold transition duration-500 transform hover:bg-blue-300 hover:scale-110 active:bg-blue-700 active:scale-98 focus:outline-none">
+              <button class="py-1 px-3 rounded-full bg-green-600 text-white font-bold transition duration-500 transform hover:bg-green-400 hover:scale-110 active:bg-blue-700 active:scale-98 focus:outline-none">
                 Mua ngay
               </button>
             </div>
             <div className="w-[120px] h-[120px]">
               <img
-                src="https://www.oppo.com/content/dam/oppo/product-asset-library/find/find-n2-series/global/find-n2-flip/v1/assets/images-pet-en-keepFlow-1.png.webp"
+                src="https://cdn.hoanghamobile.com/i/preview/Uploads/2023/03/20/tim-n-flip.png"
                 alt=""
                 className="w-full h-full object-cover"
               />
             </div>
           </div>
-          <div className="bg-yellow-300 border rounded-3xl flex items-center justify-between px-10 sm:mt-2 ">
+          <div className=" border bg-gradient-to-r from-yellow-300 to-pink-200
+                     hover:from-pink-300 hover:to-slate-300 text-yellow-100
+                      hover:text-black rounded-3xl flex items-center justify-between px-10 sm:mt-2 
+                      shadow-lg transform transition-all 
+                      duration-500 ease-in-out hover:scale-10 hover:brightness-10 
+                      hover:animate-pulse active:animate-bounce">
             <div className="text-white py-2">
               <p className="text-xl font-medium uppercase ">SAMSUNG</p>
 
@@ -348,7 +359,7 @@ export default function Home() {
               <p className="text-2xl mb-1 ">
                 “Tân vương của điện thoại camera”
               </p>
-              <button class="py-1 px-3 rounded-full bg-blue-400 text-white font-bold transition duration-500 transform hover:bg-blue-300 hover:scale-110 active:bg-blue-700 active:scale-98 focus:outline-none">
+              <button class="py-1 px-3 rounded-full bg-green-600 text-white font-bold transition duration-500 transform hover:bg-green-400 hover:scale-110 active:bg-blue-700 active:scale-98 focus:outline-none">
                 Mua ngay
               </button>
             </div>
@@ -365,7 +376,7 @@ export default function Home() {
       {/* THƯƠNG HIỆU  */}
       <div className="bg-gray-100 mt-4  ">
         <div className="grid max-w-[95%]  px-4  mx-auto">
-          <h1 className="text-3xl leading-4 font-medium py-5 text-red-500 text-center">
+          <h1 className="text-3xl leading-4 font-semibold py-5 text-red-600 text-center">
             Danh mục thịnh hành
           </h1>
           <div className="flex flex-wrap mx-auto items-center w-full justify-between pb-20 ">
@@ -405,9 +416,14 @@ export default function Home() {
                     alt=""
                   />
                   <div className="absolute inline-block top-[24px] left-[24px] z-600">
-                    <span className="bg-cyan-500 h-20 px-6 py-2 rounded-full text-xs leading-4 font-semibold text-black  shadow-text-white animate-badge-appear">
-                      Mới
-                    </span>
+                    <button class="bg-gradient-to-r from-red-700 to-red-400
+                     hover:from-pink-500 hover:to-slate-600 text-yellow-100 hover:text-black
+                      font-bold py-1 px-4 rounded-full shadow-lg transform transition-all 
+                      duration-500 ease-in-out hover:scale-110 hover:brightness-110 
+                      hover:animate-pulse active:animate-bounce">
+                      New
+                    </button>
+
                   </div>
                   <div className="absolute text-center z-600 bottom-0 mb-20 left-1/2 transform -translate-x-1/2">
                     <span className="font-bold texl-2xl leading-5 ">
@@ -427,9 +443,13 @@ export default function Home() {
                       alt=""
                     />
                     <div className="absolute inline-block top-[24px] left-[24px] z-600">
-                      <span className="bg-cyan-500 h-20 px-6 py-2 rounded-full text-xs leading-4 font-semibold text-black  shadow-text-white animate-badge-appear">
-                        Mới
-                      </span>
+                      <button class="bg-gradient-to-r from-purple-400 to-yellow-200
+                     hover:from-pink-300 hover:to-purple-400 text-black
+                      font-bold py-1 px-4 rounded-full shadow-lg transform transition-all 
+                      duration-500 ease-in-out hover:scale-110 hover:brightness-110 
+                      hover:animate-pulse active:animate-bounce">
+                        New
+                      </button>
                     </div>
                     <div className="absolute text-center z-600 bottom-0 mb-10 left-1/2 transform -translate-x-1/2">
                       <span className="font-bold texl-2xl leading-5 ">
@@ -449,9 +469,13 @@ export default function Home() {
                       alt=""
                     />
                     <div className="absolute inline-block top-[24px] left-[24px] z-600">
-                      <span className="bg-cyan-500 h-20 px-6 py-2 rounded-full text-xs leading-4 font-semibold text-black  shadow-text-white animate-badge-appear">
-                        Mới
-                      </span>
+                      <button class="bg-gradient-to-r from-purple-400 to-yellow-200
+                     hover:from-pink-300 hover:to-purple-400 text-black
+                      font-bold py-1 px-4 rounded-full shadow-lg transform transition-all 
+                      duration-500 ease-in-out hover:scale-110 hover:brightness-110 
+                      hover:animate-pulse active:animate-bounce">
+                        New
+                      </button>
                     </div>
                     <div className="absolute text-center z-600 bottom-0 mb-10 left-1/2 transform -translate-x-1/2">
                       <span className="font-bold texl-2xl leading-5 ">
@@ -471,9 +495,13 @@ export default function Home() {
                       alt=""
                     />
                     <div className="absolute inline-block top-[24px] left-[24px] z-600">
-                      <span className="bg-cyan-500 h-20 px-6 py-2 rounded-full text-xs leading-4 font-semibold text-black  shadow-text-white animate-badge-appear">
-                        Mới
-                      </span>
+                      <button class="bg-gradient-to-r from-purple-400 to-yellow-200
+                     hover:from-pink-300 hover:to-purple-400 text-black
+                      font-bold py-1 px-4 rounded-full shadow-lg transform transition-all 
+                      duration-500 ease-in-out hover:scale-110 hover:brightness-110 
+                      hover:animate-pulse active:animate-bounce">
+                        New
+                      </button>
                     </div>
                     <div className="absolute text-center z-600 bottom-0 mb-10 left-1/2 transform -translate-x-1/2">
                       <span className="font-bold texl-2xl leading-5 ">
@@ -493,9 +521,13 @@ export default function Home() {
                       alt=""
                     />
                     <div className="absolute inline-block top-[24px] left-[24px] z-600">
-                      <span className="bg-cyan-500 h-20 px-6 py-2 rounded-full text-xs leading-4 font-semibold text-black  shadow-text-white animate-badge-appear">
-                        Mới
-                      </span>
+                      <button class="bg-gradient-to-r from-purple-400 to-yellow-200
+                     hover:from-pink-300 hover:to-purple-400 text-black
+                      font-bold py-1 px-4 rounded-full shadow-lg transform transition-all 
+                      duration-500 ease-in-out hover:scale-110 hover:brightness-110 
+                      hover:animate-pulse active:animate-bounce">
+                        New
+                      </button>
                     </div>
                     <div className="absolute text-center z-600 bottom-0 mb-10 left-1/2 transform -translate-x-1/2">
                       <span className="font-bold texl-2xl leading-5 ">
@@ -516,9 +548,9 @@ export default function Home() {
         <div className=" grid max-w-[100%]  pt-20  mx-auto lg:gap-8  lg:py-0 lg:pt-10">
           <div className="relative">
             <img
-              src="https://www.didongmy.com/vnt_upload/news/12_2022/tinh-nang-moi-cua-galaxy-s23-man-hinh-oled-didongmy.jpg"
+              src="https://i.ytimg.com/vi/NfMm8h0-1mA/maxresdefault.jpg"
               alt=""
-              className="w-full h-[500px] object-cover  "
+              className="w-full h-[520px] object-fill"
             />
             <div className="absolute bottom-[200px] left-[50px]">
               <a href="">
@@ -531,7 +563,7 @@ export default function Home() {
         </div>
         <div className="grid  max-w-[95%] px-4  mx-auto lg:gap-8  lg:py-16 lg:pt bg-gray-100">
           <div class="grid grid-cols-5 gap-4 xl:px-[100px]">
-          {filteredArraySamsung.slice(0, 4).map((item) => (
+            {filteredArraySamsung.slice(0, 4).map((item) => (
               <div
                 key={item.id}
                 class="row-span-1  border border-solid rounded-3xl bg-white  shadow-lg"
@@ -545,7 +577,7 @@ export default function Home() {
                       <NavLink to={`/product_detail/${item.id}`}>
                         <div className="mb-4 relative overflow-hidden transition-transform duration-500 ease-in-out transform-gpu group-hover:-translate-y-3">
                           <img
-                          className="max-h-[200px]"
+                            className="max-h-[200px]"
                             src={`${DOMAIN}${detail.image}`}
                             alt={`${detail.image}`}
                           />
@@ -613,10 +645,10 @@ export default function Home() {
                         </div>
                         <div className="mb-2 flex text-center items-center justify-center gap-1">
                           <span className="text-red-500 text-[18px] font-medium">
-                          {formatPrice(`${detail.price} ₫`)}
+                            {formatPrice(`${detail.price} ₫`)}
                           </span>
                           <span className="text-sm text-gray-500 line-through">
-                          {formatPrice(`${detail.discount} ₫`)}
+                            {formatPrice(`${detail.discount} ₫`)}
                           </span>
                         </div>
                         <div className="mb-4"></div>
@@ -630,7 +662,7 @@ export default function Home() {
                   ))}
               </div>
             ))}
-            
+
             {/* <div class="row-span-1  border border-solid rounded-3xl bg-white shadow-lg">
               <div className="py-8 flex flex-col items-center lg:relative ">
                 <div className="mb-4  ">
@@ -865,7 +897,7 @@ export default function Home() {
                       <NavLink to={`/product_detail/${item.id}`}>
                         <div className="mb-4 relative overflow-hidden transition-transform duration-500 ease-in-out transform-gpu group-hover:-translate-y-3">
                           <img
-                          className="max-h-[200px]"
+                            className="max-h-[200px]"
                             src={`${DOMAIN}${detail.image}`}
                             alt={`${detail.image}`}
                           />
@@ -933,10 +965,10 @@ export default function Home() {
                         </div>
                         <div className="mb-2 flex text-center items-center justify-center gap-1">
                           <span className="text-red-500 text-[18px] font-medium">
-                          {formatPrice(`${detail.price} ₫`)}
+                            {formatPrice(`${detail.price} ₫`)}
                           </span>
                           <span className="text-sm text-gray-500 line-through">
-                          {formatPrice(`${detail.discount} ₫`)}
+                            {formatPrice(`${detail.discount} ₫`)}
                           </span>
                         </div>
                         <div className="mb-4"></div>
@@ -955,7 +987,7 @@ export default function Home() {
               <div className="py-8 flex flex-col items-center lg:relative ">
                 <div className="mb-4  ">
                   <img
-                  className="max-h-[200px]"
+                    className="max-h-[200px]"
                     src="https://cdn.hoanghamobile.com/i/productlist/ts/Uploads/2023/02/02/s23-xang.png"
                     alt=""
                     style={{ visibility: "hidden" }}

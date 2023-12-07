@@ -49,7 +49,6 @@ export default function Cart() {
   //     total: formatPrice(calculateTotal() + 20000),
   //   }));
   // };
-
   const [totalDetail, settotalDetail] = useState();
   const [cart, setCart] = useState([]);
   useEffect(() => {
@@ -200,26 +199,22 @@ export default function Cart() {
   useEffect(() => {
     setAddress((prev) => ({
       ...prev,
-      address: `${
-        ward
-          ? `${wards?.find((item) => item.ward_id === ward)?.ward_name},`
+      address: `${ward
+        ? `${wards?.find((item) => item.ward_id === ward)?.ward_name},`
+        : ""
+        } ${district
+          ? `${districts?.find((item) => item.district_id === district)
+            ?.district_name
+          },`
           : ""
-      } ${
-        district
-          ? `${
-              districts?.find((item) => item.district_id === district)
-                ?.district_name
-            },`
-          : ""
-      } ${
-        province
+        } ${province
           ? provinces?.find((item) => item.province_id === province)
-              ?.province_name
+            ?.province_name
           : ""
-      }`,
+        }`,
       province: province
         ? provinces?.find((item) => item.province_id === province)
-            ?.province_name
+          ?.province_name
         : "",
     }));
   }, [province, district, ward]);
@@ -229,11 +224,17 @@ export default function Cart() {
       address: `${soNha}, ${address.address}`,
     }));
   }, [soNha]);
+  useEffect(() => {
+    setOrder((prevOrder) => ({
+      ...prevOrder,
+      total: formatPrice(calculateTotal()),
+    }));
+  }, [cart]);
   console.log("address", address);
   return (
     <div className="w-full bg-gray-100 py-20">
       <div className="rounded-lg md:max-w-[900px] max-w-screen-lg pt-4 mx-auto ">
-        <NavLink to="/listproducts/1">
+        <NavLink to="/listproducts/0">
           <div className="flex items-center text-blue-600 ">
             <svg
               width="20px"
@@ -571,8 +572,8 @@ export default function Cart() {
                         required
                       />
                     </div>
-                    <div> 
-                    <label className="block">Số điện thoại:</label>
+                    <div>
+                      <label className="block">Số điện thoại:</label>
                       <input
                         name="phone"
                         value={order.phone}
@@ -584,7 +585,7 @@ export default function Cart() {
                       />
                     </div>
                     <div className="col-span-2">
-                    <label className="block">Email:</label>
+                      <label className="block">Email:</label>
                       <input
                         type="text"
                         name="email"
@@ -595,34 +596,34 @@ export default function Cart() {
                         required
                       />
                     </div>
-                     <div className="col-span-2 border rounded-lg   px-2">
-                    <div className="flex flex-col gap-4">
-                      <div className="flex items-center gap-4">
-                        <Select
-                          type="province"
-                          value={province}
-                          setValue={setProvince}
-                          options={provinces}
-                          label="Tỉnh/Thành phố"
-                        />
-                        <Select
-                          type="district"
-                          reset={reset}
-                          value={district}
-                          setValue={setDistrict}
-                          options={districts}
-                          label="Quận/Huyện"
-                        />
-                        <Select
-                          reset={reset}
-                          type="ward"
-                          value={ward}
-                          setValue={setWard}
-                          options={wards}
-                          label="Xã"
-                        />
-                      </div>
-                      {/* <InputReadOnly
+                    <div className="col-span-2 border rounded-lg   px-2">
+                      <div className="flex flex-col gap-4">
+                        <div className="flex items-center gap-4">
+                          <Select
+                            type="province"
+                            value={province}
+                            setValue={setProvince}
+                            options={provinces}
+                            label="Tỉnh/Thành phố"
+                          />
+                          <Select
+                            type="district"
+                            reset={reset}
+                            value={district}
+                            setValue={setDistrict}
+                            options={districts}
+                            label="Quận/Huyện"
+                          />
+                          <Select
+                            reset={reset}
+                            type="ward"
+                            value={ward}
+                            setValue={setWard}
+                            options={wards}
+                            label="Xã"
+                          />
+                        </div>
+                        {/* <InputReadOnly
                         name="address"
                         onChange={handleChange}
                         label="Địa chỉ chính xác"
@@ -649,19 +650,19 @@ export default function Cart() {
                             : ""
                         }`}
                       /> */}
+                      </div>
                     </div>
-                  </div>
-                  <div className="col-span-2">
-                  <label className="block">Số nhà/ tên đường:</label>
-                    <input
-                      type="text"
-                      name="soNha"
-                      value={soNha}
-                      onChange={handleChangeSoNha}
-                      className=" border rounded-lg xl:h-[50px] sm:h-[30px] px-2 w-full"
-                      placeholder="Nhập địa chỉ / số nhà"
-                    />
-                  </div>
+                    <div className="col-span-2">
+                      <label className="block">Số nhà/ tên đường:</label>
+                      <input
+                        type="text"
+                        name="soNha"
+                        value={soNha}
+                        onChange={handleChangeSoNha}
+                        className=" border rounded-lg xl:h-[50px] sm:h-[30px] px-2 w-full"
+                        placeholder="Nhập địa chỉ / số nhà"
+                      />
+                    </div>
                   </div>
                   <div className="rounded-2xl bg-white py-5 px-4 mt-5 ">
                     <div className="flex gap-4  justify-between items-start">

@@ -1,6 +1,8 @@
+import Login from "../components/Auth/Login";
 import Cart from "../components/Cart";
 import ListProducts from "../components/ListProducts";
 import ProductDetail from "../components/ProductDetail";
+import { Example } from "../components/address";
 
 
 const { default: Home } = require("../page/Home");
@@ -21,6 +23,14 @@ const publicRoutes = [
     {
         path: "/cart",
         component: Cart
+    },
+    {
+        path: "/test",
+        component: Example
+    },
+    {
+        path: "/login",
+        component: Login
     },
 
 

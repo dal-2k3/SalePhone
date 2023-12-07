@@ -31,7 +31,7 @@ export default function ProductDetail() {
     }));
   };
   const [review, setReview] = useState({
-    idProduct: productId,
+    id_Product: productId,
     rating: rating,
     username: "",
     phone: "",
@@ -82,8 +82,8 @@ export default function ProductDetail() {
     capacity: "",
     quantityDB: '',
     color: "",
-    idProduct: "",
-    idProductDetail: "",
+    id_Product: "",
+    id_Product_detail: "",
     nameCategory: "",
     imageProductDetail: "",
     id_Promotion: "",
@@ -103,7 +103,7 @@ export default function ProductDetail() {
 
           setSelectedProduct({
             ...selectedProduct,
-            idProduct: productDetails.id,
+            id_Product: productDetails.id,
             name: productDetails.name,
             capacity: productDetails.capacity,
             nameCategory: productDetails.Categorie.name,
@@ -162,7 +162,7 @@ export default function ProductDetail() {
     setSelectedProduct({
       ...selectedProduct,
       color: isActivePhone.color,
-      idProductDetail: isActivePhone.id,
+      id_Product_detail: isActivePhone.id,
       price: isActivePhone.price,
       imageProductDetail: isActivePhone.image,
       quantityDB: isActivePhone.quantity
@@ -220,7 +220,7 @@ export default function ProductDetail() {
     if (existingIndex !== -1) {
       // Nếu sản phẩm đã tồn tại trong giỏ hàng, tăng số lượng lên
       if (storedCart[existingIndex].quantity == storedCart[existingIndex].quantityDB) {
-        // navigate("/cart");
+        navigate("/cart");
       }
       else {
         storedCart[existingIndex].quantity =
@@ -233,8 +233,8 @@ export default function ProductDetail() {
     }
 
     localStorage.setItem("cart", JSON.stringify(storedCart));
-    // alert("Product added to cart!");
-    // navigate("/cart");
+
+    navigate("/cart");
     console.log("local", selectedProduct);
   };
 
