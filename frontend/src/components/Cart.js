@@ -67,6 +67,13 @@ export default function Cart() {
   console.log("dia chi:", soNha);
 
 
+  //   setOrder((prevOrder) => ({
+  //     ...prevOrder,
+  //     total: formatPrice(calculateTotal() + 20000),
+  //   }));
+  // };
+  const [totalDetail, settotalDetail] = useState();
+
   const [cart, setCart] = useState([]);
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -232,26 +239,22 @@ export default function Cart() {
   useEffect(() => {
     setAddress((prev) => ({
       ...prev,
-      address: `${
-        ward
-          ? `${wards?.find((item) => item.ward_id === ward)?.ward_name},`
+      address: `${ward
+        ? `${wards?.find((item) => item.ward_id === ward)?.ward_name},`
+        : ""
+        } ${district
+          ? `${districts?.find((item) => item.district_id === district)
+            ?.district_name
+          },`
           : ""
-      } ${
-        district
-          ? `${
-              districts?.find((item) => item.district_id === district)
-                ?.district_name
-            },`
-          : ""
-      } ${
-        province
+        } ${province
           ? provinces?.find((item) => item.province_id === province)
-              ?.province_name
+            ?.province_name
           : ""
-      }`,
+        }`,
       province: province
         ? provinces?.find((item) => item.province_id === province)
-            ?.province_name
+          ?.province_name
         : "",
     }));
   }, [province, district, ward]);
@@ -261,6 +264,12 @@ export default function Cart() {
       address: `${soNha}, ${address.address}`,
     }));
   }, [soNha]);
+  useEffect(() => {
+    setOrder((prevOrder) => ({
+      ...prevOrder,
+      total: formatPrice(calculateTotal()),
+    }));
+  }, [cart]);
   console.log("address", address);
   return (
     <div className="w-full bg-gray-100 py-16">
@@ -497,6 +506,7 @@ export default function Cart() {
       </Transition.Root>
       <div className="rounded-lg md:max-w-[900px] max-w-screen-lg  mx-auto ">
         <NavLink to="/">
+
           <div className="flex items-center text-blue-600 ">
             <svg
               width="20px"
@@ -854,6 +864,7 @@ export default function Cart() {
                     </div>
                     <div>
                       <label className="block">Số điện thoại:</label>
+
                       <Controller
                         name="phone"
                         control={control}
@@ -875,6 +886,7 @@ export default function Cart() {
                       />
                       <p className="text-red-500">{errors.phone?.message}</p>
                       {/* <input
+>>>>>>> ddbfb9f7952d0758c366f1af2046e9503ceda781
                         name="phone"
                         value={order.phone}
                         onChange={handleChange}

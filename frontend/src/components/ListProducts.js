@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
 import {
   getProductsByCategory,
@@ -6,6 +6,8 @@ import {
 } from "../services/products/product";
 import { listCategories } from "../services/categories/categories";
 import { DOMAIN } from "../utils/settings/config";
+import './snow.css'
+
 
 export default function ListProducts() {
   const [categories, setcategories] = useState([0]);
@@ -26,18 +28,6 @@ export default function ListProducts() {
   }
   // get list categories
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const categoriesData = await listCategories();
-        setcategories(categoriesData);
-      } catch (error) {
-        // Xử lý lỗi nếu cần
-      }
-    };
-    fetchCategories();
-  }, [reload]);
-  // get list products
-  useEffect(() => {
     const fetchProducts = async () => {
       try {
         const productsData = await getProductsByCategory(id);
@@ -48,12 +38,61 @@ export default function ListProducts() {
       }
     };
     fetchProducts();
+    const fetchCategories = async () => {
+      try {
+        const categoriesData = await listCategories();
+        setcategories(categoriesData);
+      } catch (error) {
+        // Xử lý lỗi nếu cần
+      }
+    };
+    fetchCategories();
+
+  }, [reload]);
+  // get list products
+  useEffect(() => {
+    const fetchAllProducts = async () => {
+      try {
+        const productsData = await listProducts();
+        // console.log(productsData);
+        setProducts(productsData);
+      } catch (error) {
+        // Xử lý lỗi nếu cần
+        console.log(error);
+      }
+    };
+    fetchAllProducts();
   }, [reload]);
   // const calculateTotal = () => {
   //   return cart.reduce((total, product) => {
   //     return total + product.price * (product.quantity || 1);
   //   }, 0);
   // };
+  let container = document.getElementById('container');
+
+  if (container) {
+    let count = 30;
+
+    for (var i = 0; i < count; i++) {
+      let leftSnow = Math.floor(Math.random() * container.clientWidth);
+      let topSnow = Math.floor(Math.random() * container.clientHeight);
+      let widthSnow = Math.floor(Math.random() * 30);
+      let timeSnow = Math.floor((Math.random() * 5) + 5);
+      let blurSnow = Math.floor(Math.random() * 10);
+      console.log(leftSnow);
+      let div = document.createElement('div');
+      div.classList.add('snow');
+      div.style.left = leftSnow + 'px';
+      div.style.top = topSnow + 'px';
+      div.style.width = widthSnow + 'px';
+      div.style.height = widthSnow + 'px';
+      div.style.animationDuration = timeSnow + 's';
+      div.style.filter = "blur(" + blurSnow + "px)";
+      container.appendChild(div);
+    }
+  } else {
+    console.error("Không tìm thấy phần tử 'container'");
+  }
   return (
     <div className="py-20 bg-gray-100">
       <div className="grid max-w-[95%]  px-4 pb-8 mx-auto ">
@@ -78,9 +117,16 @@ export default function ListProducts() {
             ))}
           </div>
           <div className=" w-[83%] ">
-            <div className="w-full h-[400px] rounded-3xl border border-solid bg-gray-50 bg-[url('https://fptshop.com.vn/Uploads/Originals/2021/12/20/637756009768148153_265645987_602450154204219_586930114020575363_n.png')] bg-no-repeat bg-center bg-cover">
-              {/* <img src="https://i.imgur.com/jY5KJsC.jpg" alt="" className="w-full h-full oject-cover" /> */}
+
+            <div id="container">
+
+              <div className="snow"></div>
+
+              <div className="w-full h-[400px] rounded-3xl border border-solid bg-gray-50 bg-[url('https://fptshop.com.vn/Uploads/Originals/2021/12/20/637756009768148153_265645987_602450154204219_586930114020575363_n.png')] bg-no-repeat bg-center bg-cover">
+
+              </div>
             </div>
+
 
             <div className="mt-2">
               <div className="flex items-center justify-between ">
@@ -157,7 +203,7 @@ export default function ListProducts() {
                                 </g>
                               </svg>
                               <p className=" px-1 py-1  text-white text-xs">
-                                Giảm {formatPrice(`${detail.discount - detail.price} ₫`)} 
+                                Giảm {formatPrice(`${detail.discount - detail.price} ₫`)}
                               </p>
                             </div>
                           </NavLink>

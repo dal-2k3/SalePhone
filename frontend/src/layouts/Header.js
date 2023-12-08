@@ -4,10 +4,12 @@ import { NavLink } from "react-router-dom";
 export default function Header() {
   return (
 
-    <header className="w-full fixed top-0 left-0 right-0 z-1">
+    <header className="w-full top-0 left-0 right-0 z-1">
       <nav
+
         className=" border-gray-200 dark:bg-gray-900  "
       style={{ background: "#008e49" }}
+
       >
 
         <div className="flex flex-wrap items-center justify-between max-w-screen-xl px-4 mx-auto">
@@ -20,9 +22,9 @@ export default function Header() {
                 className=" mr-3 h-[50px] w-[90px] "
                 alt="SalePhone Logo"
               />
-          </a>
+            </a>
           </NavLink>
-            {/* <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
+          {/* <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
               Landwind
             </span> */}
           <div className="flex items-center lg:order-2">

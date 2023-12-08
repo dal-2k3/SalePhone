@@ -38,3 +38,13 @@ export const deleteOrder = async (id) => {
         throw error;
     }
 };
+// order detail
+export const getOrderDetail = async (id) => {
+    try {
+        const response = await axios.get(`${DOMAIN}api/v1/orders/detail/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error update order list:', error);
+        throw error;
+    }
+};

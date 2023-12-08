@@ -4,6 +4,7 @@ const { getCategoryById } = require('../../services/categories');
 const productRouter = express.Router();
 const path = require('path');
 const multer = require('multer');
+const { findIdProductDetailInOrderDetail, findIdProductInOrderDetail } = require('../../services/order');
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/'); // thư mục lưu trữ ảnh
@@ -67,7 +68,7 @@ productRouter.post('/', upload.fields([{ name: 'image', maxCount: 10 }, { name: 
 
         // Đợi cho tất cả các promises hoàn thành trước khi trả về kết quả
         await Promise.all([...addDetailsPromises, ...addPromotionsPromises]);
-        
+
         res.status(200).json({ message: 'Product and details added successfully' });
     } catch (error) {
         console.log(error);
@@ -116,15 +117,12 @@ productRouter.put('/:id', async (req, res) => {
 });
 productRouter.delete('/:id', async (req, res) => {
     const { id } = req.params;
-    const idproduct = await getProductById(id);
-    if (!idproduct) {
-        res.status(500).send("Product does not exist");
+    const idproduct = await findIdProductInOrderDetail(id);
+    if ( idproduct) {
+        return res.status(500).send("Product already exist in the table order detail");
     }
-    const product = await deleteProduct(id)
-    if (!product) {
-        res.status(500).send("can't update  product");
-    }
-    res.status(200).send(product)
+    await deleteProduct(id);
+    res.status(200).send("delete product successfully")
 });
 // Product_detail
 productRouter.post('/detail', upload.single('image'), async (req, res) => {
@@ -154,17 +152,16 @@ productRouter.put('/detail/:id', upload.single('image'), async (req, res) => {
     }
     res.status(200).send(productDetail);
 });
-productRouter.delete('detail/:id', async (req, res) => {
+productRouter.delete('/detail/:id', async (req, res) => {
     const { id } = req.params;
-    const checkId = await getProductDetailById(id);
-    if (!checkId) {
-        res.status(500).send("Product detail does not exist");
-    };
-    const productDetail = await deleteProductDetail(id);
-    if (!productDetail) {
-        res.status(500).send("can't delete product detail");
+    const checkId = await findIdProductDetailInOrderDetail(id);
+    if ( checkId) {
+        return res.status(500).send("Product details already exist in the table order detail");
     }
-    res.status(200).send(productDetail);
+        //   await deleteProductDetail(id);
+        res.status(200).send("delete product detail successfully");
+
+
 });
 
 // Product_promotion

@@ -41,7 +41,15 @@ export const updateProducts = async (id, product) => {
         throw error;
     }
 };
-// image
+export const deleteProduct = async (id) => {
+    try {
+        const response = await axios.delete(`${DOMAIN}api/v1/products/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error delete product:', error);
+        throw error;
+    }
+};
 // product detail
 export const getProductDetail = async (id) => {
     try {
@@ -80,7 +88,15 @@ export const updateProductDetail = async (id, detail) => {
         throw error;
     }
 };
-
+export const deleteProductDetail = async (id) => {
+    try {
+        const response = await axios.delete(`${DOMAIN}api/v1/products/detail/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error Delete product detail:', error);
+        throw error;
+    }
+};
 // product promotion
 
 export const addProductPromotion = async (promotion) => {

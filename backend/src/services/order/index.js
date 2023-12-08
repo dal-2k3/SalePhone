@@ -1,6 +1,7 @@
 const { Order } = require("../../models");
 const { Product } = require("../../models");
 const { Product_detail } = require("../../models");
+const { Promotion } = require("../../models");
 const { Order_detail } = require("../../models");
 
 
@@ -120,6 +121,30 @@ const getOrderDetail = async (id_Order) => {
         console.log(error);
     }
 };
+const findIdProductInOrderDetail = async (id_Product) => {
+    try {
+        const orderDetail = await Order_detail.findOne({
+            where: {
+                id_Product,
+            },
+        });
+        return orderDetail;
+    } catch (error) {
+        console.log(error);
+    }
+};
+const findIdProductDetailInOrderDetail = async (id_Product_detail) => {
+    try {
+        const orderDetail = await Order_detail.findOne({
+            where: {
+                id_Product_detail,
+            },
+        });
+        return orderDetail;
+    } catch (error) {
+        console.log(error);
+    }
+};
 
 module.exports = {
     createOrder,
@@ -132,4 +157,6 @@ module.exports = {
     createOrderDetail,
     getOrderDetail,
     getOrderDetailByOrder,
+    findIdProductInOrderDetail,
+    findIdProductDetailInOrderDetail,
 }

@@ -453,43 +453,43 @@ export default function Home() {
                   </div>
                 </div>
               </div> */}
-              {filteredArrayIphone.slice(0,4).map((item) => (
+              {filteredArrayIphone.slice(0, 4).map((item) => (
                 <div className="row-span-1 border bg-white  relative rounded-3xl overflow-hidden group duration-1000">
-                {item.product_detail &&
-                  item.product_detail.map((detail, index) => (
-                    <div className="flex flex-col items-center pt-5 pb-14  px-5  ">
-                  <div className="absolute inline-block top-[24px] left-[24px] z-600 ">
-                    <span
-                      style={{ backgroundColor: "#c9d8a1", color: "#a81817" }}
-                      className=" h-20 px-3 py-2 rounded-full text-xs leading-4 font-semibold text-black  shadow-text-white animate-badge-appear"
-                    >
-                      Mới
-                    </span>
-                  </div>
-                  <NavLink to={`/product_detail/${item.id}`}>
-                    <div className=" inline-block h-full w-full">
-                      <img
-                        className="max-h-[200px] object-cover"
-                        src={`${DOMAIN}${detail.image}`}
-                        alt=""
-                      />
-                    </div>
-                  </NavLink>
-                  <div class="absolute bottom-5 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 translate-y-1 transition duration-[1500ms]">
-                    <button
-                      style={{ backgroundColor: "#c56058", color: "#fff" }}
-                      className="bg-green-500 text-white py-2 px-4 rounded-full"
-                    >
-                      Mua ngay
-                    </button>
-                  </div>
-                  <div className=" text-center ">
-                    <span className="font-bold texl-2xl ">
-                    {item.name} ({item.capacity}) - Chính hãng VN/A
-                    </span>
-                  </div>
-                </div>
-                  ))}
+                  {item.product_detail &&
+                    item.product_detail.map((detail, index) => (
+                      <div className="flex flex-col items-center pt-5 pb-14  px-5  ">
+                        <div className="absolute inline-block top-[24px] left-[24px] z-600 ">
+                          <span
+                            style={{ backgroundColor: "#c9d8a1", color: "#a81817" }}
+                            className=" h-20 px-3 py-2 rounded-full text-xs leading-4 font-semibold text-black  shadow-text-white animate-badge-appear"
+                          >
+                            Mới
+                          </span>
+                        </div>
+                        <NavLink to={`/product_detail/${item.id}`}>
+                          <div className=" inline-block h-full w-full">
+                            <img
+                              className="max-h-[200px] object-cover"
+                              src={`${DOMAIN}${detail.image}`}
+                              alt=""
+                            />
+                          </div>
+                        </NavLink>
+                        <div class="absolute bottom-5 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 translate-y-1 transition duration-[1500ms]">
+                          <button
+                            style={{ backgroundColor: "#c56058", color: "#fff" }}
+                            className="bg-green-500 text-white py-2 px-4 rounded-full"
+                          >
+                            Mua ngay
+                          </button>
+                        </div>
+                        <div className=" text-center ">
+                          <span className="font-bold texl-2xl ">
+                            {item.name} ({item.capacity}) - Chính hãng VN/A
+                          </span>
+                        </div>
+                      </div>
+                    ))}
                 </div>
               ))}
 
@@ -597,7 +597,7 @@ export default function Home() {
                   </div>
                 </div>
               </div> */}
-              
+
             </div>
             {/* <div class="row-span-2 col-span-2 bg-cyan-300">03</div> */}
           </div>
@@ -613,7 +613,7 @@ export default function Home() {
               alt=""
               className="w-full h-[500px]  "
             />
-{/*             
+            {/*             
             <div className="absolute bottom-[200px] left-[50px]">
               <a href="">
                 <button class="py-2 px-5 rounded-full bg-blue-400 text-white font-bold transition duration-500 transform hover:bg-blue-300 hover:scale-110 active:bg-blue-700 active:scale-98 focus:outline-none">
@@ -945,7 +945,7 @@ export default function Home() {
       </div>
       <div
         className="bg-gray-100"
-        // style={{ backgroundColor: "#f0f4f7" }}
+      // style={{ backgroundColor: "#f0f4f7" }}
       >
         <div className="grid  max-w-[95%] px-4  mx-auto lg:gap-8 py-5 bg-gray-100">
           <div class="grid grid-cols-5 gap-4 xl:px-[100px]">
@@ -1378,3 +1378,5 @@ export default function Home() {
     </section>
   );
 }
+
+
