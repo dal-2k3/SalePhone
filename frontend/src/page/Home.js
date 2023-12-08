@@ -1021,10 +1021,10 @@ export default function Home() {
                         </p>
                       </div>
                       <div className="text-center">
-                        <div className="mb-2 px-4">
+                        <div className="mb-2 px-4 min-h-[72px] flex items-center justify-center">
                           <a
                             href={`/product_detail/${item.id}`}
-                            className="font-bold text-sm"
+                            className="font-bold text-sm "
                           >
                             {item.name} ({item.capacity}) - Chính hãng VN/A
                           </a>
@@ -1037,7 +1037,7 @@ export default function Home() {
                             {formatPrice(`${detail.discount} ₫`)}
                           </span>
                         </div>
-                        <div className="mb-4"></div>
+                        
                         <div>
                           <button class="py-2 px-5 rounded-full bg-blue-400 text-white font-bold transition duration-500 transform hover:bg-blue-300 hover:scale-110 active:bg-blue-700 active:scale-98 focus:outline-none">
                             Mua ngay
@@ -1060,7 +1060,7 @@ export default function Home() {
                   />
                 </div>
                 <div className="text-center">
-                  <div className="mb-2 px-7">
+                  <div className="mb-2 px-7 min-h-[72px]">
                     <a href="" className="font-bold text-sm ">
                       Mua ngay - Phát quà liền tay
                     </a>
@@ -1073,7 +1073,7 @@ export default function Home() {
                         10.000 đ
                       </span> */}
                   </div>
-                  <div className="mb-4"></div>
+                  {/* <div className="mb-4"></div> */}
                   <div>
                     <button class="py-2 px-5 rounded-full bg-blue-400 text-white font-bold transition duration-500 transform hover:bg-blue-300 hover:scale-110 active:bg-blue-700 active:scale-98 focus:outline-none">
                       Mua ngay
