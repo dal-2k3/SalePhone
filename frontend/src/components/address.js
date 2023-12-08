@@ -1,111 +1,38 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
-const AddressDropdowns = () => {
-    const [cities, setCities] = useState([]);
-    const [districts, setDistricts] = useState([]);
-    const [wards, setWards] = useState([]);
-    const [selectedCity, setSelectedCity] = useState('');
-    const [selectedDistrict, setSelectedDistrict] = useState('');
-    const [selectedWard, setSelectedWard] = useState('');
 
-    useEffect(() => {
-        const fetchCities = async () => {
-            try {
-                const response = await axios.get('https://provinces.open-api.vn/api/?depth=1');
-                setCities(response.data);
-            } catch (error) {
-                console.error('Error fetching cities:', error);
-            }
-        };
+export function Example() {
+    const notify = () => {
+        toast("Default Notification !");
 
-        fetchCities();
-    }, []);
+        toast.success("Success Notification !", {
+            position: toast.POSITION.TOP_CENTER
+        });
 
-    const fetchDistricts = async (cityCode) => {
-        try {
-            const response = await axios.get(`https://provinces.open-api.vn/api/p/${cityCode}?depth=2`);
-            setDistricts(response.data.districts);
-        } catch (error) {
-            console.error('Error fetching districts:', error);
-        }
-    };
+        toast.error("Error Notification !", {
+            position: toast.POSITION.TOP_LEFT
+        });
 
-    const fetchWards = async (districtCode) => {
-        try {
-            const response = await axios.get(`https://provinces.open-api.vn/api/d/${districtCode}?depth=2`);
-            setWards(response.data.wards);
-        } catch (error) {
-            console.error('Error fetching wards:', error);
-        }
-    };
+        toast.warn("Warning Notification !", {
+            position: toast.POSITION.BOTTOM_LEFT
+        });
 
-    const handleCityChange = (event) => {
-        const cityCode = event.target.value;
-        setSelectedCity(event.target.options[event.target.selectedIndex].text);
-        setSelectedDistrict('');
-        setSelectedWard('');
-        fetchDistricts(cityCode);
-    };
+        toast.info("Info Notification !", {
+            position: toast.POSITION.BOTTOM_CENTER
+        });
 
-    const handleDistrictChange = (event) => {
-        const districtCode = event.target.value;
-        setSelectedDistrict(event.target.options[event.target.selectedIndex].text);
-        setSelectedWard('');
-        fetchWards(districtCode);
-    };
-
-    const handleWardChange = (event) => {
-        setSelectedWard(event.target.options[event.target.selectedIndex].text);
+        toast("Custom Style Notification with css class!", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+            className: 'foo-bar'
+        });
     };
 
     return (
-        <div>
-            <h2>Address Dropdowns</h2>
-
-            <div>
-                <label>Province:</label>
-                <select value={selectedCity} onChange={handleCityChange}>
-                    <option value="" disabled>Select Province</option>
-                    {cities.map((city) => (
-                        <option key={city.code} value={city.code}>
-                            {city.name}
-                        </option>
-                    ))}
-                </select>
-            </div>
-
-            <div>
-                <label>District:</label>
-                <select value={selectedDistrict} onChange={handleDistrictChange}>
-                    <option value="" disabled>Select District</option>
-                    {districts.map((district) => (
-                        <option key={district.code} value={district.code}>
-                            {district.name}
-                        </option>
-                    ))}
-                </select>
-            </div>
-
-            <div>
-                <label>Ward:</label>
-                <select value={selectedWard} onChange={handleWardChange}>
-                    <option value="" disabled>Select Ward</option>
-                    {wards.map((ward) => (
-                        <option key={ward.code} value={ward.code}>
-                            {ward.name}
-                        </option>
-                    ))}
-                </select>
-            </div>
-
-            <h2>
-                {selectedCity && `${selectedCity} | `}
-                {selectedDistrict && `${selectedDistrict} | `}
-                {selectedWard}
-            </h2>
-        </div>
+        <>
+            <button onClick={notify}>Notify</button>;
+            <ToastContainer />
+        </>
     );
-};
-
-export default AddressDropdowns;
+}

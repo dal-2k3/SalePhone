@@ -31,7 +31,7 @@ export default function ProductDetail() {
     }));
   };
   const [review, setReview] = useState({
-    idProduct: productId,
+    id_Product: productId,
     rating: rating,
     username: "",
     phone: "",
@@ -218,9 +218,9 @@ export default function ProductDetail() {
     console.log(existingIndex);
     if (existingIndex !== -1) {
       // Nếu sản phẩm đã tồn tại trong giỏ hàng, tăng số lượng lên
+
       if (
-        storedCart[existingIndex].quantity ==
-        storedCart[existingIndex].quantityDB
+        storedCart[existingIndex].quantity == storedCart[existingIndex].quantityDB
       ) {
         navigate("/cart");
       } else {
@@ -233,7 +233,7 @@ export default function ProductDetail() {
     }
 
     localStorage.setItem("cart", JSON.stringify(storedCart));
-    // alert("Product added to cart!");
+
     navigate("/cart");
     console.log("local", selectedProduct);
   };

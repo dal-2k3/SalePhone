@@ -2,6 +2,7 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import {
   AddProducts,
+  deleteProduct,
   listProducts,
   updateProducts,
 } from "../../../services/products/product";
@@ -195,6 +196,15 @@ export default function ListProducts() {
       console.error("Error updating Product:", error);
     }
   };
+  // delete product 
+  const handleDelete = async (id) => {
+    try {
+      await deleteProduct(id);
+      setReload(!reload);
+    } catch (error) {
+      console.log("Product already exist in the table order detail", error);
+    }
+  }
   //  get list Products
   useEffect(() => {
     const fetchProducts = async () => {
@@ -742,7 +752,9 @@ export default function ListProducts() {
                         </button>
                       </NavLink>
 
-                      <button className="hover:text-primary">
+                      <button className="hover:text-primary"
+                        onClick={() => handleDelete(item.id)}
+                      >
                         <svg
                           className="fill-current text-red-500"
                           width="18"
