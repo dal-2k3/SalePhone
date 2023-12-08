@@ -6,13 +6,10 @@ export default function Header() {
 
     <header className="w-full top-0 left-0 right-0 z-1">
       <nav
-<<<<<<< HEAD
-        className=" border-gray-200 py-2 dark:bg-gray-900 "
-        style={{ background: "#008e49" }}
-=======
+
         className=" border-gray-200 dark:bg-gray-900  "
       style={{ background: "#008e49" }}
->>>>>>> ddbfb9f7952d0758c366f1af2046e9503ceda781
+
       >
 
         <div className="flex flex-wrap items-center justify-between max-w-screen-xl px-4 mx-auto">
