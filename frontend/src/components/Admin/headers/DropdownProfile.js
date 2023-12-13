@@ -1,17 +1,31 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Transition from '../../../utils/transition';
+import { logoutUser } from '../../../services/API/authApi';
+
 
 // import UserAvatar from '';
 
 function DropdownProfile({
     align
 }) {
-
+    const navigate = useNavigate();
     const [dropdownOpen, setDropdownOpen] = useState(false);
+
 
     const trigger = useRef(null);
     const dropdown = useRef(null);
+
+    const handleLogout = async () => {
+        try {
+            await logoutUser();
+            // Chuyển hướng về trang đăng nhập hoặc trang chính (tùy thuộc vào yêu cầu của bạn)
+            navigate('/login');
+        } catch (error) {
+            console.log(error)
+        }
+
+    };
 
     // close on click outside
     useEffect(() => {
@@ -84,8 +98,8 @@ function DropdownProfile({
                         <li>
                             <Link
                                 className="font-medium text-sm text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center py-1 px-3"
-                                to="/signin"
-                                onClick={() => setDropdownOpen(!dropdownOpen)}
+
+                                onClick={() => handleLogout()}
                             >
                                 Sign Out
                             </Link>

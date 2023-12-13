@@ -1,57 +1,34 @@
-import {
-  loginFailed,
-  loginStart,
-  loginSuccess,
-  logoutUserFailed,
-  logoutUserStart,
-  logoutUserSuccess,
-  registerFailed,
-  registerStart,
-  registerSuccess,
-} from "../../redux/authSlice";
 import { DOMAIN } from "../../utils/settings/config";
 import axios from "axios";
 
-export const loginUser = async (dispatch, navigate, user) => {
-  dispatch(loginStart());
+export const loginUser = async (user) => {
   try {
-    const response = await axios.post(`${DOMAIN}/api/v1/users/login`, user);
-    dispatch(loginSuccess(response.data));
-    navigate("/");
+    const response = await axios.post(`${DOMAIN}api/v1/users/login`, user);
+    const token = response.data.token;
+    // Lưu token vào localStorage
+    localStorage.setItem('token', token);
+    return response.data;
   } catch (err) {
-    dispatch(loginFailed(err));
+    console.log('Error login:', err);
+    throw err;
   }
 };
 
-export const registerUser = async (dispatch, navigate, user) => {
-  dispatch(registerStart());
+export const registerUser = async (user) => {
   try {
     await axios.post(`${DOMAIN}/api/v1/users/register`, user);
-    dispatch(registerSuccess());
-    navigate("/login");
   } catch (err) {
-    dispatch(registerFailed(err.response.data));
+    console.log('Error register:', err);
+    throw err;
   }
 };
-
-export const logoutUser = async (
-  dispatch,
-  id,
-  accessToken,
-  navigate,
-  axiosJWT
-) => {
-  dispatch(logoutUserStart());
+export const logoutUser = async () => {
   try {
-    await axiosJWT.post(`${DOMAIN}/api/v1/users/logout`, id, {
-      headers: {
-        token: `Bearer ${accessToken}`,
-      },
-    });
-    dispatch(logoutUserSuccess());
-    localStorage.clear();
-    navigate("/");
-  } catch (err) {
-    dispatch(logoutUserFailed(err));
+    // Xóa token khỏi localStorage
+    localStorage.removeItem('token');
+  } catch (error) {
+    console.log('Error Logout:', error);
+    throw error;
   }
+
 };

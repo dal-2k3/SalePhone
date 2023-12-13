@@ -81,6 +81,7 @@ export default function Cart() {
     // setOrder({ ...order, order_details: updatedOrderDetails, });
     setCart(storedCart);
   }, [reload]);
+  
   const updateOrderDetails = (cart) => {
     const updatedOrderDetails = cart.map((product, index) => ({
       ...cart[index],
@@ -161,7 +162,7 @@ export default function Cart() {
       total: formatPrice(calculateTotal()),
     }));
   }, [cart]);
-  const navigate = useNavigate();
+
   const onSubmit = async (e) => {
     // e.preventDefault();
     // alert("hihihi");
@@ -171,8 +172,6 @@ export default function Cart() {
       const orderfinal = await createOrder(order);
       setOrderSuccess(orderfinal);
       console.log("final", orderfinal.id);
-      // setOrder([]);
-      // clearLocalStorage()
       setReload(!reload);
     } catch (error) {
       console.log(error);
@@ -396,7 +395,7 @@ export default function Cart() {
                             <p className="py-1">{orderSuccess.id}</p>
                             <p className="py-1">{orderSuccess.fullname}</p>
                             <p className="py-1">{orderSuccess.phone}</p>
-                            <p className="py-1">Nhận hàng tại nhà</p>
+                            <p className="py-1">Thanh toán khi Nhận hàng </p>
                             {/* <p>Nhận hàng tại nhà</p> */}
                           </div>
                         </div>
@@ -432,8 +431,7 @@ export default function Cart() {
                                     </p>
                                     <p className=" text-gray-500 line-through">
                                       {formatPrice(
-                                        `${
-                                          item.discount * (item.quantity || 1)
+                                        `${item.discount * (item.quantity || 1)
                                         }`
                                       )}
                                       đ
@@ -518,7 +516,7 @@ export default function Cart() {
               // xmlns:xlink="http://www.w3.org/1999/xlink"
               viewBox="0 0 72 72"
               enable-background="new 0 0 72 72"
-              // xml:space="preserve"
+            // xml:space="preserve"
             >
               <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
               <g

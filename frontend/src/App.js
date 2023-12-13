@@ -6,6 +6,8 @@ import DefaultLayout from "./layouts/DefaultLayout";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 library.add(faArrowUp);
 
@@ -45,6 +47,18 @@ function App() {
           })}
         </Routes>
       </BrowserRouter>
+      <ToastContainer
+        position="bottom-left"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <FontAwesomeIcon></FontAwesomeIcon>
     </div>
   );
