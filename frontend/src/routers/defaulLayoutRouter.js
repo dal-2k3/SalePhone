@@ -36,7 +36,7 @@ const publicRoutes = [
         component: Login
     },
     {
-        path: "/notfound",
+        path: "*",
         component: NotFound
     },
     {
