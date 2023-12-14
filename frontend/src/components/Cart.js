@@ -27,7 +27,7 @@ const schema = yup.object().shape({
 });
 
 export default function Cart() {
-  const [openAdd, setOpenAdd] = useState(false);
+  const [openAdd, setOpenAdd] = useState(true);
   const cancelButtonRef = useRef(null);
 
   const [reload, setReload] = useState(false);
@@ -65,7 +65,6 @@ export default function Cart() {
     setSoNha(diaChi);
   };
   console.log("dia chi:", soNha);
-
 
   //   setOrder((prevOrder) => ({
   //     ...prevOrder,
@@ -193,11 +192,10 @@ export default function Cart() {
 
   const [reset, setReset] = useState(false);
   const closeModal = () => {
-    setOpenAdd(false)
-    clearLocalStorage()
+    setOpenAdd(false);
+    clearLocalStorage();
     setReload(!reload);
-
-  }
+  };
   // get tỉnh
   useEffect(() => {
     const fetchPublicProvince = async () => {
@@ -239,22 +237,26 @@ export default function Cart() {
   useEffect(() => {
     setAddress((prev) => ({
       ...prev,
-      address: `${ward
-        ? `${wards?.find((item) => item.ward_id === ward)?.ward_name},`
-        : ""
-        } ${district
-          ? `${districts?.find((item) => item.district_id === district)
-            ?.district_name
-          },`
+      address: `${
+        ward
+          ? `${wards?.find((item) => item.ward_id === ward)?.ward_name},`
           : ""
-        } ${province
+      } ${
+        district
+          ? `${
+              districts?.find((item) => item.district_id === district)
+                ?.district_name
+            },`
+          : ""
+      } ${
+        province
           ? provinces?.find((item) => item.province_id === province)
-            ?.province_name
+              ?.province_name
           : ""
-        }`,
+      }`,
       province: province
         ? provinces?.find((item) => item.province_id === province)
-          ?.province_name
+            ?.province_name
         : "",
     }));
   }, [province, district, ward]);
@@ -384,19 +386,24 @@ export default function Cart() {
                         </div>
                       </div>
                       <div className="bg-gray-100 rounded-md my-2">
-                        <div className="flex p-3">
-                          <div className="pr-10 ">
+                        <div className="flex p-3 max-w-full ">
+                          <div className="pr-10 min-w-[30%]">
                             <p className="py-1">Mã đơn hàng</p>
                             <p className="py-1">Họ và tên</p>
                             <p className="py-1">Số điện thoại</p>
                             <p className="py-1">Hình thức thanh toán</p>
+                            <p className="py-1">Địa chỉ</p>
+
                             {/* <p>Nhận hàng tại nhà</p> */}
                           </div>
-                          <div>
-                            <p className="py-1">{orderSuccess.id}</p>
-                            <p className="py-1">{orderSuccess.fullname}</p>
-                            <p className="py-1">{orderSuccess.phone}</p>
-                            <p className="py-1">Nhận hàng tại nhà</p>
+                          <div className="flex-1 ">
+                            <p className="py-1 ">{orderSuccess.id ? orderSuccess.id : 'không'}</p>
+                            <p className="py-1">{orderSuccess.fullname ? orderSuccess.fullname : 'không'}</p>
+                            <p className="py-1">{orderSuccess.phone ? orderSuccess.phone : 'không'}</p>
+                            <p className="py-1">Thanh toán khi nhận hàng</p>
+                            <p className="py-1 w-full">
+                            {orderSuccess.address ? orderSuccess.address : 'Nhận hàng tại nhà'}
+                            </p>
                             {/* <p>Nhận hàng tại nhà</p> */}
                           </div>
                         </div>
@@ -506,7 +513,6 @@ export default function Cart() {
       </Transition.Root>
       <div className="rounded-lg md:max-w-[900px] max-w-screen-lg  mx-auto ">
         <NavLink to="/">
-
           <div className="flex items-center text-blue-600 ">
             <svg
               width="20px"

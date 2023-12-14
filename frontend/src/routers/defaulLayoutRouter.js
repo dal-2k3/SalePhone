@@ -6,6 +6,7 @@ import NewsLayout from "../components/New";
 import NotFound from "../components/NotFound";
 import ProductDetail from "../components/ProductDetail";
 import { Example } from "../components/address";
+import { ListPagination } from "../components/test";
 
 
 const { default: Home } = require("../page/Home");
@@ -46,6 +47,10 @@ const publicRoutes = [
     {
         path: "/contact",
         component: Contact
+    },
+    {
+        path: "/test",
+        component: ListPagination
     },
 
 ]
