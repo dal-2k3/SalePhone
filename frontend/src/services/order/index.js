@@ -20,6 +20,15 @@ export const getOrders = async () => {
         throw error;
     }
 };
+export const getOrderByPhone = async (phone) => {
+    try {
+        const response = await axios.get(`${DOMAIN}api/v1/orders/order/${phone}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error get orders list:', error);
+        throw error;
+    }
+};
 export const updateOrder = async (id, data) => {
     try {
         const response = await axios.put(`${DOMAIN}api/v1/orders/${id}`, data);

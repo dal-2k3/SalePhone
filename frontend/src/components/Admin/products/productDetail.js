@@ -2,9 +2,11 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { DOMAIN } from "../../../utils/settings/config";
 import { Dialog, Transition } from "@headlessui/react";
-import { addProductDetail, addProductPromotion, deleteProductDetail, getProductDetail, updateProductDetail, updateProductPromotion } from "../../../services/products/product";
+import { addProductDetail, addProductPromotion, deleteProductDetail, deleteProductPromotion, getProductDetail, updateProductDetail, updateProductPromotion } from "../../../services/products/product";
 import EditDetail from "./EditDetail";
 import EditPromotion from "./EditPromotion";
+import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 export default function ProductDetail() {
   const [product, setProduct] = useState([0]);
@@ -50,7 +52,6 @@ export default function ProductDetail() {
       formData.append("image", productDetail.image);
       // console.log(productDetail.idProduct);
       await addProductDetail(formData);
-      setReload((prevReload) => !prevReload);
       setProductDetail({
         idProduct: "",
         color: "",
@@ -58,10 +59,27 @@ export default function ProductDetail() {
         price: "",
         discount: "",
         image: null,
-      })
+      });
+      setReload((prevReload) => !prevReload);
       setOpenAdd(false);
+      toast.success('thêm thành công');
     } catch (error) {
       console.log(error);
+      if (error.response) {
+        // Nếu có response từ server
+        const statusCode = error.response.status;
+        if (statusCode === 500) {
+          // Xử lý lỗi 500, 501 và hiển thị thông báo
+          toast.warn('hình ảnh của bạn (phải là file ảnh)');
+        } else {
+          // Xử lý các lỗi khác và hiển thị thông báo
+          const errorMessage = error.response.data.message || 'Đã xảy ra lỗi khi thêm sản phẩm chi tiết.';
+          toast.error(errorMessage);
+        }
+      } else {
+        // Nếu không có response từ server (ví dụ: không thể kết nối đến server)
+        toast.error('Unable to connect to the server. Please try again later.');
+      }
     }
   };
 
@@ -89,12 +107,26 @@ export default function ProductDetail() {
         image: null,
       })
       setOpenAddPromotion(false);
+      toast.success('thêm thành công ');
     } catch (error) {
       console.log(error);
+      if (error.response) {
+        // Nếu có response từ server
+        const statusCode = error.response.status;
+        if (statusCode === 500) {
+          // Xử lý lỗi 500, 501 và hiển thị thông báo
+          toast.warn('hình ảnh của bạn (phải là file ảnh)');
+        } else {
+          // Xử lý các lỗi khác và hiển thị thông báo
+          const errorMessage = error.response.data.message || 'Đã xảy ra lỗi khi thêm sản phẩm quà tặng.';
+          toast.error(errorMessage);
+        }
+      } else {
+        // Nếu không có response từ server (ví dụ: không thể kết nối đến server)
+        toast.error('Unable to connect to the server. Please try again later.');
+      }
     }
   };
-
-
   // edit product detail
 
   const handleEditDetal = (productdetail) => {
@@ -119,10 +151,25 @@ export default function ProductDetail() {
       );
       setReload(!reload);
       setProduct(updatedProductDetails);
-
+      toast.success("sửa thành công chi tiết sản phẩm")
       seteditingDetail(null);
     } catch (error) {
       console.error("Error updating user:", error);
+      if (error.response) {
+        // Nếu có response từ server
+        const statusCode = error.response.status;
+        if (statusCode === 500) {
+          // Xử lý lỗi 500, 501 và hiển thị thông báo
+          toast.warn('hình ảnh của bạn (phải là file ảnh)');
+        } else {
+          // Xử lý các lỗi khác và hiển thị thông báo
+          const errorMessage = error.response.data.message || 'Đã xảy ra lỗi khi sửa sản phẩm chi tiết.';
+          toast.error(errorMessage);
+        }
+      } else {
+        // Nếu không có response từ server (ví dụ: không thể kết nối đến server)
+        toast.error('Unable to connect to the server. Please try again later.');
+      }
     }
   };
   // edit promotion
@@ -148,10 +195,25 @@ export default function ProductDetail() {
       );
       setReload(!reload);
       setProduct(updatedProductPromotion);
-
       seteditingPromotion(null);
+      toast.success('sửa thành công sản phẩm quà tặng');
     } catch (error) {
       console.error("Error updating user:", error);
+      if (error.response) {
+        // Nếu có response từ server
+        const statusCode = error.response.status;
+        if (statusCode === 500) {
+          // Xử lý lỗi 500, 501 và hiển thị thông báo
+          toast.warn('hình ảnh của bạn (phải là file ảnh)');
+        } else {
+          // Xử lý các lỗi khác và hiển thị thông báo
+          const errorMessage = error.response.data.message || 'Đã xảy ra lỗi khi thêm sản phẩm quà tặng.';
+          toast.error(errorMessage);
+        }
+      } else {
+        // Nếu không có response từ server (ví dụ: không thể kết nối đến server)
+        toast.error('Unable to connect to the server. Please try again later.');
+      }
     }
   };
   // delete Product detail
@@ -160,8 +222,50 @@ export default function ProductDetail() {
       console.log(id);
       await deleteProductDetail(id);
       setReload(!reload);
+      toast.success('xóa thành công');
     } catch (error) {
       console.log("Product details already exist in the table order detail:", error);
+      if (error.response) {
+        // Nếu có response từ server
+        const statusCode = error.response.status;
+        if (statusCode === 500) {
+          // Xử lý lỗi 500, 501 và hiển thị thông báo
+          toast.warn('sản phẩm chi tiết đã tồn tại trong Order');
+        } else {
+          // Xử lý các lỗi khác và hiển thị thông báo
+          const errorMessage = error.response.data.message || 'Đã xảy ra lỗi khi xóa sản phẩm chi tiết.';
+          toast.error(errorMessage);
+        }
+      } else {
+        // Nếu không có response từ server (ví dụ: không thể kết nối đến server)
+        toast.error('Unable to connect to the server. Please try again later.');
+      }
+    }
+  }
+  // delete Product promotion
+  const handleDeletePromotion = async (id) => {
+    try {
+      console.log(id);
+      await deleteProductPromotion(id);
+      setReload(!reload);
+      toast.success('xóa thành công');
+    } catch (error) {
+      console.log("Product details already exist in the table order detail:", error);
+      if (error.response) {
+        // Nếu có response từ server
+        const statusCode = error.response.status;
+        if (statusCode === 500) {
+          // Xử lý lỗi 500, 501 và hiển thị thông báo
+          toast.warn('sản phẩm quà tặng đã tồn tại trong Order');
+        } else {
+          // Xử lý các lỗi khác và hiển thị thông báo
+          const errorMessage = error.response.data.message || 'Đã xảy ra lỗi khi xóa sản phẩm quà tặng.';
+          toast.error(errorMessage);
+        }
+      } else {
+        // Nếu không có response từ server (ví dụ: không thể kết nối đến server)
+        toast.error('Unable to connect to the server. Please try again later.');
+      }
     }
   }
   //  get list Products details
@@ -176,7 +280,7 @@ export default function ProductDetail() {
       }
     };
     fetchProductsDetails();
-  }, [reload]);
+  }, [reload, id]);
   return (
 
     <div className=" rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
@@ -188,7 +292,7 @@ export default function ProductDetail() {
             </div>
             <hr className="border-1 border-solid mb-4" />
             <div className="flex justify-between items-center mb-3">
-              <div className="text-xl font-bold">DETAIL</div>
+              <div className="text-xl font-bold">PRODUCT DETAILS</div>
               <button
                 onClick={() => setOpenAdd(true)}
                 className=" bg-green-600 text-white py-1 px-2 mr-2 rounded transition duration-150 ease-in-out ..."
@@ -643,7 +747,10 @@ export default function ProductDetail() {
                             id="update">
                             <path d="M23.7207 8.1641c-3.7872-3.7316-9.6125-4.1499-13.8605-1.2914L9.8483 5.2317c-.002-.2762-.2276-.4985-.5039-.4963L8.3445 4.7432C8.0684 4.7453 7.8464 4.9708 7.8484 5.2468L7.876 8.9893c.0039.5498.4512.9922 1 .9922.002 0 .0049 0 .0078 0l3.743-.0276c.2762-.002.4984-.2277.4963-.5039l-.0078-1.0001c-.0021-.2761-.2276-.4981-.5036-.4961l-.6362.0046c3.3478-1.6712 7.5305-1.1391 10.341 1.6295 2.6972 2.6588 3.4342 6.6558 1.9015 10.0831-.1091.244-.0197.5283.2183.65l.8925.456c.2529.1292.5727.0251.6901-.2334C27.9255 16.3433 27.0319 11.4282 23.7207 8.1641zM23.124 22.0186c-.002 0-.0049 0-.0078 0l-3.743.0275c-.2762.0021-.4984.2277-.4963.5039l.0078 1.0001c.0021.276.2276.498.5036.4961l.6356-.0046c-3.348 1.6708-7.53 1.1382-10.3404-1.6295-2.6972-2.6588-3.4342-6.6559-1.9015-10.0831.1091-.244.0197-.5283-.2183-.65l-.8925-.456c-.2529-.1292-.5727-.0251-.6901.2334-1.9068 4.2002-1.0131 9.1153 2.298 12.3795 2.1396 2.1084 4.9307 3.1592 7.7197 3.1592 2.1475 0 4.2929-.6252 6.1407-1.869l.0119 1.6421c.002.2762.2276.4985.5039.4964l.9999-.0078c.2761-.0022.4981-.2277.4961-.5037l-.0276-3.7424C24.1201 22.4609 23.6729 22.0186 23.124 22.0186z"></path></svg>
                         </button>
-                        <button className="hover:text-primary">
+                        <button className="hover:text-primary"
+                          onClick={() => handleDeletePromotion(promotion.id)}
+                        >
+
                           <svg
                             className="fill-current text-red-500"
                             width="18"

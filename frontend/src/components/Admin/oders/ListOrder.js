@@ -3,6 +3,8 @@ import moment from "moment";
 import { getOrders, updateOrder } from '../../../services/order';
 import EditOrder from './EditOrder';
 import { NavLink } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 export default function ListOrder() {
     const [orders, setOrders] = useState([]);
@@ -13,7 +15,7 @@ export default function ListOrder() {
         chờ_xử_lý: 'bg-yellow-400',
         đã_xử_lý: 'bg-green-400',
         đã_giao: 'bg-blue-400',
-        hủy: 'bg-red-400',
+        đã_hủy: 'bg-red-400',
     };
 
     const handleChangeEdit = (item) => {
@@ -24,9 +26,11 @@ export default function ListOrder() {
     }
     const handleEdit = async (editedCategory) => {
         try {
+
             await updateOrder(editingOrder.id, editedCategory);
-            // setReload((prevReload) => !prevReload);  
+            setReload((prevReload) => !prevReload);
             seteditingOrder(null);
+            toast.success("cập nhật đơn hàng thành công")
         } catch (error) {
             console.log(error)
         }

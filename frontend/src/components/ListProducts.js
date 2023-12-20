@@ -26,18 +26,36 @@ export default function ListProducts() {
   function formatPrice(price) {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
+  // get list products and productById
+  useEffect(() => {
+    if (id) {
+      const fetchProducts = async () => {
+        try {
+          const productsData = await getProductsByCategory(id);
+          console.log(productsData);
+          setProducts(productsData);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      fetchProducts();
+    } else {
+      const fetchAllProducts = async () => {
+        try {
+          const productsData = await listProducts();
+          // console.log(productsData);
+          setProducts(productsData);
+        } catch (error) {
+          // Xử lý lỗi nếu cần
+          console.log(error);
+        }
+      };
+      fetchAllProducts();
+    }
+  }, [id]);
+
   // get list categories
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const productsData = await getProductsByCategory(id);
-        console.log(productsData);
-        setProducts(productsData);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchProducts();
     const fetchCategories = async () => {
       try {
         const categoriesData = await listCategories();
@@ -47,21 +65,6 @@ export default function ListProducts() {
       }
     };
     fetchCategories();
-
-  }, [reload]);
-  // get list products
-  useEffect(() => {
-    const fetchAllProducts = async () => {
-      try {
-        const productsData = await listProducts();
-        // console.log(productsData);
-        setProducts(productsData);
-      } catch (error) {
-        // Xử lý lỗi nếu cần
-        console.log(error);
-      }
-    };
-    fetchAllProducts();
   }, [reload]);
   // const calculateTotal = () => {
   //   return cart.reduce((total, product) => {

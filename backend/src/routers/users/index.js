@@ -1,6 +1,7 @@
 const express = require("express");
 const userRouter = express.Router();
 const { authenticate, verifyTokenandAdmin } = require("../../middwares/auth");
+require('dotenv').config();
 
 const {
     createUser,
@@ -21,16 +22,23 @@ const {
 let refreshTokens = [];
 
 userRouter.post('/register', async (req, res) => {
-    const { username, email, password } = req.body;
+    const { username,phone, email, password, code } = req.body;
+
+    const verificationCode = process.env.VERIFICATION_CODE;
+
+    console.log('Using Verification Code:', verificationCode);
+
+    if (code !== verificationCode) {
+        return res.status(401).send("Invalid verification code");
+    }
+
     const hashedPassword = await hashPassword(password);
-
-    const mail = await getUserByEmail(email);
-
-    if (mail) {
-        return res.status(404).send("Email already exists!!!");
+    const  existingMail = await getUserByEmail(email);
+    if (existingMail) {
+        return res.status(409).send("Email already exists!!!");
     } else {
         const user = await createUser({
-            username, email, password: hashedPassword
+            username,phone, email, password: hashedPassword
         })
         if (!user) {
             return res.status(500).send("Can't create user");

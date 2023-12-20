@@ -6,6 +6,8 @@ import {
   updateComments,
 } from "../../../services/comments";
 import moment from "moment";
+import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 export default function ListComment() {
   const [commentsPrivate, setCommentsPrivate] = useState([]);
@@ -19,13 +21,41 @@ export default function ListComment() {
     status: "public",
   };
   const saveEdit = async (id) => {
-    console.log(id);
-    await updateComments(id, status);
-    setReload((prevReload) => !prevReload);
+    try {
+      console.log(id);
+      await updateComments(id, status);
+      setReload((prevReload) => !prevReload);
+      toast.success('duyệt đánh giá thành công');
+    } catch (error) {
+      console.log(error);
+      if (error.response) {
+        // Nếu có response từ server
+        const statusCode = error.response.status;
+        if (statusCode === 501) {
+          // Xử lý lỗi 500, 501 và hiển thị thông báo
+          toast.warn('lỗi khi duyệt đánh giá');
+        } else {
+          // Xử lý các lỗi khác và hiển thị thông báo
+          const errorMessage = error.response.data.message || 'Đã xảy ra lỗi khi duyệt đánh giá.';
+          toast.error(errorMessage);
+        }
+      } else {
+        // Nếu không có response từ server (ví dụ: không thể kết nối đến server)
+        toast.error('Unable to connect to the server. Please try again later.');
+      }
+    }
+
   };
+
   const saveDelete = async (id) => {
-    await deleteComments(id);
-    setReload((prevReload) => !prevReload);
+    try {
+      await deleteComments(id);
+      setReload((prevReload) => !prevReload);
+      toast.success('xóa đánh giá thành công');
+    } catch (error) {
+      console.log(error);
+    }
+
   };
   useEffect(() => {
     const fetchlistscommentsPrivate = async () => {
@@ -52,17 +82,15 @@ export default function ListComment() {
     <div>
       <div className="flex mt-20   justify-center ">
         <button
-          className={`py-2 px-4 font-bold text-2xl ${
-            activeTab === 1 ? "text-cyan-600" : "text-black"
-          }`}
+          className={`py-2 px-4 font-bold text-2xl ${activeTab === 1 ? "text-cyan-600" : "text-black"
+            }`}
           onClick={() => changeTab(1)}
         >
           Bình luận chưa xử lý
         </button>
         <button
-          className={`py-2 px-4  font-bold text-2xl ${
-            activeTab === 2 ? "text-cyan-600 " : "text-black"
-          }`}
+          className={`py-2 px-4  font-bold text-2xl ${activeTab === 2 ? "text-cyan-600 " : "text-black"
+            }`}
           onClick={() => changeTab(2)}
         >
           Bình luận đã xử lý
@@ -110,11 +138,10 @@ export default function ListComment() {
                         {Array.from({ length: 5 }).map((_, index) => (
                           <svg
                             key={index}
-                            className={`w-6 h-6  ${
-                              index < item.rating
-                                ? "text-yellow-500"
-                                : "text-gray-400"
-                            } me-1`}
+                            className={`w-6 h-6  ${index < item.rating
+                              ? "text-yellow-500"
+                              : "text-gray-400"
+                              } me-1`}
                             aria-hidden="true"
                             xmlns="http://www.w3.org/2000/svg"
                             fill="currentColor"
@@ -225,11 +252,10 @@ export default function ListComment() {
                         {Array.from({ length: 5 }).map((_, index) => (
                           <svg
                             key={index}
-                            className={`w-6 h-6  ${
-                              index < item.rating
-                                ? "text-yellow-500"
-                                : "text-gray-400"
-                            } me-1`}
+                            className={`w-6 h-6  ${index < item.rating
+                              ? "text-yellow-500"
+                              : "text-gray-400"
+                              } me-1`}
                             aria-hidden="true"
                             xmlns="http://www.w3.org/2000/svg"
                             fill="currentColor"

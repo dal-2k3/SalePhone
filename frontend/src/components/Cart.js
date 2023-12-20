@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import { DOMAIN } from "../utils/settings/config";
 import { NavLink, useNavigate } from "react-router-dom";
-import { createOrder } from "../services/order";
+import { createOrder, getOrderDetail } from "../services/order";
 import {
   apiGetPublicDistrict,
   apiGetPublicProvinces,
@@ -81,7 +81,7 @@ export default function Cart() {
     // setOrder({ ...order, order_details: updatedOrderDetails, });
     setCart(storedCart);
   }, [reload]);
-  
+
   const updateOrderDetails = (cart) => {
     const updatedOrderDetails = cart.map((product, index) => ({
       ...cart[index],
