@@ -1,4 +1,3 @@
-
 import ListCategoris from "../components/Admin/categories/listCategoris";
 import ListComment from "../components/Admin/comments/ListComment";
 import HomeAdmin from "../components/Admin/homeAdmin";
@@ -7,42 +6,47 @@ import OrderDetail from "../components/Admin/oders/OrderDetail";
 import ListProducts from "../components/Admin/products/listProducts";
 import ProductDetail from "../components/Admin/products/productDetail";
 import ListUsers from "../components/Admin/users/listUsers";
-
+import RequireAuth from "../components/Auth/RequireAuth";
+import NotFound from "../components/NotFound";
+ // Import HOC
 
 const adminRouter = [
     {
         path: "/admin",
-        component: HomeAdmin
+        component: RequireAuth(HomeAdmin)
     },
     {
         path: "/users/list",
-        component: ListUsers
+        component: RequireAuth(ListUsers)
     },
-
     {
         path: "/categories/list",
-        component: ListCategoris
+        component: RequireAuth(ListCategoris)
     },
     {
         path: "/products/list",
-        component: ListProducts
+        component: RequireAuth(ListProducts)
     },
     {
         path: "/products/detail/:id",
-        component: ProductDetail
+        component: RequireAuth(ProductDetail)
     },
     {
         path: "/comments/list",
-        component: ListComment
+        component: RequireAuth(ListComment)
     },
     {
         path: "/orders/list",
-        component: ListOrder
+        component: RequireAuth(ListOrder)
     },
     {
         path: "/orders/detail/:id",
-        component: OrderDetail
+        component: RequireAuth(OrderDetail)
     },
+    {
+        path: "*",
+        component: RequireAuth(NotFound)
+    },
+];
 
-]
 export default adminRouter;

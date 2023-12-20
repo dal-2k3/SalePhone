@@ -21,8 +21,9 @@ export default function ListProducts() {
   const handleGet = async (id) => {
     try {
       const product = await getProductsByCategory(id);
-      // console.log(id);
       setProducts(product);
+
+      // console.log(id);
     } catch (error) {
       console.log(error);
     }
@@ -287,7 +288,7 @@ export default function ListProducts() {
                 <div className=" pagination">
                   <button
                     className={`mr-2 flex items-center text-cyan-500 ${
-                      currentPage === 1 ? "text-gray-500" : "text-cyan-500"
+                      currentPage === 1 ? "hidden" : "block"
                     }`}
                     disabled={currentPage === 1}
                     onClick={() => setCurrentPage((prev) => prev - 1)}
@@ -331,8 +332,8 @@ export default function ListProducts() {
                   <button
                     className={`flex items-center ml-2 ${
                       currentPage === totalPages
-                        ? "text-gray-500"
-                        : "text-cyan-500"
+                        ? "text-gray-500 hidden"
+                        : "text-cyan-500 block"
                     }`}
                     disabled={currentPage === totalPages}
                     onClick={() => setCurrentPage((prev) => prev + 1)}

@@ -1,8 +1,9 @@
 const express = require('express');
 const { createOrder, createOrderDetail, getAllOrders, getOrderById, deleteOrder, updateOrder, getOrderDetailByOrder, getOrderDetail } = require('../../services/order');
 const { getProductDetailById, updateProductDetail } = require('../../services/products');
+const { sendMail } = require('../../services/mailer');
 const orderRouter = express.Router();
-
+const DOMAIN = "http://localhost:8000/";
 orderRouter.post('/', async (req, res) => {
     try {
         const { fullname, phone, email, address, total, order_details } = req.body;
@@ -18,16 +19,17 @@ orderRouter.post('/', async (req, res) => {
         }
         for (const detail of order_details) {
             const { id_Product_detail, quantity } = detail;
+
             console.log(detail);
+
             const productDetail = await getProductDetailById(id_Product_detail);
 
             if (productDetail) {
                 const newQuantity = productDetail.quantity - quantity;
                 console.log(newQuantity);
                 const updateResult = await updateProductDetail(id_Product_detail, { quantity: newQuantity });
-
                 if (updateResult) {
-                    await createOrderDetail({
+                    const orderdetail = await createOrderDetail({
                         id_Order: newOrder.id,
                         id_Product: detail.id_Product,
                         id_Product_detail: id_Product_detail,
@@ -40,7 +42,55 @@ orderRouter.post('/', async (req, res) => {
                     return res.status(500).json({ message: 'Error updating product detail' });
                 }
             }
+        };
+
+        const subject = `Hóa Đơn Đặt Hàng số : ${newOrder.id}`;
+        const htmlHead = `<table style="width:50%">
+            <tr style="border: 1px solid black;">
+                <th style="border: 1px solid black;">Tên Sản Phẩm</th>
+                <th style="border: 1px solid black;">Màu sắc</th>
+                <th style="border: 1px solid black;">Hình Ảnh</th>
+                <th style="border: 1px solid black;">Giá</th>
+                <th style="border: 1px solid black;">Số Lượng</th>
+                <th style="border: 1px solid black;">Thành Tiền</th>
+            </tr>`;
+
+        let htmlContent = "";
+
+        for (const detail of order_details) {
+            htmlContent += `
+            <tr>
+                <td style="border: 1px solid black; font-size: 1.2rem; text-align: center;">
+                    ${detail.name} ${detail.capacity}
+                </td>
+                <td style="border: 1px solid black; font-size: 1.2rem; text-align: center;">
+                    ${detail.color}
+                </td>
+                <td style="border: 1px solid black; font-size: 1.2rem; text-align: center;">
+                    <a href="${DOMAIN}${detail.imageProductDetail}">
+                        <img src=${DOMAIN}${detail.imageProductDetail} width="80" height="80">
+                    </a>
+                </td>
+                <td style="border: 1px solid black; font-size: 1.2rem; text-align: center;">${detail.price}đ</td>
+                <td style="border: 1px solid black; font-size: 1.2rem; text-align: center;">${detail.quantity}</td>
+                <td style="border: 1px solid black; font-size: 1.2rem; text-align: center;">${detail.totalDetail}đ</td>
+            </tr>`;
         }
+
+        const htmlResult = `
+                <h1>Xin chào khách hàng : ${fullname}</h1>
+                <h3>Số điện thoại: ${phone}</h3>
+                <h3>Địa chỉ: ${address}</h3>
+                
+                <h3>thời gian đặt hàng: ${newOrder.createdAt} </h3>
+              
+                <h3 style=" color: red;" >chi tiết sản phẩm</h3>
+                ${htmlHead}
+                ${htmlContent}
+                 <h2>Tổng Thanh Toán:<h3 style="color: red;">${total}đ</h3></h2>           
+                <p style =" "> Trân trọng!</p>`;
+
+        await sendMail(email, subject, htmlResult);
         res.status(200).json(newOrder);
     } catch (error) {
         console.error(error);
@@ -89,11 +139,11 @@ orderRouter.get('/detail/:id', async (req, res) => {
     const { id } = req.params;
     const checkId = await getOrderDetailByOrder(id);
     if (!checkId) {
-        res.status(500).send("order does not exist")
+        return res.status(500).send("order does not exist")
     }
     const orderDetai = await getOrderDetail(id);
     if (!orderDetai) {
-        res.status(501).send("can't get list order detail");
+        return res.status(501).send("can't get list order detail");
     }
     res.status(200).send(orderDetai);
 });

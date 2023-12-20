@@ -6,7 +6,7 @@ export default function DefaultLayout({ children }) {
   return (
     <Fragment>
       <Header />
-      <div>{children}</div>
+      <div >{children}</div>
       <ScrollToTop></ScrollToTop>
       <Footer />
     </Fragment>

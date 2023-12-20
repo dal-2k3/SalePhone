@@ -83,3 +83,6 @@ body{
         transform: translate(100px,50vh);
     }
 }
+li:hover .dropdown-category {
+  display: block;
+}

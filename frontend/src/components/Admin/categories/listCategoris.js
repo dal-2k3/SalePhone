@@ -22,6 +22,8 @@ export default function ListCategoris() {
     logo: null, // Đối tượng File
     note: "",
   });
+  const [search, setSearch] = useState("")
+
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     setCategory((prevCategory) => ({
@@ -82,8 +84,8 @@ export default function ListCategoris() {
     console.log(id);
     await deleteCategory(id);
     setReload(!reload);
-  }
-// get list
+  };
+  // get list
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -95,16 +97,59 @@ export default function ListCategoris() {
     };
     fetchCategories();
   }, [reload]);
-
+  console.log(categories);
   return (
     <div className="flex flex-col">
-      <div className="p-2">
-        <button
-          onClick={() => setOpenAdd(true)}
-          className=" bg-yellow-600 text-white py-1 px-2 mr-2 rounded transition duration-150 ease-in-out ..."
-        >
-          Add Category
-        </button>
+      <div className="flex justify-between items-center">
+        <div className="text-xl font-bold">Tất cả danh mục</div>
+        <div className="flex py-2">
+          <div className="pr-5">
+            <div class="relative ">
+              <input
+                type="text"
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                }}
+                //   style={{ background: "#eae9ee" }}
+                class="border border-solid rounded-2xl p-4 w-full py-2 pl-4 pr-4  focus:outline-none focus:border-blue-500"
+                placeholder="Tìm kiếm danh mục"
+              />
+              <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <svg
+                  height="32px"
+                  version="1.1"
+                  viewBox="0 0 32 32"
+                  width="32px"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <title />
+                  <desc />
+                  <defs />
+                  <g
+                    fill="none"
+                    fill-rule="evenodd"
+                    id="Page-1"
+                    stroke="none"
+                    stroke-width="1"
+                  >
+                    <g fill="#929292" id="icon-111-search">
+                      <path
+                        d="M19.4271164,21.4271164 C18.0372495,22.4174803 16.3366522,23 14.5,23 C9.80557939,23 6,19.1944206 6,14.5 C6,9.80557939 9.80557939,6 14.5,6 C19.1944206,6 23,9.80557939 23,14.5 C23,16.3366522 22.4174803,18.0372495 21.4271164,19.4271164 L27.0119176,25.0119176 C27.5621186,25.5621186 27.5575313,26.4424687 27.0117185,26.9882815 L26.9882815,27.0117185 C26.4438648,27.5561352 25.5576204,27.5576204 25.0119176,27.0119176 L19.4271164,21.4271164 L19.4271164,21.4271164 Z M14.5,21 C18.0898511,21 21,18.0898511 21,14.5 C21,10.9101489 18.0898511,8 14.5,8 C10.9101489,8 8,10.9101489 8,14.5 C8,18.0898511 10.9101489,21 14.5,21 L14.5,21 Z"
+                        id="search"
+                      />
+                    </g>
+                  </g>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <button
+            onClick={() => setOpenAdd(true)}
+            className=" bg-yellow-600 text-white py-1 px-2 mr-2 rounded transition duration-150 ease-in-out ..."
+          >
+           Thêm danh mục
+          </button>
+        </div>
       </div>
 
       <Transition.Root show={openAdd} as={Fragment}>
@@ -216,21 +261,25 @@ export default function ListCategoris() {
             <thead>
               <tr className="bg-gray-100 text-left dark:bg-meta-4">
                 <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                  Name
+                  Danh mục
                 </th>
                 <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
-                  Note
+                  Ghi chú
                 </th>
                 <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
-                  Status
+                  Trạng thái
                 </th>
                 <th className="py-4 px-4 font-medium text-black dark:text-white">
-                  Actions
+                  Thao tác
                 </th>
               </tr>
             </thead>
             <tbody>
-              {categories.map((item) => (
+              {categories.filter((item) => {
+                  return search.toLowerCase() === ""
+                    ? item
+                    : item.name.toLowerCase().includes(search);
+                }).map((item) => (
                 <tr key={item.id}>
                   <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
@@ -260,18 +309,22 @@ export default function ListCategoris() {
                         className="hover:text-primary"
                         onClick={() => handleEdit(item)}
                       >
-
-                        <svg xmlns="http://www.w3.org/2000/svg"
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
                           className="fill-current text-green-600"
                           width="18"
                           height="18"
                           enable-background="new 0 0 32 32"
                           viewBox="0 0 32 32"
-                          id="update">
-                          <path d="M23.7207 8.1641c-3.7872-3.7316-9.6125-4.1499-13.8605-1.2914L9.8483 5.2317c-.002-.2762-.2276-.4985-.5039-.4963L8.3445 4.7432C8.0684 4.7453 7.8464 4.9708 7.8484 5.2468L7.876 8.9893c.0039.5498.4512.9922 1 .9922.002 0 .0049 0 .0078 0l3.743-.0276c.2762-.002.4984-.2277.4963-.5039l-.0078-1.0001c-.0021-.2761-.2276-.4981-.5036-.4961l-.6362.0046c3.3478-1.6712 7.5305-1.1391 10.341 1.6295 2.6972 2.6588 3.4342 6.6558 1.9015 10.0831-.1091.244-.0197.5283.2183.65l.8925.456c.2529.1292.5727.0251.6901-.2334C27.9255 16.3433 27.0319 11.4282 23.7207 8.1641zM23.124 22.0186c-.002 0-.0049 0-.0078 0l-3.743.0275c-.2762.0021-.4984.2277-.4963.5039l.0078 1.0001c.0021.276.2276.498.5036.4961l.6356-.0046c-3.348 1.6708-7.53 1.1382-10.3404-1.6295-2.6972-2.6588-3.4342-6.6559-1.9015-10.0831.1091-.244.0197-.5283-.2183-.65l-.8925-.456c-.2529-.1292-.5727-.0251-.6901.2334-1.9068 4.2002-1.0131 9.1153 2.298 12.3795 2.1396 2.1084 4.9307 3.1592 7.7197 3.1592 2.1475 0 4.2929-.6252 6.1407-1.869l.0119 1.6421c.002.2762.2276.4985.5039.4964l.9999-.0078c.2761-.0022.4981-.2277.4961-.5037l-.0276-3.7424C24.1201 22.4609 23.6729 22.0186 23.124 22.0186z"></path></svg>
+                          id="update"
+                        >
+                          <path d="M23.7207 8.1641c-3.7872-3.7316-9.6125-4.1499-13.8605-1.2914L9.8483 5.2317c-.002-.2762-.2276-.4985-.5039-.4963L8.3445 4.7432C8.0684 4.7453 7.8464 4.9708 7.8484 5.2468L7.876 8.9893c.0039.5498.4512.9922 1 .9922.002 0 .0049 0 .0078 0l3.743-.0276c.2762-.002.4984-.2277.4963-.5039l-.0078-1.0001c-.0021-.2761-.2276-.4981-.5036-.4961l-.6362.0046c3.3478-1.6712 7.5305-1.1391 10.341 1.6295 2.6972 2.6588 3.4342 6.6558 1.9015 10.0831-.1091.244-.0197.5283.2183.65l.8925.456c.2529.1292.5727.0251.6901-.2334C27.9255 16.3433 27.0319 11.4282 23.7207 8.1641zM23.124 22.0186c-.002 0-.0049 0-.0078 0l-3.743.0275c-.2762.0021-.4984.2277-.4963.5039l.0078 1.0001c.0021.276.2276.498.5036.4961l.6356-.0046c-3.348 1.6708-7.53 1.1382-10.3404-1.6295-2.6972-2.6588-3.4342-6.6559-1.9015-10.0831.1091-.244.0197-.5283-.2183-.65l-.8925-.456c-.2529-.1292-.5727-.0251-.6901.2334-1.9068 4.2002-1.0131 9.1153 2.298 12.3795 2.1396 2.1084 4.9307 3.1592 7.7197 3.1592 2.1475 0 4.2929-.6252 6.1407-1.869l.0119 1.6421c.002.2762.2276.4985.5039.4964l.9999-.0078c.2761-.0022.4981-.2277.4961-.5037l-.0276-3.7424C24.1201 22.4609 23.6729 22.0186 23.124 22.0186z"></path>
+                        </svg>
                       </button>
-                      <button className="hover:text-primary"
-                        onClick={() => handleDelete(item.id)}>
+                      <button
+                        className="hover:text-primary"
+                        onClick={() => handleDelete(item.id)}
+                      >
                         <svg
                           className="fill-current text-red-600"
                           width="18"
@@ -298,7 +351,6 @@ export default function ListCategoris() {
                           />
                         </svg>
                       </button>
-
                     </div>
                   </td>
                 </tr>
