@@ -16,7 +16,7 @@ export const loginUser = async (user) => {
 
 export const registerUser = async (user) => {
   try {
-    await axios.post(`${DOMAIN}/api/v1/users/register`, user);
+    await axios.post(`${DOMAIN}api/v1/users/register`, user);
   } catch (err) {
     console.log('Error register:', err);
     throw err;

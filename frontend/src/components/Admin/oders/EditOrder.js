@@ -7,7 +7,7 @@ export default function EditOrder({ order, onSave, onCancel }) {
         chờ_xử_lý: 'bg-yellow-300',
         đã_xử_lý: 'bg-green-300',
         đã_giao: 'bg-blue-300',
-        hủy: 'bg-red-300',
+        đã_hủy: 'bg-red-300',
     };
 
     const handleChange = (e) => {
@@ -17,7 +17,8 @@ export default function EditOrder({ order, onSave, onCancel }) {
             [name]: value,
         }));
     }
-    const handleEdit = async () => {
+    const handleEdit = async (e) => {
+        e.preventDefault();
         try {
             onSave(editedOrder)
         } catch (error) {
@@ -69,68 +70,84 @@ export default function EditOrder({ order, onSave, onCancel }) {
                                                 <form className="w-full" onSubmit={handleEdit}>
                                                     <div className="mb-4">
                                                         <div className=" mt-2 grid grid-cols-2 gap-4">
-                                                            <label className="block mb-2 text-sm font-bold">
-                                                                fullname
-                                                            </label>
-                                                            <input
-                                                                type="text"
-                                                                name="fullname"
-                                                                value={editedOrder.fullname}
-                                                                onChange={handleChange}
-                                                                className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2"
-                                                                placeholder="Nhập họ và tên"
-                                                                required
-                                                            />
-                                                            <label className="block mb-2 text-sm font-bold">
+                                                            <div>
+                                                                <label className="block mb-2 text-sm font-bold">
+                                                                    fullname
+                                                                </label>
+                                                                <input
+                                                                    type="text"
+                                                                    name="fullname"
+                                                                    value={editedOrder.fullname}
+                                                                    onChange={handleChange}
+                                                                    className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2"
+                                                                    placeholder="Nhập họ và tên"
+                                                                    required
+                                                                />
+                                                            </div>
+                                                            <div>
+                                                                <label className="block mb-2 text-sm font-bold">
+                                                                    SĐT
+                                                                </label>
+                                                                <input
+                                                                    name="phone"
+                                                                    value={editedOrder.phone}
+                                                                    onChange={handleChange}
+                                                                    type="text"
+                                                                    className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2"
+                                                                    placeholder="Nhập số điện thoại"
+                                                                    required
+                                                                />
+                                                            </div>
+                                                            <div className='col-span-2'>
+                                                                <label className="block mb-2 text-sm font-bold">
+                                                                    địa chỉ
+                                                                </label>
+                                                                <input
+                                                                    type="text"
+                                                                    name="address"
+                                                                    value={editedOrder.address}
+                                                                    onChange={handleChange}
+                                                                    className=" w-full border rounded-lg xl:h-[50px] sm:h-[30px] px-2"
+                                                                    placeholder="Địa chỉ..."
+                                                                    required
+                                                                />
+                                                            </div>
+                                                            <div className='col-span-2'>
+                                                                <label className="block mb-2 text-sm font-bold">
+                                                                    email
+                                                                </label>
+                                                                <input
+                                                                    type="email"
+                                                                    name="email"
+                                                                    value={editedOrder.email}
+                                                                    onChange={handleChange}
+                                                                    className="w-full border rounded-lg xl:h-[50px] sm:h-[30px] px-2"
+                                                                    placeholder="Nhập địa chỉ email"
+                                                                    required
+                                                                />
+                                                            </div>
 
-                                                            </label>
-                                                            <input
-                                                                type="text"
-                                                                name="address"
-                                                                value={editedOrder.address}
-                                                                onChange={handleChange}
-                                                                className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2"
-                                                                placeholder="Địa chỉ..."
-                                                                required
-                                                            />
-                                                            <input
-                                                                name="phone"
-                                                                value={editedOrder.phone}
-                                                                onChange={handleChange}
-                                                                type="text"
-                                                                className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2"
-                                                                placeholder="Nhập số điện thoại"
-                                                                required
-                                                            />
-                                                            <label className="block mb-2 text-sm font-bold">
-                                                                trạng thái:
-                                                            </label>
-                                                            <input
-                                                                type="email"
-                                                                name="email"
-                                                                value={editedOrder.email}
-                                                                onChange={handleChange}
-                                                                className="col-span-2 border rounded-lg xl:h-[50px] sm:h-[30px] px-2"
-                                                                placeholder="Nhập địa chỉ email"
-                                                                required
-                                                            />
+                                                            <div className='col-span-2'>
+                                                                <label className="block mb-2 text-sm font-bold">
+                                                                    trạng thái
+                                                                </label>
+                                                                <select
+                                                                    id="statusSelect"
+                                                                    name="status"
+                                                                    className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
+                                                                    value={editedOrder.status}
+                                                                    onChange={handleChange}
+                                                                >
+                                                                    {Object.keys(statusColors).map((status) => (
+                                                                        <option key={status} value={status}>
+                                                                            {status}
+                                                                        </option>
+                                                                    ))}
+                                                                </select>
+                                                            </div>
 
-                                                            <label className="block mb-2 text-sm font-bold">
-                                                                trạng thái:
-                                                            </label>
-                                                            <select
-                                                                id="statusSelect"
-                                                                name="status"
-                                                                className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
-                                                                value={editedOrder.status}
-                                                                onChange={handleChange}
-                                                            >
-                                                                {Object.keys(statusColors).map((status) => (
-                                                                    <option key={status} value={status}>
-                                                                        {status}
-                                                                    </option>
-                                                                ))}
-                                                            </select>
+
+
                                                         </div>
                                                     </div>
 

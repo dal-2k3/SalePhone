@@ -12,6 +12,8 @@ import "react-quill/dist/quill.snow.css";
 import { DOMAIN } from "../../../utils/settings/config";
 import { listCategories } from "../../../services/categories/categories";
 import EditProduct from "./EditProduct";
+import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 export default function ListProducts() {
   const [products, setProducts] = useState([0]);
@@ -150,7 +152,8 @@ export default function ListProducts() {
         });
       }
       await AddProducts(formData);
-
+      setOpenAdd(false);
+      setReload((prevReload) => !prevReload);
       setProduct({
         idCategory: "",
         name: "",
@@ -161,10 +164,26 @@ export default function ListProducts() {
         ],
         promotions: [{ gift: "", giftImage: "" }],
       });
-      setOpenAdd(false);
-      setReload((prevReload) => !prevReload);
+      toast.success('thêm sản phẩm thành công');
     } catch (error) {
+
       console.log(error);
+      // Xử lý lỗi và hiển thị thông báo
+      if (error.response) {
+        // Nếu có response từ server
+        const statusCode = error.response.status;
+        if (statusCode === 500) {
+          // Xử lý lỗi 500, 501 và hiển thị thông báo
+          toast.warn('hình ảnh của bạn (phải là file ảnh)');
+        } else {
+          // Xử lý các lỗi khác và hiển thị thông báo
+          const errorMessage = error.response.data.message || 'Đã xảy ra lỗi khi thêm sản phẩm.';
+          toast.error(errorMessage);
+        }
+      } else {
+        // Nếu không có response từ server (ví dụ: không thể kết nối đến server)
+        toast.error('Unable to connect to the server. Please try again later.');
+      }
     }
   };
 
@@ -190,8 +209,8 @@ export default function ListProducts() {
       console.log(editedProduct);
       setReload(!reload);
       setProducts(updatedProducts);
-
       setEditingProduct(null);
+      toast.success("sửa sản phẩm thành công 😒")
     } catch (error) {
       console.error("Error updating Product:", error);
     }
@@ -201,8 +220,25 @@ export default function ListProducts() {
     try {
       await deleteProduct(id);
       setReload(!reload);
+      toast.success('xóa sản phẩm thành công');
     } catch (error) {
-      console.log("Product already exist in the table order detail", error);
+      console.log(error);
+      if (error.response) {
+        // Nếu có response từ server
+        const statusCode = error.response.status;
+        if (statusCode === 500) {
+          // Xử lý lỗi 500, 501 và hiển thị thông báo
+          toast.error('sản phẩm này đã tồn tại trong Order');
+        } else {
+          // Xử lý các lỗi khác và hiển thị thông báo
+          const errorMessage = error.response.data.message || 'Đã xảy ra lỗi khi xóa sản phẩm.';
+          toast.error(errorMessage);
+        }
+      } else {
+        // Nếu không có response từ server (ví dụ: không thể kết nối đến server)
+        toast.error('Unable to connect to the server. Please try again later.');
+      }
+
     }
   }
   //  get list Products
@@ -221,6 +257,7 @@ export default function ListProducts() {
   }, [reload]);
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+
       <div className="max-w-full overflow-x-auto">
         <div className="mb-20">
           <div className="flex justify-between items-center mb-3">
@@ -300,7 +337,9 @@ export default function ListProducts() {
                                   }
                                   className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
                                 >
+                                  <option selected>Danh Mục</option>
                                   {categories.map((category) => (
+
                                     <option
                                       key={category.id}
                                       value={category.id}
@@ -345,6 +384,7 @@ export default function ListProducts() {
                                   onChange={(event) =>
                                     handleChange("capacity", event)
                                   }
+                                  required
                                   className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
                                 />
                               </div>
@@ -359,6 +399,7 @@ export default function ListProducts() {
                                   name="parameter"
                                   id="parameter"
                                   theme="snow"
+
                                   value={product.parameter}
                                   onChange={handleDescriptionChange}
                                   modules={{
@@ -421,6 +462,7 @@ export default function ListProducts() {
                                     required
                                     className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
                                   >
+                                    <option selected> chọn</option>
                                     <option
                                       className="bg-gray-100"
                                       value="tai nghe"
@@ -667,7 +709,7 @@ export default function ListProducts() {
                           </div>
 
                           <b className="text-xs text-black dark:text-white">
-                            {item.name} 
+                            {item.name}
                           </b>
                         </div>
                       </td>

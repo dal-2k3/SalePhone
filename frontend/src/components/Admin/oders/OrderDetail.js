@@ -15,7 +15,7 @@ export default function OrderDetail() {
             SetOrder(data.map((item) => (item.Order)))
         }
         fetchOrderDetail();
-    }, []);
+    }, [id]);
     useEffect(() => {
         if (!order) return
         SetIsActiveOrder(order[0]);
@@ -28,29 +28,30 @@ export default function OrderDetail() {
     return (
 
         <div className='w-full p-3'>
-            {isActiveOrder && (<div>
-                <div className='flex py-5 text-2xl '>
-                    <p className='underline underline-offset-8 decoration-2 decoration-blue-500'>Chi tiết hàng đơn số : # {isActiveOrder.id}</p>
-                    <p className='ml-7 px-2 text-xl border rounded-lg border-yellow-400 text-green-700'>{isActiveOrder.status} </p>
-                    <p className='ml-7 px-2 text-xl '>Thời gian: {moment(isActiveOrder.createdAt).format("DD-MM-YYYY hh:mm:ss")} </p>
-                </div>
+            {isActiveOrder && (
+                <div>
+                    <div className='flex py-5 text-2xl '>
+                        <p className='underline underline-offset-8 decoration-2 decoration-blue-500'>Chi tiết hàng đơn số : # {isActiveOrder.id}</p>
+                        <p className='ml-7 px-2 text-xl border rounded-lg border-yellow-400 text-green-700'>{isActiveOrder.status} </p>
+                        <p className='ml-7 px-2 text-xl '>Thời gian đặt hàng : {moment(isActiveOrder.createdAt).format("DD-MM-YYYY hh:mm:ss")} </p>
+                    </div>
 
-                <div className="grid grid-cols-3 gap-4 ">
-                    <div className="col-span-2 rounded-lg border-2 border-green-700 p-4 text-lg text-slate-800">
-                        <div className='text-2xl text-center'>THÔNG TIN NHẬN HÀNG </div>
-                        <div className='flex py-1'><p className=' w-[16%] text-gray-500'>Người nhận:</p><p className='w-[84%]'>{isActiveOrder.fullname}</p></div>
-                        <div className='flex py-1'><p className=' w-[16%] text-gray-500'>Địa chỉ:</p><p className='w-[84%]'>{isActiveOrder.address}</p></div>
-                        <div className='flex py-1'><p className=' w-[16%] text-gray-500'>Số điên thoại:</p><p className='w-[84%]'>{isActiveOrder.phone}</p></div>
-                        <div className='flex py-1'><p className=' w-[16%] text-gray-500'>Email:</p><p className='w-[84%]'>{isActiveOrder.email}</p></div>
-                        <div className='flex py-1'><p className=' w-[16%] text-red-600 text-xl underline underline-offset-8 decoration-2 decoration-red-600'>Tổng tiền:</p>
-                            <p className='w-[84%] text-green-700'>{isActiveOrder.total} Đ</p></div>
-                    </div>
-                    <div className="col-span-1 rounded-lg border-2 border-yellow-400 p-4 text-lg text-slate-800">
-                        <div className='text-2xl'>Hình thức thanh toán: </div>
-                        <div>Thanh toán khi nhận hàng </div>
+                    <div className="grid grid-cols-3 gap-4 ">
+                        <div className="col-span-2 rounded-lg border-2 border-green-700 p-4 text-lg text-slate-800">
+                            <div className='text-2xl text-center'>THÔNG TIN NHẬN HÀNG </div>
+                            <div className='flex py-1'><p className=' w-[16%] text-gray-500'>Người nhận:</p><p className='w-[84%]'>{isActiveOrder.fullname}</p></div>
+                            <div className='flex py-1'><p className=' w-[16%] text-gray-500'>Địa chỉ:</p><p className='w-[84%]'>{isActiveOrder.address}</p></div>
+                            <div className='flex py-1'><p className=' w-[16%] text-gray-500'>Số điên thoại:</p><p className='w-[84%]'>{isActiveOrder.phone}</p></div>
+                            <div className='flex py-1'><p className=' w-[16%] text-gray-500'>Email:</p><p className='w-[84%]'>{isActiveOrder.email}</p></div>
+                            <div className='flex py-1'><p className=' w-[16%] text-red-600 text-xl underline underline-offset-8 decoration-2 decoration-red-600'>Tổng tiền:</p>
+                                <p className='w-[84%] text-green-700'>{isActiveOrder.total} Đ</p></div>
+                        </div>
+                        <div className="col-span-1 rounded-lg border-2 border-yellow-400 p-4 text-lg text-slate-800">
+                            <div className='text-2xl'>Hình thức thanh toán: </div>
+                            <div>Thanh toán khi nhận hàng </div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
             )}
 
@@ -59,8 +60,6 @@ export default function OrderDetail() {
             </div>
             {orderDetail.map((item) => (
                 <div>
-
-
                     <div key={item.id} className='py-2 grid grid-cols-12 m-7 gap-4 text-lg border-b-2 border-slate-300'>
                         <div className='col-span-2'>
                             <div className='w-[150px] h-[150px]'>

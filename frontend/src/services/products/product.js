@@ -127,3 +127,12 @@ export const updateProductPromotion = async (id, promotion) => {
         throw error;
     }
 };
+export const deleteProductPromotion = async (id) => {
+    try {
+        const response = await axios.delete(`${DOMAIN}api/v1/products/promotion/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error Delete product promotion:', error);
+        throw error;
+    }
+};

@@ -36,12 +36,26 @@ const getOrderById = async (id) => {
         console.log(error);
     }
 };
-const getOrderByPhone = async (phone) => {
+const checkPhone = async (phone) => {
     try {
         const order = await Order.findOne({
             where: {
                 phone,
             }
+        })
+        return order;
+    } catch (error) {
+        console.log(error);
+    }
+};
+const getOrderByPhone = async (phone) => {
+    console.log(phone);
+    try {
+        const order = await Order.findAll({
+            order: [['createdAt', 'DESC']],
+            where: {
+                phone,
+            },
         })
         return order;
     } catch (error) {
@@ -95,6 +109,7 @@ const getOrderDetailByOrder = async (id_Order) => {
     }
 };
 const getOrderDetail = async (id_Order) => {
+    console.log(id_Order);
     try {
         const orderDetail = await Order_detail.findAll({
             where: {
@@ -145,11 +160,24 @@ const findIdProductDetailInOrderDetail = async (id_Product_detail) => {
         console.log(error);
     }
 };
+const findIdProductPromotionInOrderDetail = async (id_Promotion) => {
+    try {
+        const orderDetail = await Order_detail.findOne({
+            where: {
+                id_Promotion,
+            },
+        });
+        return orderDetail;
+    } catch (error) {
+        console.log(error);
+    }
+};
 
 module.exports = {
     createOrder,
     getAllOrders,
     getOrderById,
+    checkPhone,
     getOrderByPhone,
     updateOrder,
     deleteOrder,
@@ -159,4 +187,5 @@ module.exports = {
     getOrderDetailByOrder,
     findIdProductInOrderDetail,
     findIdProductDetailInOrderDetail,
+    findIdProductPromotionInOrderDetail
 }

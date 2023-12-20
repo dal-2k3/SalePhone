@@ -17,7 +17,20 @@ const storage = multer.diskStorage({
     },
 });
 
-const upload = multer({ storage: storage });
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+        // Kiểm tra nếu tệp là hình ảnh
+        cb(null, true);
+    } else {
+        // Nếu không phải là hình ảnh, từ chối tệp
+        cb(new Error('Only image files are allowed!'), false);
+    }
+};
+
+const upload = multer({
+    storage: storage,
+    fileFilter: fileFilter,
+});
 
 categoriesRouter.post('/', upload.single('logo'), async (req, res) => {
     try {
@@ -25,11 +38,11 @@ categoriesRouter.post('/', upload.single('logo'), async (req, res) => {
         const logo = path.join('uploads', req.file.filename); // Kết hợp thư mục và tên file
         const checkname = await getCategoryByName(name);
         if (checkname) {
-            return res.status(404).send("Category name already exists!!!");
+            return res.status(501).send("Category name already exists!!!");
         }
         const category = await createCategory({ name, note, logo });
         if (!category) {
-            return res.status(500).send("Can't create category");
+            return res.status(502).send("Can't create category");
         }
 
         res.status(200).send(category);

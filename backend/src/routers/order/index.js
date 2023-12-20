@@ -1,5 +1,5 @@
 const express = require('express');
-const { createOrder, createOrderDetail, getAllOrders, getOrderById, deleteOrder, updateOrder, getOrderDetailByOrder, getOrderDetail } = require('../../services/order');
+const { createOrder, createOrderDetail, getAllOrders, getOrderById, deleteOrder, updateOrder, getOrderDetailByOrder, getOrderDetail, getOrderByPhone, checkPhone } = require('../../services/order');
 const { getProductDetailById, updateProductDetail } = require('../../services/products');
 const { sendMail } = require('../../services/mailer');
 const orderRouter = express.Router();
@@ -27,20 +27,26 @@ orderRouter.post('/', async (req, res) => {
             if (productDetail) {
                 const newQuantity = productDetail.quantity - quantity;
                 console.log(newQuantity);
-                const updateResult = await updateProductDetail(id_Product_detail, { quantity: newQuantity });
-                if (updateResult) {
-                    const orderdetail = await createOrderDetail({
-                        id_Order: newOrder.id,
-                        id_Product: detail.id_Product,
-                        id_Product_detail: id_Product_detail,
-                        id_Promotion: detail.id_Promotion,
-                        totalDetail: detail.totalDetail,
-                        quantity: quantity,
-                    });
+
+                if (newQuantity <= 0) {
+                    // Nếu số lượng mới sau khi cập nhật là 0 hoặc âm, cập nhật trạng thái của product_detail
+                    await updateProductDetail(id_Product_detail, { quantity: 0, status: 'Hết hàng' });
                 } else {
-                    // Trả về lỗi nếu cập nhật không thành công
-                    return res.status(500).json({ message: 'Error updating product detail' });
+                    // Nếu số lượng mới lớn hơn 0, tiến hành cập nhật số lượng
+                    const updateResult = await updateProductDetail(id_Product_detail, { quantity: newQuantity });
+                    if (!updateResult) {
+                        // Trả về lỗi nếu cập nhật không thành công
+                        return res.status(500).json({ message: 'Error updating product detail' });
+                    }
                 }
+                await createOrderDetail({
+                    id_Order: newOrder.id,
+                    id_Product: detail.id_Product,
+                    id_Product_detail: id_Product_detail,
+                    id_Promotion: detail.id_Promotion,
+                    totalDetail: detail.totalDetail,
+                    quantity: quantity,
+                });
             }
         };
 
@@ -101,9 +107,19 @@ orderRouter.post('/', async (req, res) => {
 orderRouter.get('/', async (req, res) => {
     const order = await getAllOrders();
     if (!order) {
-        res.status(500).send("can't get the order list");
+        return res.status(500).send("can't get the order list");
     }
     res.status(200).send(order);
+})
+orderRouter.get('/order/:phone', async (req, res) => {
+    const { phone } = req.params;
+    console.log(phone);
+    const Phone = await checkPhone(phone);
+    if (!Phone) {
+        return res.status(500).send("order does not exist");
+    }
+    const orders = await getOrderByPhone(phone)
+    res.status(200).send(orders);
 })
 orderRouter.put('/:id', async (req, res) => {
     const { id } = req.params;
@@ -116,7 +132,7 @@ orderRouter.put('/:id', async (req, res) => {
     }
     const order = await updateOrder(id, { fullname, phone, email, address, status });
     if (!order) {
-        res.status(501).send("can't update the order ");
+        return res.status(501).send("can't update the order ");
     }
     res.status(200).send(order);
 });
@@ -124,7 +140,7 @@ orderRouter.delete('/:id', async (req, res) => {
     const { id } = req.params;
     const checkId = await getOrderById(id);
     if (!checkId) {
-        res.status(500).send("order does not exist");
+        return res.status(500).send("order does not exist");
     }
     const order = await deleteOrder(id);
     if (!order) {
