@@ -29,7 +29,7 @@ const schema = yup.object().shape({
 export default function Cart() {
   const [openAdd, setOpenAdd] = useState(false);
   const cancelButtonRef = useRef(null);
-
+  const [orderSuccessDetail, setOrderSuccessDetail] = useState();
   const [reload, setReload] = useState(false);
   const {
     handleSubmit,
@@ -38,7 +38,10 @@ export default function Cart() {
   } = useForm({
     resolver: yupResolver(schema),
   });
-  const [orderSuccess, setOrderSuccess] = useState({});
+  const [orderSuccess, setOrderSuccess] = useState({
+    order: "",
+    orderDetail: "",
+  });
   const [order, setOrder] = useState({
     fullname: "",
     phone: "",
@@ -53,26 +56,24 @@ export default function Cart() {
   });
 
   const [soNha, setSoNha] = useState("");
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setOrder((prevOrder) => ({
-      ...prevOrder,
-      [name]: value,
-    }));
-  };
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setOrder((prevOrder) => ({
+  //     ...prevOrder,
+  //     [name]: value,
+  //   }));
+  // };
   const handleChangeSoNha = (e) => {
     const diaChi = e.target.value;
     setSoNha(diaChi);
   };
   console.log("dia chi:", soNha);
 
-
   //   setOrder((prevOrder) => ({
   //     ...prevOrder,
   //     total: formatPrice(calculateTotal() + 20000),
   //   }));
   // };
-  const [totalDetail, settotalDetail] = useState();
 
   const [cart, setCart] = useState([]);
   useEffect(() => {
@@ -153,6 +154,17 @@ export default function Cart() {
       return total + product.price * (product.quantity || 1);
     }, 0);
   };
+  const calculateTotal2 = () => {
+    return orderSuccess && orderSuccess.orderDetail
+      ? orderSuccess.orderDetail.reduce((total, product) => {
+          // Chuyển đổi chuỗi thành số và thêm vào tổng
+          return (
+            total + (parseFloat(product.totalDetail.replace(/\./g, "")) || 0)
+          );
+        }, 0)
+      : 0;
+  };
+
   function formatPrice(price) {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
@@ -170,9 +182,16 @@ export default function Cart() {
     console.log("tuiiiiiiiiiiiii dat hang duoc roi", e);
     try {
       const orderfinal = await createOrder(order);
-      setOrderSuccess(orderfinal);
-      console.log("final", orderfinal.id);
+      const orderfinalDetail = await getOrderDetail(orderfinal.id);
+      console.log("aaa");
+      setOrderSuccess({
+        ...orderSuccess,
+        order: orderfinal,
+        orderDetail: orderfinalDetail,
+      });
+
       setReload(!reload);
+      clearLocalStorage();
     } catch (error) {
       console.log(error);
     }
@@ -192,11 +211,10 @@ export default function Cart() {
 
   const [reset, setReset] = useState(false);
   const closeModal = () => {
-    setOpenAdd(false)
-    clearLocalStorage()
-    setReload(!reload);
+    setOpenAdd(false);
 
-  }
+    setReload(!reload);
+  };
   // get tỉnh
   useEffect(() => {
     const fetchPublicProvince = async () => {
@@ -238,22 +256,26 @@ export default function Cart() {
   useEffect(() => {
     setAddress((prev) => ({
       ...prev,
-      address: `${ward
-        ? `${wards?.find((item) => item.ward_id === ward)?.ward_name},`
-        : ""
-        } ${district
-          ? `${districts?.find((item) => item.district_id === district)
-            ?.district_name
-          },`
+      address: `${
+        ward
+          ? `${wards?.find((item) => item.ward_id === ward)?.ward_name},`
           : ""
-        } ${province
+      } ${
+        district
+          ? `${
+              districts?.find((item) => item.district_id === district)
+                ?.district_name
+            },`
+          : ""
+      } ${
+        province
           ? provinces?.find((item) => item.province_id === province)
-            ?.province_name
+              ?.province_name
           : ""
-        }`,
+      }`,
       province: province
         ? provinces?.find((item) => item.province_id === province)
-          ?.province_name
+            ?.province_name
         : "",
     }));
   }, [province, district, ward]);
@@ -269,9 +291,9 @@ export default function Cart() {
       total: formatPrice(calculateTotal()),
     }));
   }, [cart]);
-  console.log("address", address);
+  // console.log("address", address);
   return (
-    <div className="w-full bg-gray-100 py-16">
+    <div className="w-full bg-gray-100 sm:py-16 pt-28">
       <Transition.Root show={openAdd} as={Fragment}>
         <Dialog
           as="div"
@@ -383,20 +405,39 @@ export default function Cart() {
                         </div>
                       </div>
                       <div className="bg-gray-100 rounded-md my-2">
-                        <div className="flex p-3">
-                          <div className="pr-10 ">
+                        <div className="flex p-3 max-w-full ">
+                          <div className="pr-10 min-w-[30%]">
                             <p className="py-1">Mã đơn hàng</p>
                             <p className="py-1">Họ và tên</p>
                             <p className="py-1">Số điện thoại</p>
                             <p className="py-1">Hình thức thanh toán</p>
+                            <p className="py-1">Địa chỉ</p>
+
                             {/* <p>Nhận hàng tại nhà</p> */}
                           </div>
-                          <div>
-                            <p className="py-1">{orderSuccess.id}</p>
-                            <p className="py-1">{orderSuccess.fullname}</p>
-                            <p className="py-1">{orderSuccess.phone}</p>
-                            <p className="py-1">Thanh toán khi Nhận hàng </p>
-                            {/* <p>Nhận hàng tại nhà</p> */}
+
+                          <div className="flex-1 ">
+                            <p className="py-1 ">
+                              {orderSuccess.order.id
+                                ? orderSuccess.order.id
+                                : "không"}
+                            </p>
+                            <p className="py-1">
+                              {orderSuccess.order.fullname
+                                ? orderSuccess.order.fullname
+                                : "không"}
+                            </p>
+                            <p className="py-1">
+                              {orderSuccess.order.phone
+                                ? orderSuccess.order.phone
+                                : "không"}
+                            </p>
+                            <p className="py-1">Thanh toán khi nhận hàng</p>
+                            <p className="py-1 w-full">
+                              {orderSuccess.order.address
+                                ? orderSuccess.order.address
+                                : "Nhận hàng tại nhà"}
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -404,69 +445,73 @@ export default function Cart() {
                         Thông tin đơn hàng
                       </p>
                       <div className="bg-gray-50 rounded-md my-2">
-                        {order.order_details.map((item, index) => (
-                          <div>
-                            <div className="flex p-3 gap-4">
-                              <div className="p-2 border rounded-md bg-white">
-                                <div className="w-[100px] h-[100px]">
-                                  <img
-                                    className="w-full h-full "
-                                    src={`${DOMAIN}${item.imageProductDetail}`}
-                                    alt=""
-                                  />
+                        {orderSuccess.orderDetail &&
+                          orderSuccess.orderDetail.map((item, index) => (
+                            <div key={index}>
+                              <div className="flex p-3 gap-4">
+                                <div className="p-2 border rounded-md bg-white">
+                                  <div className="w-[100px] h-[100px]">
+                                    <img
+                                      className="w-full h-full "
+                                      src={`${DOMAIN}${item.Product_detail.image}`}
+                                      alt=""
+                                    />
+                                  </div>
                                 </div>
-                              </div>
-                              <div className="flex-1">
-                                <p className="text-xl font-medium pb-1">
-                                  Điện thoại {item.name} {item.capacity}{" "}
-                                  {item.color}
-                                </p>
-                                <div className="flex justify-between">
-                                  <p className="text-gray-500">
-                                    Số lượng: {item.quantity}
+                                <div className="flex-1">
+                                  <p className="text-xl font-medium pb-1">
+                                    Điện thoại {item.Product.name}{" "}
+                                    {item.Product.capacity}{" "}
+                                    {item.Product_detail.color}
                                   </p>
-                                  <div>
-                                    <p className="font-medium text-red-600">
-                                      {formatPrice(`${item.totalDetail}`)}đ
+                                  <div className="flex justify-between">
+                                    <p className="text-gray-500">
+                                      Số lượng: {item.quantity}
                                     </p>
-                                    <p className=" text-gray-500 line-through">
-                                      {formatPrice(
-                                        `${item.discount * (item.quantity || 1)
-                                        }`
-                                      )}
-                                      đ
-                                    </p>
+                                    <div>
+                                      <p className="font-medium text-red-600">
+                                        {formatPrice(`${item.totalDetail}`)}đ
+                                      </p>
+                                      <p className=" text-gray-500 line-through">
+                                        {formatPrice(
+                                          `${
+                                            item.Product_detail.discount *
+                                            (item.quantity || 1)
+                                          }`
+                                        )}
+                                        đ
+                                      </p>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                            <div className="p-3">
-                              <p className="text-lg font-normal">
-                                Khuyến mãi kèm theo
-                              </p>
-                              <div className="border border-gray-200 rounded-lg flex items-center p-3">
-                                <div className="rounded-full w-20 h-20  border flex items-center justify-center ">
-                                  <img
-                                    className="w-[80%] h-[80%] my-auto mx-auto"
-                                    src={`${DOMAIN}${item.imageGift}`}
-                                    alt=""
-                                  />
-                                </div>
-                                <p className="py-2 px-2 text-sm">
-                                  Tặng ngay bộ {item.gift} giá lên tới dưới 1 tỉ
-                                  đồng
+                              <div className="p-3">
+                                <p className="text-lg font-normal">
+                                  Khuyến mãi kèm theo
                                 </p>
+                                <div className="border border-gray-200 rounded-lg flex items-center p-3">
+                                  <div className="rounded-full w-20 h-20  border flex items-center justify-center ">
+                                    <img
+                                      className="w-[80%] h-[80%] my-auto mx-auto"
+                                      src={`${DOMAIN}${item.Promotion.image}`}
+                                      alt=""
+                                    />
+                                  </div>
+                                  <p className="py-2 px-2 text-sm">
+                                    Tặng ngay bộ {item.Promotion.gift} giá lên
+                                    tới dưới 1 tỉ đồng
+                                  </p>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        ))}
+                          ))}
                       </div>
                       {/* <div className="bg-gray-200 rounded-md my-2"></div> */}
                       <div className="bg-gray-100 rounded-md my-2">
                         <div className="p-3">
                           <div className="flex justify-between">
                             <p>Tổng tiền:</p>
-                            <p>{formatPrice(`${calculateTotal()}đ`)}</p>
+                            <p>{formatPrice(`${calculateTotal2()}đ`)}</p>
                           </div>
                           <div className="flex justify-between">
                             <p>Phí giao hàng:</p>
@@ -480,7 +525,7 @@ export default function Cart() {
                           <div className="flex justify-between">
                             <p className="text-xl font-medium ">Thành tiền</p>
                             <p className="text-red-600 text-xl font-medium">
-                              {formatPrice(`${calculateTotal()}đ`)}
+                              {formatPrice(`${calculateTotal2()}đ`)}
                             </p>
                           </div>
                         </div>
@@ -502,9 +547,9 @@ export default function Cart() {
           </div>
         </Dialog>
       </Transition.Root>
-      <div className="rounded-lg md:max-w-[900px] max-w-screen-lg  mx-auto ">
-        <NavLink to="/">
 
+      <div className="rounded-lg md:max-w-[900px] max-w-screen-lg  mx-auto px-4 sm:px-0">
+        <NavLink to="/">
           <div className="flex items-center text-blue-600 ">
             <svg
               width="20px"
@@ -516,7 +561,7 @@ export default function Cart() {
               // xmlns:xlink="http://www.w3.org/1999/xlink"
               viewBox="0 0 72 72"
               enable-background="new 0 0 72 72"
-            // xml:space="preserve"
+              // xml:space="preserve"
             >
               <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
               <g
@@ -540,24 +585,28 @@ export default function Cart() {
         </p>
       </div>
       {cart.length > 0 ? (
-        <div className="flex flex-col rounded-lg md:max-w-[900px] max-w-screen-lg mt-15  pt-5 mx-auto ">
+        <div className="flex flex-col rounded-lg md:max-w-[900px] max-w-screen-lg mt-15  pt-5 mx-auto px-4 sm:px-0 ">
           <div className="rounded-2xl bg-white py-5 px-4 ">
             {cart.map((product, index) => (
               <div>
                 <div className="flex gap-4 mb-4 ">
                   <div className="w-[100px] h-[100px]">
-                    <img
-                      className="w-full h-full"
-                      src={`${DOMAIN}${product.imageProductDetail}`}
-                      alt=""
-                    />
+                    <NavLink to={`/product_detail/${product.id_Product}`}>
+                      <img
+                        className="w-full h-full"
+                        src={`${DOMAIN}${product.imageProductDetail}`}
+                        alt=""
+                      />
+                    </NavLink>
                   </div>
                   <div className="flex-1">
                     <div className="flex justify-between">
-                      <p className="font-semibold text-lg">
-                        Điện thoại {product.name} {product.capacity}{" "}
-                        {product.color}
-                      </p>
+                      <NavLink to={`/product_detail/${product.id_Product}`}>
+                        <p className="font-semibold sm:text-lg text-[15px]">
+                          Điện thoại {product.name} {product.capacity}{" "}
+                          {product.color}
+                        </p>
+                      </NavLink>
                       {/* <p>số lượng trong kho: {product.quantityDB}</p> */}
                       <div>
                         <button onClick={() => removeFromCart(index)}>
@@ -598,13 +647,13 @@ export default function Cart() {
                         </button>
                       </div>
                     </div>
-                    <div className="flex justify-between mt-1">
+                    <div className="sm:flex justify-between mt-1">
                       <div>
-                        <div className="flex items-center text-base">
+                        <div className="flex items-center sm:text-base text-[12px]">
                           <p className="text-gray-500 pr-1  ">Màu sắc :</p>
                           <p>{product.color}</p>
                         </div>
-                        <div className="flex items-center text-base">
+                        <div className="flex items-center sm:text-base text-[12px]">
                           <p className="text-gray-500 pr-1  ">Số lượng:</p>
                           <div className=" flex items-center border rounded-l-xl  h-[30px]">
                             <button onClick={() => decreaseQuantity(index)}>
@@ -710,7 +759,7 @@ export default function Cart() {
                           </p>
                         )}
                       </div>
-                      <div className="text-lg">
+                      <div className="sm:text-lg">
                         <p className="text-red-500 font-semibold">
                           {formatPrice(
                             `${product.price * (product.quantity || 1)} ₫`
@@ -815,11 +864,11 @@ export default function Cart() {
                     ></path>{" "}
                   </g>
                 </svg>
-                <p className="font-semibold text-xl text-red-500">
+                <p className="font-semibold sm:text-xl text-red-500">
                   Hình thức giao hàng
                 </p>
               </div>
-              <span className="text-base" name="" id="">
+              <span className="sm:text-base" name="" id="">
                 Giao hàng tận nhà
               </span>
             </div>
@@ -828,7 +877,7 @@ export default function Cart() {
                 <p>Thông tin người nhận hàng</p>
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className=" mt-2 grid grid-cols-2 gap-4">
-                    <div>
+                    <div className="col-span-2 sm:col-span-1">
                       <label className="block">Họ và tên:</label>
                       <Controller
                         name="fullname"
@@ -860,7 +909,7 @@ export default function Cart() {
                         required
                       /> */}
                     </div>
-                    <div>
+                    <div className="col-span-2 sm:col-span-1">
                       <label className="block">Số điện thoại:</label>
 
                       <Controller
@@ -919,7 +968,7 @@ export default function Cart() {
                     </div>
                     <div className="col-span-2 border rounded-lg   px-2">
                       <div className="flex flex-col gap-4">
-                        <div className="flex items-center gap-4">
+                        <div className="sm:flex items-center gap-4">
                           <Select
                             type="province"
                             value={province}
@@ -986,12 +1035,12 @@ export default function Cart() {
                     </div>
                   </div>
                   <div className="rounded-2xl bg-white py-5 px-4 mt-5 ">
-                    <div className="flex gap-4  justify-between items-start">
+                    <div className="sm:flex sm:gap-4  justify-between items-start">
                       <div className="flex-1">
                         <div className="flex justify-between">
                           <p>Tổng tiền:</p>
                           <p>
-                            {formatPrice(`${calculateTotal()} ₫`)}
+                            {formatPrice(`${calculateTotal()}₫`)}
                             {/* {calculateTotal()}đ */}
                           </p>
                         </div>
@@ -1001,14 +1050,14 @@ export default function Cart() {
                         </div>
                         <div className="flex justify-between">
                           <p>Giảm giá voucher</p>
-                          <p>0đ</p>
+                          <p>0₫</p>
                         </div>
                       </div>
-                      <div className="flex-1">
+                      <div className="flex-1 mt-1 sm:mt-0">
                         <div className="flex justify-between ">
                           <p>Cần thanh toán ({cart.length} sản phẩm)</p>
                           <p className="text-red-500 text-lg font-semibold">
-                            {formatPrice(`${calculateTotal()} ₫`)}
+                            {formatPrice(`${calculateTotal()}₫`)}
                             {/* {calculateTotal() + 20000} */}
                           </p>
                         </div>

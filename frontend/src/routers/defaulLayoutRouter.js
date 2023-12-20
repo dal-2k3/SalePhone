@@ -10,6 +10,7 @@ import OrderDetail from "../components/OrderDetail";
 import OrdersList from "../components/OrdersList";
 import ProductDetail from "../components/ProductDetail";
 import { Example } from "../components/address";
+import { ListPagination } from "../components/test";
 
 
 const { default: Home } = require("../page/Home");
@@ -56,7 +57,7 @@ const publicRoutes = [
         component: Contact
     },
     {
-        path: "/checkOrder",
+         path: "/checkOrder",
         component: CheckOrder
     },
     {
@@ -67,5 +68,6 @@ const publicRoutes = [
         path: "/order/details/:id",
         component: OrderDetail
     },
+
 ]
 export default publicRoutes;

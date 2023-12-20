@@ -13,6 +13,21 @@ import {
 } from "../services/products/product";
 import { DOMAIN } from "../utils/settings/config";
 import { createComment, getComments } from "../services/comments";
+import * as yup from "yup";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+const schema = yup.object().shape({
+  username: yup.string().required("Họ và tên không được để trống"),
+  phone: yup
+    .string()
+    .matches(/^[0-9]{10}$/, "Vui lòng nhập đúng số điện thoại")
+    .required("Số điện thoại không được để trống"),
+  // email: yup
+  //   .string()
+  //   .email("Email không đúng")
+  //   .required("Email không được để trống"),
+});
+
 export default function ProductDetail() {
   const [product, setProduct] = useState([]);
   const { id: productId } = useParams();
@@ -22,7 +37,13 @@ export default function ProductDetail() {
   const [selectedOption, setSelectedOption] = useState("");
   const [comments, setComments] = useState([]);
   const [rating, setRating] = useState(0);
-
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
   const handleChangeStar = (value) => {
     setRating(value);
     setReview((prevReview) => ({
@@ -45,8 +66,9 @@ export default function ProductDetail() {
     }));
     // Ở đây bạn có thể gửi giá trị rating lên server hoặc xử lý nó theo ý muốn
   };
-  const handleReviewSubmit = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (e) => {
+    // e.preventDefault();
+    console.log("tuiiiiiiiiiiiii dat hang duoc roi", e);
     try {
       console.log("comment", review);
       await createComment(review);
@@ -205,6 +227,7 @@ export default function ProductDetail() {
   console.log(isActivePhone);
 
   console.log("local", selectedProduct);
+  console.log("review", review);
 
   const navigate = useNavigate();
   const addToCart = () => {
@@ -220,7 +243,8 @@ export default function ProductDetail() {
       // Nếu sản phẩm đã tồn tại trong giỏ hàng, tăng số lượng lên
 
       if (
-        storedCart[existingIndex].quantity == storedCart[existingIndex].quantityDB
+        storedCart[existingIndex].quantity ==
+        storedCart[existingIndex].quantityDB
       ) {
         navigate("/cart");
       } else {
@@ -271,7 +295,7 @@ export default function ProductDetail() {
               </Transition.Child>
 
               <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-                <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0 ">
+                <div className="flex min-h-full my-32 sm:my-0 justify-center p-4 text-center sm:items-center sm:p-0 ">
                   <Transition.Child
                     as={Fragment}
                     enter="ease-out duration-300"
@@ -281,7 +305,7 @@ export default function ProductDetail() {
                     leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                     leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                   >
-                    <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-screen-sm ">
+                    <Dialog.Panel className="mt-0 relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-screen-sm ">
                       <div className="  mx-auto py-3 px-3 bg-white  ">
                         <div className="flex  sm:items-center justify-between">
                           <h1 className="text-2xl font-bold pl-2">
@@ -316,7 +340,7 @@ export default function ProductDetail() {
                           </button>
                         </div>
                         <hr className=" border-solid border-[1.5px] my-5" />
-                        <form onSubmit={handleReviewSubmit}>
+                        <form onSubmit={handleSubmit(onSubmit)}>
                           <div className="">
                             <div className="flex items-center justify-center h-300">
                               {isActivePhone && (
@@ -356,44 +380,70 @@ export default function ProductDetail() {
                                 id=""
                                 cols="30"
                                 rows="10"
-                                required
                               ></textarea>
                             </div>
                             <hr className=" border-solid border-[1.5px] my-5" />
                             <div>
-                              <div className="grid grid-cols-2 gap-4">
+                              <div className="grid sm:grid-cols-2 gap-2 sm:gap-4">
                                 <div>
                                   <label htmlFor="" className="font-normal">
                                     Họ tên:
                                   </label>
-                                  <input
+                                  <Controller
                                     name="username"
-                                    value={review.username}
-                                    onChange={handleChangeReview}
-                                    className="border w-full  h-[40px]   rounded border-slate-300"
-                                    type="text"
-                                    placeholder="Nhập họ và tên (bắt buộc..)"
-                                    required
+                                    control={control}
+                                    render={({ field }) => (
+                                      <input
+                                        type="text"
+                                        value={field.value}
+                                        onChange={(e) => {
+                                          field.onChange(e);
+                                          setReview((prevOrder) => ({
+                                            ...prevOrder,
+                                            username: e.target.value,
+                                          }));
+                                        }}
+                                        className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2 w-full"
+                                        placeholder="Nhập họ và tên"
+                                      />
+                                    )}
                                   />
+                                  <p className="text-red-500">
+                                    {errors.username?.message}
+                                  </p>
                                 </div>
                                 <div>
                                   <label htmlFor="" className="font-normal">
                                     Số điện thoại mua hàng:
                                   </label>
 
-                                  <input
+                                  <Controller
                                     name="phone"
-                                    value={review.phone}
-                                    onChange={handleChangeReview}
-                                    className="border w-full h-[40px]   rounded border-slate-300"
-                                    type="number"
-                                    placeholder="Nhập số điện thoại(bắt buộc..)"
-                                    required
+                                    control={control}
+                                    render={({ field }) => (
+                                      <input
+                                        type="text"
+                                        value={field.value}
+                                        onChange={(e) => {
+                                          field.onChange(e);
+                                          setReview((prevOrder) => ({
+                                            ...prevOrder,
+                                            phone: e.target.value,
+                                          }));
+                                        }}
+                                        className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2 w-full"
+                                        placeholder="Nhập số điện thoại"
+                                      />
+                                    )}
                                   />
+                                  <p className="text-red-500">
+                                    {errors.phone?.message}
+                                  </p>
                                 </div>
                               </div>
                             </div>
                           </div>
+
                           <button
                             type="submit"
                             className="bg-green-500 rounded-md  text-white py-2 px-4 w-full mb-4 mt-4"
@@ -408,8 +458,8 @@ export default function ProductDetail() {
               </div>
             </Dialog>
           </Transition.Root>
-          <div className="flex w-[100%] px-5">
-            <div className="w-[45%] border border-solid py-8 rounded-2xl h-auto mr-5">
+          <div className="md:flex w-[100%] mt-5 md:mt-0 md:px-5">
+            <div className="w-full md:w-[45%] border border-solid py-8 rounded-2xl h-auto mr-5">
               <div className="relative mb-4 h-[400px] flex items-center justify-center">
                 {isActivePhone && (
                   <img
@@ -539,23 +589,23 @@ export default function ProductDetail() {
               </div>
             </div>
 
-            <div className=" w-[55%]   h-auto ">
+            <div className="w-full md:w-[55%]   h-auto ">
               <div>
-                <p className="font-bold text-xl   ">
+                <p className="font-bold text-xl mt-2 sm:mt-0">
                   {item.name} ({item.capacity}) - Chính hãng VN/A
                 </p>
               </div>
               <div className="flex items-center my-2">
-                <p className="text-[#fd475a] font-bold mr-2 text-2xl">
+                <p className="text-[#fd475a] font-bold mr-2 sm:text-2xl">
                   {isActivePhone ? `${formatPrice(isActivePhone.price)} đ` : 0}
                 </p>
-                <p className="text-gray-500 font-bold line-through mr-2">
+                <p className="text-gray-500 text-[12px] sm:text-normal font-bold line-through mr-2 ">
                   {isActivePhone
                     ? `${formatPrice(isActivePhone.discount)} đ`
                     : 0}
                 </p>
                 <p className="mr-2">|</p>
-                <p className="text-base italic text-gray-700 ">
+                <p className="sm:text-base italic text-[12px] text-gray-700 ">
                   Giá đã bao gồm VAT
                 </p>
               </div>
@@ -564,7 +614,7 @@ export default function ProductDetail() {
               </p>
               <div
                 style={{
-                  backgroundColor: '#e46175'
+                  backgroundColor: "#e46175",
                 }}
                 className="rounded-lg flex justify-center items-center uppercase"
               >
@@ -596,7 +646,7 @@ export default function ProductDetail() {
               </div>
               {/* //capacity */}
               <div>
-                <div className="xl:flex mt-4 justify-center bg-gray-100 rounded-lg">
+                <div className="xl:flex flex mt-4 justify-center bg-gray-100 rounded-lg">
                   {filteredArray.flat().map((item) => (
                     <NavLink
                       key={item.id}
@@ -668,9 +718,12 @@ export default function ProductDetail() {
               </div>
 
               <div className="mt-3">
-                <div style={{
-                  backgroundColor: '#e46175'
-                }} className="text-center  rounded-t-lg text-white uppercase text-sm ">
+                <div
+                  style={{
+                    backgroundColor: "#e46175",
+                  }}
+                  className="text-center  rounded-t-lg text-white uppercase text-sm "
+                >
                   ưu đãi đặc biệt
                 </div>
                 <div className="flex items-center justify-center py-2 bg-white rounded-b-lg border">
@@ -986,6 +1039,110 @@ export default function ProductDetail() {
                   </div>
                 </div>
               )}
+            </div>
+          </div>
+          <div>
+            <div className="text-2xl font-bold">Xem thêm sản phẩm khác</div>
+            <div class="grid grid-cols-2  md:grid-cols-5 gap-4 mt-3">
+              {item.category.map((item) => (
+                <div
+                  key={item.id}
+                  class="col-span-1  border border-solid rounded-3xl bg-white  shadow-lg"
+                >
+                  {item.product_detail &&
+                    item.product_detail.map((detail, index) => (
+                      <div
+                        key={index}
+                        className="py-8 flex flex-col items-center lg:relative group "
+                      >
+                        <NavLink to={`/product_detail/${item.id}`}>
+                          <div className="mb-4 relative overflow-hidden transition-transform duration-500 ease-in-out transform-gpu group-hover:-translate-y-3">
+                            <img
+                              className="max-h-[200px]"
+                              src={`${DOMAIN}${detail.image}`}
+                              alt={`${detail.image}`}
+                            />
+                          </div>
+                        </NavLink>
+                        <div className="flex items-center lg:absolute top-[200px] left-0 rounded-r-xl bg-red-600">
+                          <svg
+                            height="20px"
+                            width="20px"
+                            version="1.1"
+                            id="Layer_1"
+                            xmlns="http://www.w3.org/2000/svg"
+                            // xmlns:xlink="http://www.w3.org/1999/xlink"
+                            viewBox="0 0 512 512"
+                            // xml:space="preserve"
+                            fill="#000000"
+                          >
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g
+                              id="SVGRepo_tracerCarrier"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            ></g>
+                            <g id="SVGRepo_iconCarrier">
+                              {" "}
+                              <path
+                                style={{ fill: "#FF5023" }}
+                                d="M141.005,339.641H16.696c-5.788,0-11.157-3.082-14.201-7.995c-3.043-4.924-3.32-11.117-0.733-16.29 L31.42,256.02L1.761,196.695c-2.587-5.173-2.31-11.249,0.733-16.174c3.043-4.913,8.413-7.837,14.201-7.837h124.31 c5.978,0,11.5,3.114,14.473,8.299c2.979,5.173,2.962,11.513-0.049,16.677c-10.815,18.566-16.299,38.186-16.299,58.36 s5.484,39.805,16.299,58.37c3.011,5.163,3.027,11.62,0.049,16.794C152.505,336.368,146.983,339.641,141.005,339.641z"
+                              ></path>{" "}
+                              <path
+                                style={{ fill: "#CD2A00" }}
+                                d="M495.304,339.641h-124.31c-5.978,0-11.5-3.277-14.473-8.462c-2.978-5.173-2.962-11.595,0.049-16.758 c10.815-18.566,16.299-38.226,16.299-58.4s-5.484-39.826-16.299-58.39c-3.011-5.163-3.027-11.467-0.049-16.641 c2.973-5.185,8.495-8.304,14.473-8.304h124.31c5.788,0,11.157,2.918,14.201,7.831c3.043,4.924,3.32,11.036,0.733,16.209 l-29.658,59.295l29.658,59.305c2.587,5.173,2.31,11.402-0.733,16.326C506.461,336.564,501.092,339.641,495.304,339.641z"
+                              ></path>{" "}
+                              <path
+                                style={{ fill: "#FFDA44" }}
+                                d="M253.773,406.261c-82.853,0-148.033-67.402-148.033-150.261S173.147,105.739,256,105.739 S406.261,173.142,406.261,256S336.625,406.261,253.773,406.261z"
+                              ></path>{" "}
+                              <path
+                                style={{ fill: "#FFA733" }}
+                                d="M406.261,256c0-82.858-67.408-150.261-150.261-150.261l-2.227,300.521 C336.625,406.261,406.261,338.858,406.261,256z"
+                              ></path>{" "}
+                              <path
+                                style={{ fill: "#FFEB99" }}
+                                d="M300.13,333.434c-2.658,0-5.326-0.63-7.771-1.924L256,312.39l-36.359,19.12 c-5.635,2.978-12.446,2.468-17.582-1.261c-5.147-3.739-7.718-10.065-6.647-16.337l6.94-40.478l-29.413-28.684 c-4.549-4.445-6.185-11.076-4.217-17.12c1.962-6.044,7.19-10.446,13.478-11.359l40.647-5.902l18.179-36.837 c2.815-5.695,8.619-9.304,14.973-9.304c6.353,0,12.158,3.608,14.973,9.304l18.179,36.837l40.647,5.902 c6.288,0.913,11.517,5.315,13.478,11.359c1.968,6.044,0.332,12.674-4.217,17.12l-29.413,28.684l6.94,40.478 c1.071,6.272-1.5,12.597-6.647,16.337C307.032,332.358,303.591,333.434,300.13,333.434z"
+                              ></path>{" "}
+                              <path
+                                style={{ fill: "#FFDA44" }}
+                                d="M292.357,331.51c2.445,1.293,5.114,1.924,7.772,1.924c3.462,0,6.902-1.076,9.81-3.184 c5.147-3.739,7.718-10.065,6.647-16.337l-6.94-40.478l29.413-28.684c4.549-4.445,6.185-11.076,4.217-17.12 c-1.962-6.044-7.19-10.446-13.478-11.359l-40.647-5.902l-18.179-36.837c-2.815-5.695-8.294-9.304-14.973-9.304v148.162 L292.357,331.51z"
+                              ></path>{" "}
+                            </g>
+                          </svg>
+                          <p className=" px-1 py-1  text-white text-xs">
+                            Giảm
+                            {formatPrice(`${detail.discount - detail.price} ₫`)}
+                          </p>
+                        </div>
+                        <div className="text-center">
+                          <div className="mb-2 px-4">
+                            <a
+                              href={`/product_detail/${item.id}`}
+                              className="font-bold text-sm"
+                            >
+                              {item.name} ({item.capacity}) - Chính hãng VN/A
+                            </a>
+                          </div>
+                          <div className="mb-2 flex-col md:flex text-center items-center justify-center ">
+                            <p className="text-red-500 text-[18px] font-medium">
+                              {formatPrice(`${detail.price} ₫`)}
+                            </p>
+                            <p className="text-sm text-gray-500 line-through">
+                              {formatPrice(`${detail.discount} ₫`)}
+                            </p>
+                          </div>
+                          <div className="mb-4"></div>
+                          <div>
+                            <button class="py-2 px-5 rounded-full bg-blue-400 text-white font-bold transition duration-500 transform hover:bg-blue-300 hover:scale-110 active:bg-blue-700 active:scale-98 focus:outline-none">
+                              Mua ngay
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              ))}
             </div>
           </div>
         </div>

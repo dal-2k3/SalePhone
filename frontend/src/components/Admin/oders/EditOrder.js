@@ -9,7 +9,7 @@ export default function EditOrder({ order, onSave, onCancel }) {
         đã_giao: 'bg-blue-300',
         đã_hủy: 'bg-red-300',
     };
-
+    
     const handleChange = (e) => {
         const { name, value } = e.target;
         setEditedOrder((prevOrder) => ({
@@ -18,7 +18,8 @@ export default function EditOrder({ order, onSave, onCancel }) {
         }));
     }
     const handleEdit = async (e) => {
-        e.preventDefault();
+        e.preventDefault()
+
         try {
             onSave(editedOrder)
         } catch (error) {

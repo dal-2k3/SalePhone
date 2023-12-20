@@ -6,19 +6,24 @@ import {
 } from "../services/products/product";
 import { listCategories } from "../services/categories/categories";
 import { DOMAIN } from "../utils/settings/config";
-import './snow.css'
-
+import "./snow.css";
+import ReactPaginate from "react-paginate";
+// import "https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css";
 
 export default function ListProducts() {
   const [categories, setcategories] = useState([0]);
   const [products, setProducts] = useState([0]);
   const [reload, setReload] = useState(false);
   const { id } = useParams();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const itemsPerPage = 2;
   const handleGet = async (id) => {
     try {
       const product = await getProductsByCategory(id);
-      console.log(id);
       setProducts(product);
+
+      // console.log(id);
     } catch (error) {
       console.log(error);
     }
@@ -55,7 +60,24 @@ export default function ListProducts() {
   }, [id]);
 
   // get list categories
+  const fetchProducts = async () => {
+    try {
+      const productsData = await getProductsByCategory(id);
+      console.log("product ne", productsData);
+      const totalCount = productsData.length;
+      console.log(totalCount);
+      setTotalPages(Math.ceil(totalCount / itemsPerPage));
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+      const currentProducts = productsData.slice(startIndex, endIndex);
+      setProducts(currentProducts);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const numbers = [...Array(totalPages + 1).keys()].slice(1);
   useEffect(() => {
+    fetchProducts();
     const fetchCategories = async () => {
       try {
         const categoriesData = await listCategories();
@@ -65,37 +87,58 @@ export default function ListProducts() {
       }
     };
     fetchCategories();
-  }, [reload]);
+  }, [currentPage, id]);
+  const changePage = (id) => {
+    setCurrentPage(id);
+  };
+
+  // get list products
+  // useEffect(() => {
+  //   const fetchAllProducts = async () => {
+  //     try {
+  //       const productsData = await listProducts();
+  //       console.log('abc', productsData);
+  //       setProducts(productsData);
+  //     } catch (error) {
+  //       // Xử lý lỗi nếu cần
+  //       console.log(error);
+  //     }
+  //   };
+  //   fetchAllProducts();
+  // }, [reload]);
+
+
+
   // const calculateTotal = () => {
   //   return cart.reduce((total, product) => {
   //     return total + product.price * (product.quantity || 1);
   //   }, 0);
   // };
-  let container = document.getElementById('container');
+  // let container = document.getElementById("container");
 
-  if (container) {
-    let count = 30;
+  // if (container) {
+  //   let count = 30;
 
-    for (var i = 0; i < count; i++) {
-      let leftSnow = Math.floor(Math.random() * container.clientWidth);
-      let topSnow = Math.floor(Math.random() * container.clientHeight);
-      let widthSnow = Math.floor(Math.random() * 30);
-      let timeSnow = Math.floor((Math.random() * 5) + 5);
-      let blurSnow = Math.floor(Math.random() * 10);
-      console.log(leftSnow);
-      let div = document.createElement('div');
-      div.classList.add('snow');
-      div.style.left = leftSnow + 'px';
-      div.style.top = topSnow + 'px';
-      div.style.width = widthSnow + 'px';
-      div.style.height = widthSnow + 'px';
-      div.style.animationDuration = timeSnow + 's';
-      div.style.filter = "blur(" + blurSnow + "px)";
-      container.appendChild(div);
-    }
-  } else {
-    console.error("Không tìm thấy phần tử 'container'");
-  }
+  //   for (var i = 0; i < count; i++) {
+  //     let leftSnow = Math.floor(Math.random() * container.clientWidth);
+  //     let topSnow = Math.floor(Math.random() * container.clientHeight);
+  //     let widthSnow = Math.floor(Math.random() * 30);
+  //     let timeSnow = Math.floor(Math.random() * 5 + 5);
+  //     let blurSnow = Math.floor(Math.random() * 10);
+  //     // console.log(leftSnow);
+  //     let div = document.createElement("div");
+  //     div.classList.add("snow");
+  //     div.style.left = leftSnow + "px";
+  //     div.style.top = topSnow + "px";
+  //     div.style.width = widthSnow + "px";
+  //     div.style.height = widthSnow + "px";
+  //     div.style.animationDuration = timeSnow + "s";
+  //     div.style.filter = "blur(" + blurSnow + "px)";
+  //     container.appendChild(div);
+  //   }
+  // } else {
+  //   console.error("Không tìm thấy phần tử 'container'");
+  // }
   return (
     <div className="py-20 bg-gray-100">
       <div className="grid max-w-[95%]  px-4 pb-8 mx-auto ">
@@ -120,16 +163,11 @@ export default function ListProducts() {
             ))}
           </div>
           <div className=" w-[83%] ">
-
             <div id="container">
-
               <div className="snow"></div>
 
-              <div className="w-full h-[400px] rounded-3xl border border-solid bg-gray-50 bg-[url('https://fptshop.com.vn/Uploads/Originals/2021/12/20/637756009768148153_265645987_602450154204219_586930114020575363_n.png')] bg-no-repeat bg-center bg-cover">
-
-              </div>
+              <div className="w-full h-[400px] rounded-3xl border border-solid bg-gray-50 bg-[url('https://fptshop.com.vn/Uploads/Originals/2021/12/20/637756009768148153_265645987_602450154204219_586930114020575363_n.png')] bg-no-repeat bg-center bg-cover"></div>
             </div>
-
 
             <div className="mt-2">
               <div className="flex items-center justify-between ">
@@ -206,13 +244,16 @@ export default function ListProducts() {
                                 </g>
                               </svg>
                               <p className=" px-1 py-1  text-white text-xs">
-                                Giảm {formatPrice(`${detail.discount - detail.price} ₫`)}
+                                Giảm{" "}
+                                {formatPrice(
+                                  `${detail.discount - detail.price} ₫`
+                                )}
                               </p>
                             </div>
                           </NavLink>
 
                           <div className="text-center">
-                            <div className="mb-2 px-4">
+                            <div className="mb-2 px-4 min-h-[72px]">
                               <a
                                 href={`/product_detail/${item.id}`}
                                 className="font-bold text-sm"
@@ -254,6 +295,133 @@ export default function ListProducts() {
                   </div>
                 ))}
               </div>
+              {/* <ReactPaginate
+                nextLabel="next >"
+                onPageChange={handlePageClick}
+                pageRangeDisplayed={3}
+                marginPagesDisplayed={2}
+                pageCount={totalPages}
+                previousLabel="< previous"
+                pageClassName="page-item"
+                pageLinkClassName="page-link"
+                previousClassName="page-item"
+                previousLinkClassName="page-link"
+                nextClassName="page-item"
+                nextLinkClassName="page-link"
+                breakLabel="..."
+                breakClassName="page-item"
+                breakLinkClassName="page-link"
+                containerClassName="pagination"
+                activeClassName="active"
+                renderOnZeroPageCount={null}
+              /> */}
+              <div className="flex items-end justify-center mt-10">
+                <div className=" pagination">
+                  <button
+                    className={`mr-2 flex items-center text-cyan-500 ${
+                      currentPage === 1 ? "hidden" : "block"
+                    }`}
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage((prev) => prev - 1)}
+                  >
+                    <svg
+                      width="12px"
+                      height="12px"
+                      fill={`${currentPage === 1 ? "#6B7280" : "#1640D6"}`}
+                      viewBox="0 0 512 512"
+                      data-name="Layer 1"
+                      id="Layer_1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      transform="rotate(180)"
+                    >
+                      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                      <g
+                        id="SVGRepo_tracerCarrier"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      ></g>
+                      <g id="SVGRepo_iconCarrier">
+                        <path d="M214.78,478l-20.67-21.57L403.27,256,194.11,55.57,214.78,34,446.46,256ZM317.89,256,86.22,34,65.54,55.57,274.7,256,65.54,456.43,86.22,478Z"></path>
+                      </g>
+                    </svg>
+                  </button>
+
+                  {/* {currentPage} / {totalPages} */}
+                  {numbers.map((n, i) => (
+                    <li
+                      className={`page-item cursor-pointer mx-2 ${
+                        currentPage === n ? "active" : ""
+                      } `}
+                      key={i}
+                    >
+                      <a className="page-link" onClick={() => changePage(n)}>
+                        {n}
+                      </a>
+                    </li>
+                  ))}
+
+                  <button
+                    className={`flex items-center ml-2 ${
+                      currentPage === totalPages
+                        ? "text-gray-500 hidden"
+                        : "text-cyan-500 block"
+                    }`}
+                    disabled={currentPage === totalPages}
+                    onClick={() => setCurrentPage((prev) => prev + 1)}
+                  >
+                    {/* <p className="pr-1"> Trang sau</p> */}
+                    <svg
+                      width="12px"
+                      height="12px"
+                      viewBox="0 0 512 512"
+                      data-name="Layer 1"
+                      id="Layer_1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill={`${
+                        currentPage === totalPages ? "#6B7280" : "#1640D6"
+                      }`}
+                    >
+                      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                      <g
+                        id="SVGRepo_tracerCarrier"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      ></g>
+                      <g id="SVGRepo_iconCarrier">
+                        <path d="M214.78,478l-20.67-21.57L403.27,256,194.11,55.57,214.78,34,446.46,256ZM317.89,256,86.22,34,65.54,55.57,274.7,256,65.54,456.43,86.22,478Z"></path>
+                      </g>
+                    </svg>
+                  </button>
+                </div>
+                {/* <ReactPaginate
+                  nextLabel="next >"
+                  onPageChange={changePage}
+                  pageRangeDisplayed={3}
+                  marginPagesDisplayed={2}
+                  pageCount={10}
+                  previousLabel="< previous"
+                  pageClassName="page-item"
+                  pageLinkClassName="page-link"
+                  previousClassName="page-item"
+                  previousLinkClassName="page-link"
+                  nextClassName="page-item"
+                  nextLinkClassName="page-link"
+                  breakLabel="..."
+                  breakClassName="page-item"
+                  breakLinkClassName="page-link"
+                  containerClassName="pagination"
+                  activeClassName="active"
+                  renderOnZeroPageCount={null}
+                /> */}
+              </div>
+              {/* <ReactPaginate
+                pageCount={totalPages}
+                pageRangeDisplayed={5}
+                marginPagesDisplayed={2}
+                onPageChange={handlePageClick}
+                containerClassName={"pagination"}
+                activeClassName={"active"}
+              /> */}
             </div>
           </div>
         </div>

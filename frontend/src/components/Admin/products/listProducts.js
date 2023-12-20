@@ -12,7 +12,7 @@ import "react-quill/dist/quill.snow.css";
 import { DOMAIN } from "../../../utils/settings/config";
 import { listCategories } from "../../../services/categories/categories";
 import EditProduct from "./EditProduct";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function ListProducts() {
@@ -32,6 +32,10 @@ export default function ListProducts() {
     ],
     promotions: [{ gift: "", giftImage: "" }],
   });
+  const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const itemsPerPage = 10;
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -43,6 +47,29 @@ export default function ListProducts() {
     };
     fetchCategories();
   }, []);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const productsData = await listProducts();
+        const totalCount = productsData.length;
+        setTotalPages(Math.ceil(totalCount / itemsPerPage));
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const currentProducts = productsData.slice(startIndex, endIndex);
+
+        setProducts(currentProducts);
+      } catch (error) {
+        // Xử lý lỗi nếu cần
+        console.log(error);
+      }
+    };
+    fetchProducts();
+  }, [reload, currentPage]);
+  const numbers = [...Array(totalPages + 1).keys()].slice(1);
+  const changePage = (id) => {
+    setCurrentPage(id);
+  };
   const addDetail = () => {
     setProduct({
       ...product,
@@ -121,7 +148,7 @@ export default function ListProducts() {
     });
   };
   const handleSave = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     try {
       const formData = new FormData();
       formData.append("idCategory", product.idCategory);
@@ -164,9 +191,8 @@ export default function ListProducts() {
         ],
         promotions: [{ gift: "", giftImage: "" }],
       });
-      toast.success('thêm sản phẩm thành công');
+      toast.success("thêm sản phẩm thành công");
     } catch (error) {
-
       console.log(error);
       // Xử lý lỗi và hiển thị thông báo
       if (error.response) {
@@ -174,15 +200,16 @@ export default function ListProducts() {
         const statusCode = error.response.status;
         if (statusCode === 500) {
           // Xử lý lỗi 500, 501 và hiển thị thông báo
-          toast.warn('hình ảnh của bạn (phải là file ảnh)');
+          toast.warn("hình ảnh của bạn (phải là file ảnh)");
         } else {
           // Xử lý các lỗi khác và hiển thị thông báo
-          const errorMessage = error.response.data.message || 'Đã xảy ra lỗi khi thêm sản phẩm.';
+          const errorMessage =
+            error.response.data.message || "Đã xảy ra lỗi khi thêm sản phẩm.";
           toast.error(errorMessage);
         }
       } else {
         // Nếu không có response từ server (ví dụ: không thể kết nối đến server)
-        toast.error('Unable to connect to the server. Please try again later.');
+        toast.error("Unable to connect to the server. Please try again later.");
       }
     }
   };
@@ -210,17 +237,17 @@ export default function ListProducts() {
       setReload(!reload);
       setProducts(updatedProducts);
       setEditingProduct(null);
-      toast.success("sửa sản phẩm thành công 😒")
+      toast.success("sửa sản phẩm thành công 😒");
     } catch (error) {
       console.error("Error updating Product:", error);
     }
   };
-  // delete product 
+  // delete product
   const handleDelete = async (id) => {
     try {
       await deleteProduct(id);
       setReload(!reload);
-      toast.success('xóa sản phẩm thành công');
+      toast.success("xóa sản phẩm thành công");
     } catch (error) {
       console.log(error);
       if (error.response) {
@@ -228,46 +255,77 @@ export default function ListProducts() {
         const statusCode = error.response.status;
         if (statusCode === 500) {
           // Xử lý lỗi 500, 501 và hiển thị thông báo
-          toast.error('sản phẩm này đã tồn tại trong Order');
+          toast.error("sản phẩm này đã tồn tại trong Order");
         } else {
           // Xử lý các lỗi khác và hiển thị thông báo
-          const errorMessage = error.response.data.message || 'Đã xảy ra lỗi khi xóa sản phẩm.';
+          const errorMessage =
+            error.response.data.message || "Đã xảy ra lỗi khi xóa sản phẩm.";
           toast.error(errorMessage);
         }
       } else {
         // Nếu không có response từ server (ví dụ: không thể kết nối đến server)
-        toast.error('Unable to connect to the server. Please try again later.');
+        toast.error("Unable to connect to the server. Please try again later.");
       }
-
     }
-  }
+  };
   //  get list Products
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const productsData = await listProducts();
-        console.log(productsData);
-        setProducts(productsData);
-      } catch (error) {
-        // Xử lý lỗi nếu cần
-        console.log(error);
-      }
-    };
-    fetchProducts();
-  }, [reload]);
+
+  console.log(search);
+  console.log("products", products);
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
-
       <div className="max-w-full overflow-x-auto">
         <div className="mb-20">
           <div className="flex justify-between items-center mb-3">
             <div className="text-xl font-bold">Tất cả sản phẩm</div>
-            <button
-              onClick={() => setOpenAdd(true)}
-              className=" bg-green-600 text-white py-1 px-2 mr-2 rounded transition duration-150 ease-in-out ..."
-            >
-              Add Product
-            </button>
+            <div className="flex py-2">
+              <div className="pr-5">
+                <div class="relative ">
+                  <input
+                    type="text"
+                    onChange={(e) => {
+                      setSearch(e.target.value);
+                    }}
+                    //   style={{ background: "#eae9ee" }}
+                    class="border border-solid rounded-2xl p-4 w-full py-2 pl-4 pr-4  focus:outline-none focus:border-blue-500"
+                    placeholder="Tìm kiếm sản phẩm"
+                  />
+                  <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <svg
+                      height="32px"
+                      version="1.1"
+                      viewBox="0 0 32 32"
+                      width="32px"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <title />
+                      <desc />
+                      <defs />
+                      <g
+                        fill="none"
+                        fill-rule="evenodd"
+                        id="Page-1"
+                        stroke="none"
+                        stroke-width="1"
+                      >
+                        <g fill="#929292" id="icon-111-search">
+                          <path
+                            d="M19.4271164,21.4271164 C18.0372495,22.4174803 16.3366522,23 14.5,23 C9.80557939,23 6,19.1944206 6,14.5 C6,9.80557939 9.80557939,6 14.5,6 C19.1944206,6 23,9.80557939 23,14.5 C23,16.3366522 22.4174803,18.0372495 21.4271164,19.4271164 L27.0119176,25.0119176 C27.5621186,25.5621186 27.5575313,26.4424687 27.0117185,26.9882815 L26.9882815,27.0117185 C26.4438648,27.5561352 25.5576204,27.5576204 25.0119176,27.0119176 L19.4271164,21.4271164 L19.4271164,21.4271164 Z M14.5,21 C18.0898511,21 21,18.0898511 21,14.5 C21,10.9101489 18.0898511,8 14.5,8 C10.9101489,8 8,10.9101489 8,14.5 C8,18.0898511 10.9101489,21 14.5,21 L14.5,21 Z"
+                            id="search"
+                          />
+                        </g>
+                      </g>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={() => setOpenAdd(true)}
+                className=" bg-green-600 text-white py-1 px-2 mr-2 rounded transition duration-150 ease-in-out ..."
+              >
+                Thêm sản phẩm
+              </button>
+            </div>
           </div>
           <hr className="border-1 border-solid mb-4" />
           <Transition.Root show={openAdd} as={Fragment}>
@@ -339,7 +397,6 @@ export default function ListProducts() {
                                 >
                                   <option selected>Danh Mục</option>
                                   {categories.map((category) => (
-
                                     <option
                                       key={category.id}
                                       value={category.id}
@@ -399,7 +456,6 @@ export default function ListProducts() {
                                   name="parameter"
                                   id="parameter"
                                   theme="snow"
-
                                   value={product.parameter}
                                   onChange={handleDescriptionChange}
                                   modules={{
@@ -691,7 +747,11 @@ export default function ListProducts() {
               </tr>
             </thead>
             <tbody>
-              {products.map((item) => (
+              {products.filter((item) => {
+                      return search.toLowerCase() === ""
+                        ? item
+                        : item.name.toLowerCase().includes(search);
+                    }).map((item) => (
                 <tr key={item.id}>
                   {item.product_detail &&
                     item.product_detail.map((detail, index) => (
@@ -736,17 +796,14 @@ export default function ListProducts() {
                   </td>
 
                   {!item.product_promotion ||
-                    item.product_promotion.length === 0 ? (
+                  item.product_promotion.length === 0 ? (
                     <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
                       <p className="inline-flex rounded-full bg-red-300 bg-opacity-0 py-1 px-3 text-sm font-medium text-orange-600">
                         Không có quà tặng nha..
                       </p>
                     </td>
                   ) : (
-                    <td
-                      className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11"
-                    >
-
+                    <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
                       {item.product_promotion.map((promotion, index) => (
                         <div className="flex flex-col gap-4 sm:flex-row sm:items-center pb-3">
                           <div className="w-12 rounded-md">
@@ -794,7 +851,8 @@ export default function ListProducts() {
                         </button>
                       </NavLink>
 
-                      <button className="hover:text-primary"
+                      <button
+                        className="hover:text-primary"
                         onClick={() => handleDelete(item.id)}
                       >
                         <svg
@@ -853,6 +911,83 @@ export default function ListProducts() {
               )}
             </tbody>
           </table>
+          <div className="flex items-end justify-center mt-10">
+            <div className=" pagination">
+              <button
+                className={`mr-2 flex items-center text-cyan-500 ${
+                  currentPage === 1 ? "hidden" : "block"
+                }`}
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((prev) => prev - 1)}
+              >
+                <svg
+                  width="12px"
+                  height="12px"
+                  fill={`${currentPage === 1 ? "#6B7280" : "#1640D6"}`}
+                  viewBox="0 0 512 512"
+                  data-name="Layer 1"
+                  id="Layer_1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  transform="rotate(180)"
+                >
+                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                  <g
+                    id="SVGRepo_tracerCarrier"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></g>
+                  <g id="SVGRepo_iconCarrier">
+                    <path d="M214.78,478l-20.67-21.57L403.27,256,194.11,55.57,214.78,34,446.46,256ZM317.89,256,86.22,34,65.54,55.57,274.7,256,65.54,456.43,86.22,478Z"></path>
+                  </g>
+                </svg>
+              </button>
+
+              {/* {currentPage} / {totalPages} */}
+              {numbers.map((n, i) => (
+                <li
+                  className={`page-item cursor-pointer mx-2 ${
+                    currentPage === n ? "active" : ""
+                  } `}
+                  key={i}
+                >
+                  <a className="page-link" onClick={() => changePage(n)}>
+                    {n}
+                  </a>
+                </li>
+              ))}
+
+              <button
+                className={`flex items-center ml-2 ${
+                  currentPage === totalPages
+                    ? "text-gray-500 hidden"
+                    : "text-cyan-500 block"
+                }`}
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((prev) => prev + 1)}
+              >
+                {/* <p className="pr-1"> Trang sau</p> */}
+                <svg
+                  width="12px"
+                  height="12px"
+                  viewBox="0 0 512 512"
+                  data-name="Layer 1"
+                  id="Layer_1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill={`${currentPage === totalPages ? "#6B7280" : "#1640D6"}`}
+                >
+                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                  <g
+                    id="SVGRepo_tracerCarrier"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></g>
+                  <g id="SVGRepo_iconCarrier">
+                    <path d="M214.78,478l-20.67-21.57L403.27,256,194.11,55.57,214.78,34,446.46,256ZM317.89,256,86.22,34,65.54,55.57,274.7,256,65.54,456.43,86.22,478Z"></path>
+                  </g>
+                </svg>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
