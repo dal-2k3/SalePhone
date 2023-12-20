@@ -6,6 +6,8 @@ import {
   updateComments,
 } from "../../../services/comments";
 import moment from "moment";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function ListComment() {
   const [commentsPrivate, setCommentsPrivate] = useState([]);
@@ -19,13 +21,40 @@ export default function ListComment() {
     status: "public",
   };
   const saveEdit = async (id) => {
-    console.log(id);
-    await updateComments(id, status);
-    setReload((prevReload) => !prevReload);
+    try {
+      console.log(id);
+      await updateComments(id, status);
+      setReload((prevReload) => !prevReload);
+      toast.success("Duyệt đánh giá thành công");
+    } catch (error) {
+      console.log(error);
+      if (error.response) {
+        // Nếu có response từ server
+        const statusCode = error.response.status;
+        if (statusCode === 501) {
+          // Xử lý lỗi 500, 501 và hiển thị thông báo
+          toast.warn("Lỗi khi duyệt đánh giá");
+        } else {
+          // Xử lý các lỗi khác và hiển thị thông báo
+          const errorMessage =
+            error.response.data.message || "Đã xảy ra lỗi khi duyệt đánh giá.";
+          toast.error(errorMessage);
+        }
+      } else {
+        // Nếu không có response từ server (ví dụ: không thể kết nối đến server)
+        toast.error("Lỗi kết nối.");
+      }
+    }
   };
+
   const saveDelete = async (id) => {
-    await deleteComments(id);
-    setReload((prevReload) => !prevReload);
+    try {
+      await deleteComments(id);
+      setReload((prevReload) => !prevReload);
+      toast.success("Xóa đánh giá thành công");
+    } catch (error) {
+      console.log(error);
+    }
   };
   useEffect(() => {
     const fetchlistscommentsPrivate = async () => {
@@ -51,33 +80,32 @@ export default function ListComment() {
   return (
     <div>
       <div className="justify-center ">
-      <button
-            className={`py-1 pr-4 font-bold text-2xl border-b-4 ${
-              activeTab === 1 ? "text-cyan-500 border-y-cyan-500" : "text-black"
-            }`}
-            onClick={() => changeTab(1)}
-          >
-            Bình luận chưa xử lý
-          </button>    
-          <button
-            className={`py-1 pr-4 font-bold text-2xl border-b-4 ${
-              activeTab === 2 ? "text-cyan-500 border-y-cyan-500" : "text-black"
-            }`}
-            onClick={() => changeTab(2)}
-          >
-            Bình luận đã xử lý
-          </button>        
-
+        <button
+          className={`py-1 pr-4 font-bold text-2xl border-b-4 ${
+            activeTab === 1 ? "text-cyan-500 border-y-cyan-500" : "text-black"
+          }`}
+          onClick={() => changeTab(1)}
+        >
+          Bình luận chưa xử lý
+        </button>
+        <button
+          className={`py-1 pr-4 font-bold text-2xl border-b-4 ${
+            activeTab === 2 ? "text-cyan-500 border-y-cyan-500" : "text-black"
+          }`}
+          onClick={() => changeTab(2)}
+        >
+          Bình luận đã xử lý
+        </button>
       </div>
 
       <div className="mt-4">
-      {activeTab === 1 && (
+        {activeTab === 1 && (
           <div>
             <table className="w-full table-auto">
               <thead>
                 <tr className="bg-gray-100 text-left dark:bg-meta-4 bo">
                   <th className="min-w-[220px] py-4 px-4 font-medium text-black  xl:pl-11">
-                    Tên 
+                    Tên
                   </th>
                   <th className="min-w-[150px] py-4 px-4 font-medium text-black ">
                     Rating
@@ -97,7 +125,7 @@ export default function ListComment() {
                 </tr>
               </thead>
               <tbody>
-              {commentsPrivate.map((item) => (
+                {commentsPrivate.map((item) => (
                   <tr key={item.id}>
                     <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark xl:pl-11">
                       <p className="inline-flex rounded-full bg-red-300 bg-opacity-0 py-1  text-lg font-light text-black">
@@ -146,7 +174,37 @@ export default function ListComment() {
                           className="hover:text-primary"
                           onClick={() => saveEdit(item.id)}
                         >
-                          <svg width="18px" height="18px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z" stroke="#508D69" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M7.75 12L10.58 14.83L16.25 9.17004" stroke="#508D69" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                          <svg
+                            width="18px"
+                            height="18px"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g
+                              id="SVGRepo_tracerCarrier"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            ></g>
+                            <g id="SVGRepo_iconCarrier">
+                              {" "}
+                              <path
+                                d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z"
+                                stroke="#508D69"
+                                stroke-width="1.5"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              ></path>{" "}
+                              <path
+                                d="M7.75 12L10.58 14.83L16.25 9.17004"
+                                stroke="#508D69"
+                                stroke-width="1.5"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              ></path>{" "}
+                            </g>
+                          </svg>
                         </button>
                         <button
                           className="hover:text-primary"
@@ -195,11 +253,10 @@ export default function ListComment() {
                         {Array.from({ length: 5 }).map((_, index) => (
                           <svg
                             key={index}
-                            className={`w-6 h-6  ${
-                              index < item.rating
-                                ? "text-yellow-500"
-                                : "text-gray-400"
-                            } me-1`}
+                            className={`w-6 h-6  ${index < item.rating
+                              ? "text-yellow-500"
+                              : "text-gray-400"
+                              } me-1`}
                             aria-hidden="true"
                             xmlns="http://www.w3.org/2000/svg"
                             fill="currentColor"
@@ -291,7 +348,7 @@ export default function ListComment() {
                 </tr>
               </thead>
               <tbody>
-              {commentsPublic.map((item) => (
+                {commentsPublic.map((item) => (
                   <tr key={item.id}>
                     <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark xl:pl-11">
                       <p className="inline-flex rounded-full bg-red-300 bg-opacity-0 py-1  text-lg font-light text-black">
@@ -335,7 +392,7 @@ export default function ListComment() {
                       </p>
                     </td>
                     <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                    <div className="flex items-center space-x-3.5">
+                      <div className="flex items-center space-x-3.5">
                         <button
                           className="hover:text-primary"
                           onClick={() => saveDelete(item.id)}
@@ -369,7 +426,7 @@ export default function ListComment() {
                       </div>
                     </td>
                   </tr>
-                ))}               
+                ))}
               </tbody>
             </table>
           </div>

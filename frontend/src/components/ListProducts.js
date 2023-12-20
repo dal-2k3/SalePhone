@@ -31,6 +31,34 @@ export default function ListProducts() {
   function formatPrice(price) {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
+  // get list products and productById
+  useEffect(() => {
+    if (id) {
+      const fetchProducts = async () => {
+        try {
+          const productsData = await getProductsByCategory(id);
+          console.log(productsData);
+          setProducts(productsData);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      fetchProducts();
+    } else {
+      const fetchAllProducts = async () => {
+        try {
+          const productsData = await listProducts();
+          // console.log(productsData);
+          setProducts(productsData);
+        } catch (error) {
+          // Xử lý lỗi nếu cần
+          console.log(error);
+        }
+      };
+      fetchAllProducts();
+    }
+  }, [id]);
+
   // get list categories
   const fetchProducts = async () => {
     try {
@@ -78,6 +106,9 @@ export default function ListProducts() {
   //   };
   //   fetchAllProducts();
   // }, [reload]);
+
+
+
   // const calculateTotal = () => {
   //   return cart.reduce((total, product) => {
   //     return total + product.price * (product.quantity || 1);

@@ -6,6 +6,7 @@ const commentRouter = express.Router();
 commentRouter.post('/', async (req, res) => {
   try {
     const { idProduct, rating, username, phone, content } = req.body;
+    console.log(idProduct);
     const checkidProduct = await getProductById(idProduct);
     if (!checkidProduct) {
       res.status(500).send("loi id")

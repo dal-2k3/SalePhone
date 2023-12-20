@@ -7,6 +7,8 @@ import {
 } from "../../../services/categories/categories";
 import { Dialog, Transition } from "@headlessui/react";
 import EditCategory from "./EditCategory";
+import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 import { DOMAIN } from "../../../utils/settings/config";
 
 export default function ListCategoris() {
@@ -16,7 +18,6 @@ export default function ListCategoris() {
   const [editingCategory, seteditingCategory] = useState(null);
 
   const cancelButtonRef = useRef(null);
-
   const [category, setCategory] = useState({
     name: "",
     logo: null, // Đối tượng File
@@ -49,8 +50,25 @@ export default function ListCategoris() {
         note: "",
       });
       setOpenAdd(false);
+      toast.success('thêm danh mục thành công');
     } catch (error) {
       console.error("Error adding category:", error);
+
+      // Xử lý lỗi và hiển thị thông báo
+      if (error.response) {
+        // Nếu có response từ server
+        const statusCode = error.response.status;
+        if (statusCode === 500 || statusCode === 501 || statusCode === 502) {
+          // Xử lý lỗi 500, 501 và hiển thị thông báo
+          toast.error('kiểm tra lại name và hình ảnh của bạn (phải là file ảnh)');
+        } else {
+          // Xử lý các lỗi khác và hiển thị thông báo
+          toast.error('An error occurred while adding category.');
+        }
+      } else {
+        // Nếu không có response từ server (ví dụ: không thể kết nối đến server)
+        toast.error('Unable to connect to the server. Please try again later.');
+      }
     }
   };
 
@@ -60,27 +78,44 @@ export default function ListCategoris() {
   const handleCancelEdit = () => {
     seteditingCategory(null);
   };
+
   const handleSave = async (editedCategory) => {
     try {
-      // Gọi API để cập nhật thông tin người dùng
+
       const updatedCategory = await updateCategory(
         editingCategory.id,
         editedCategory
       );
       console.log(editedCategory);
-      // Cập nhật danh sách người dùng
+      // Cập nhật danh sách category
       const updatedCategories = categories.map((category) =>
         category.id === updatedCategory.id ? updatedCategory : category
       );
       setReload(!reload);
       setcategories(updatedCategories);
       seteditingCategory(null);
+      toast.success('sửa danh mục thành công');
     } catch (error) {
       console.error("Error updating user:", error);
+      const statusCode = error.response.status;
+      if (statusCode === 500) {
+        toast.error('kiểm tra hình ảnh của bạn (phải là file ảnh)');
+      }
     }
   };
   // delete
   const handleDelete = async (id) => {
+    try {
+      await deleteCategory(id);
+      setReload(!reload);
+      toast.success('xóa danh mục thành công');
+    } catch (error) {
+      console.log(error);
+      const statusCode = error.response.status;
+      if (statusCode === 500) {
+        toast.error('danh mục đã tồn tại sản phẩm !');
+      }
+    }
     console.log(id);
     await deleteCategory(id);
     setReload(!reload);

@@ -218,7 +218,7 @@ export default function Home() {
 
               <div class="hidden duration-700 ease-in-out" data-carousel-item>
                 <img
-                  src="https://baotinmobile.vn/uploads/2023/09/banner-15.jpg.webp"
+                  src="https://i02.appmifile.com/754_operator_sg/11/12/2023/c2d754383bcd7bd1328596ea4799d885.png?f=webp"
                   class="absolute block w-full h-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
                   alt="..."
                 />
@@ -381,7 +381,9 @@ export default function Home() {
       <div className="bg-gray-100 mt-4  ">
         <div className="grid   px-4  mx-auto">
           <div>
-            <h1 className="text-3xl  font-medium py-5 text-red-500 text-center">
+            <h1 style={{ color: "#008e49" }} className="text-3xl font-bold py-2 my-7 underline
+            underline-offset-2 
+            ">
               Danh mục thịnh hành
             </h1>
           </div>
@@ -425,13 +427,12 @@ export default function Home() {
                   {item.product_detail &&
                     item.product_detail.map((detail, index) => (
                       <div className="flex flex-col items-center pt-5 pb-14  px-5  ">
-                        <div className="absolute inline-block top-[24px] left-[24px] z-600 ">
-                          <span
-                            style={{
-                              backgroundColor: "#c9d8a1",
-                              color: "#a81817",
-                            }}
-                            className=" h-20 px-3 py-2 rounded-full text-xs leading-4 font-semibold text-black  shadow-text-white animate-badge-appear"
+
+                        <div className="absolute inline-block top-[18px] left-[16px] z-600 ">
+                          <span style={{ background: "#008e49" }}
+                            className=" hover:bg-red-700 text-white font-bold py-1 px-2 rounded-b-2xl rounded-s-xl 
+                            shadow-lg hover:text-yellow-300 shadow-white transform transition-all duration-500
+                             ease-in-out hover:scale-110 hover:brightness-110 hover:animate-pulse active:animate-bounce"
                           >
                             Mới
                           </span>
@@ -575,13 +576,24 @@ export default function Home() {
       </div>
 
       {/* samsung */}
-      <div className="sm:pt-20  mx-auto lg:gap-8  lg:py-0 ">
-        <div className="relative">
-          <img
-            src="https://img.global.news.samsung.com/vn/wp-content/uploads/2021/11/M52-Master-KV.png"
-            alt=""
-            className="w-full sm:h-[500px]  h-[200px]"
-          />
+      <div className="bg-gray-100">
+        <div className=" grid max-w-[100%]  mx-auto lg:gap-8  lg:pt-10">
+          <div className="relative">
+            <img
+              src="https://news.khangz.com/wp-content/uploads/2021/11/Main-2-ki%CC%81ch-thu%CC%9Bo%CC%9B%CC%81c_81104282330112023.png"
+              alt=""
+              className="w-full h-[500px] object-cover  "
+            />
+            {/*             
+            <div className="absolute bottom-[200px] left-[50px]">
+              <a href="">
+                <button class="py-2 px-5 rounded-full bg-blue-400 text-white font-bold transition duration-500 transform hover:bg-blue-300 hover:scale-110 active:bg-blue-700 active:scale-98 focus:outline-none">
+                  Mua ngay
+                </button>
+              </a>
+            </div> */}
+          </div>
+
         </div>
       </div>
       <div className="bg-gray-100">

@@ -232,7 +232,7 @@ const updatePromotion = async (id, data) => {
 };
 const deletePromotion = async (id) => {
     try {
-        const promotion = await Promotion.update(
+        const promotion = await Promotion.destroy(
             {
                 where: {
                     id,

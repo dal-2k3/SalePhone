@@ -1,112 +1,129 @@
 import React from "react";
-import { NavLink, useNavigate } from "react-router-dom";
-import "./Auth.css";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { useDispatch } from "react-redux";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { toast, } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import { registerUser } from "../../services/API/authApi";
 
 export default function Register() {
-  const dispatch = useDispatch();
+  const { register, handleSubmit, setError, formState: { errors }, setValue, getValues } = useForm();
   const navigate = useNavigate();
-  const formik = useFormik({
-    initialValues: {
-      fullname: "",
-      email: "",
-      password: "",
-      phone: "",
-    },
-    validationSchema: Yup.object().shape({
-      fullname: Yup.string().required("(*) Full name is not empty"),
-      email: Yup.string()
-        .required("(*) Email is not empty")
-        .matches(
-          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-          "Email is invalid"
-        ),
-      password: Yup.string()
-        .required("(*) Password is not empty")
-        .min(6, "Must be 6-32 letters")
-        .max(32, "Must be 6-32 letters"),
-      phone: Yup.string()
-        .required("(*) Phone is not empty")
-        .matches(/^\d{10}$/, "Number phone is invalid"),
-    }),
-    onSubmit: async (value) => {
-      await registerUser(dispatch, navigate, value);
-    },
-  });
+
+  const onSubmit = async (data) => {
+    try {
+      console.log(data);
+      await registerUser(data);
+      toast.success('Đăng ký thành công!');
+      navigate('/login'); // Chuyển hướng sau khi đăng ký thành công
+    } catch (error) {
+      console.error('Registration error:', error);
+      // Xử lý lỗi và hiển thị thông báo
+      if (error.response) {
+        // Nếu có response từ server
+        const statusCode = error.response.status;
+
+        if (statusCode === 409) {
+          toast.warn('Email của bạn đã tồn tại!');
+        } else if (statusCode === 401) {
+          toast.warn('Mã xác nhận admin không đúng. Mời nhập lại');
+        } else {
+          // Xử lý các lỗi khác và hiển thị thông báo
+          const errorMessage = error.response.data.message || 'Đã xảy ra lỗi khi đăng ký.';
+          toast.error(errorMessage);
+        }
+      } else {
+        // Nếu không có response từ server (ví dụ: không thể kết nối đến server)
+        toast.error('Unable to connect to the server. Please try again later.');
+      }
+    }
+  };
+
+  const handleInputChange = (field, value) => {
+    setValue(field, value);
+  };
 
   return (
-    <div className="limiter">
-      <div className="container-login100">
-        <form onSubmit={formik.handleSubmit}>
-          <div className="wrap-login100">
-            <span className="login100-form-title mt-5">Register</span>
-            <div className="d-flex justify-content-center pb-5"></div>
-            <div className="wrap-input100">
-              <input
-                name="fullname"
-                className="input100"
-                type="text"
-                placeholder="Full Name"
-                onChange={formik.handleChange}
-              />
-              {formik.errors.fullname && formik.touched.fullname ? (
-                <div className="text-danger">{formik.errors.fullname}</div>
-              ) : null}
-            </div>
+    <div className="">
+      <div className="bg-slate-100 flex flex-col items-center justify-center h-screen">
+        <div className="w-full max-w-md bg-white rounded-lg shadow-xl p-6">
+          <h2 className="text-2xl text-center font-bold text-green-700 mb-4">Đăng ký Admin</h2>
 
-            <div className="wrap-input100">
-              <input
-                className="input100"
-                type="text"
-                placeholder="Email"
-                name="email"
-                onChange={formik.handleChange}
-              />
-              {formik.errors.email && formik.touched.email ? (
-                <div className="text-danger">{formik.errors.email}</div>
-              ) : null}
-            </div>
+          <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
+            <input
+              {...register('username', { required: 'Họ và tên là bắt buộc' })}
+              type="text"
+              className={`bg-gray-100 text-gray-900 border-0 rounded-md p-2 mb-4 focus:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150 ${errors.username ? 'border-red-500' : ''}`}
+              placeholder="Họ và tên..."
+              onChange={(e) => handleInputChange('username', e.target.value)}
+            />
+            {errors.username && <p className="text-red-500 text-xs mt-1">{errors.username.message}</p>}
 
-            <div className="wrap-input100">
-              <input
-                className="input100"
-                type="password"
-                placeholder="Password"
-                name="password"
-                onChange={formik.handleChange}
-              />
-              {formik.errors.password && formik.touched.password ? (
-                <div className="text-danger">{formik.errors.password}</div>
-              ) : null}
-            </div>
+            <input
+              {...register('email', { required: 'Email là bắt buộc', pattern: /^\S+@\S+$/i })}
+              type="email"
+              className={`bg-gray-100 text-gray-900 border-0 rounded-md p-2 mb-4 focus:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150 ${errors.email ? 'border-red-500' : ''}`}
+              placeholder="Email..."
+              onChange={(e) => handleInputChange('email', e.target.value)}
+            />
+            {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
 
-            <div className="wrap-input100">
-              <input
-                className="input100"
-                type="text"
-                placeholder="Phone"
-                name="phone"
-                onChange={formik.handleChange}
-              />
-              {formik.errors.phone && formik.touched.phone ? (
-                <div className="text-danger">{formik.errors.phone}</div>
-              ) : null}
-            </div>
+            <input
+              {...register('phone', {
+                required: 'Số điện thoại là bắt buộc',
+                pattern: {
+                  value: /^[0-9]+$/,
+                  message: 'Số điện thoại phải là kiểu số từ 0-9',
+                },
+                minLength: {
+                  value: 10,
+                  message: 'Số điện thoại phải là 10 số',
+                },
+                maxLength: {
+                  value: 10,
+                  message: 'Số điện thoại không được vượt quá 10 số',
+                },
+              })}
+              type="text"
+              className={`bg-gray-100 text-gray-900 border-0 rounded-md p-2 mb-4 focus:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150 ${errors.phone ? 'border-red-500' : ''}`}
+              placeholder="Số điện thoại..."
+              onChange={(e) => handleInputChange('phone', e.target.value)}
+            />
+            {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone.message}</p>}
 
-            <button className="login100-form-btn">Register</button>
+            <input
+              {...register('password', {
+                required: 'Password là bắt buộc',
+                minLength: {
+                  value: 6,
+                  message: 'Mật khẩu phải có ít nhất 6 ký tự',
+                },
+              })}
+              type="password"
+              className={`bg-gray-100 text-gray-900 border-0 rounded-md p-2 mb-4 focus:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150 ${errors.password ? 'border-red-500' : ''}`}
+              placeholder="Password...."
+              onChange={(e) => handleInputChange('password', e.target.value)}
+            />
+            {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
 
-            <div className="text-center py-4">
-              <span className="txt1">Login?</span>
-              &nbsp;
-              <NavLink to="/signin" className="txt2">
-                Click
-              </NavLink>
-            </div>
-          </div>
-        </form>
+            <input
+              {...register('code', { required: 'Mã xác nhận là bắt buộc' })}
+              type="text"
+              className={`bg-gray-100 text-gray-900 border-0 rounded-md p-2 mb-4 focus:bg-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150 ${errors.code ? 'border-red-500' : ''}`}
+              placeholder="Mã xác nhận admin..."
+              onChange={(e) => handleInputChange('code', e.target.value)}
+            />
+            {errors.code && <p className="text-red-500 text-xs mt-1">{errors.code.message}</p>}
+
+
+            <button
+              type="submit"
+              className="bg-gradient-to-r from-green-500 to-gray-600 text-white font-bold py-2 px-4 rounded-md mt-4 hover:bg-indigo-600 hover:to-blue-700 transition ease-in-out duration-150"
+            >
+              Đăng ký
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

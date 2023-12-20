@@ -1,25 +1,41 @@
 const express = require('express');
-const { createProduct, getAllProduct, getProductById, addProductDetail, getProductDetailByIdProduct, getProductByCategory, updateProduct, deleteProduct, addPromotion, getProductDetailById, updateProductDetail, deleteProductDetail, getPromotionById, updatePromotion, } = require('../../services/products');
+const { createProduct, getAllProduct, getProductById, addProductDetail, getProductDetailByIdProduct, getProductByCategory, updateProduct, deleteProduct, addPromotion, getProductDetailById, updateProductDetail, deleteProductDetail, getPromotionById, updatePromotion, deletePromotion, } = require('../../services/products');
 const { getCategoryById } = require('../../services/categories');
 const productRouter = express.Router();
 const path = require('path');
 const multer = require('multer');
-const { findIdProductDetailInOrderDetail, findIdProductInOrderDetail } = require('../../services/order');
+const { findIdProductDetailInOrderDetail, findIdProductInOrderDetail, findIdProductPromotionInOrderDetail } = require('../../services/order');
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/'); // thư mục lưu trữ ảnh
     },
     filename: function (req, file, cb) {
-        cb(null, Date.now() + '-' + file.originalname); // tên tệp sẽ được lưu là một timestamp + tên gốc của tệp
+        const timestamp = Date.now();
+        const originalname = file.originalname.replace(/[^a-zA-Z0-9]/g, ''); // Lọc bỏ ký tự đặc biệt từ tên gốc
+        const fileName = `${timestamp}-${originalname}`;
+        cb(null, fileName);
     },
 });
-const upload = multer({ storage: storage });
 
+const isImage = (file) => {
+    const imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    return imageMimeTypes.includes(file.mimetype);
+};
+
+const upload = multer({
+    storage: storage,
+    fileFilter: (req, file, cb) => {
+        if (!isImage(file)) {
+            // Nếu không phải là file ảnh, từ chối tệp
+            return cb(new Error('Only image files are allowed!'), false);
+        }
+        cb(null, true);
+    },
+});
 
 productRouter.post('/', upload.fields([{ name: 'image', maxCount: 10 }, { name: 'giftImage', maxCount: 10 }]), async (req, res) => {
     try {
         const files = req.files;
-
         if (!files || (files['image'] && files['image'].length === 0 && files['giftImage'] && files['giftImage'].length === 0)) {
             return res.status(400).json({ message: 'No files uploaded' });
         }
@@ -118,7 +134,7 @@ productRouter.put('/:id', async (req, res) => {
 productRouter.delete('/:id', async (req, res) => {
     const { id } = req.params;
     const idproduct = await findIdProductInOrderDetail(id);
-    if ( idproduct) {
+    if (idproduct) {
         return res.status(500).send("Product already exist in the table order detail");
     }
     await deleteProduct(id);
@@ -130,11 +146,11 @@ productRouter.post('/detail', upload.single('image'), async (req, res) => {
     const image = path.join('uploads', req.file.filename);
     const checkId = await getProductById(idProduct);
     if (!checkId) {
-        res.status(500).send("Product does not exist");
+        res.status(404).send("Product does not exist");
     }
     const productDetail = await addProductDetail({ idProduct, color, discount, price, quantity, image });
     if (!productDetail) {
-        res.status(500).send("can't create product detail");
+        res.status(501).send("can't create product detail");
     }
     res.status(200).send(productDetail);
 });
@@ -144,24 +160,22 @@ productRouter.put('/detail/:id', upload.single('image'), async (req, res) => {
     const image = path.join('uploads', req.file.filename);
     const checkId = await getProductDetailById(id);
     if (!checkId) {
-        res.status(500).send("Product detail does not exist");
+        res.status(404).send("Product detail does not exist");
     };
     const productDetail = await updateProductDetail(id, { color, discount, price, quantity, image, status });
     if (!productDetail) {
-        res.status(500).send("can't update product detail");
+        res.status(501).send("can't update product detail");
     }
     res.status(200).send(productDetail);
 });
 productRouter.delete('/detail/:id', async (req, res) => {
     const { id } = req.params;
     const checkId = await findIdProductDetailInOrderDetail(id);
-    if ( checkId) {
+    if (checkId) {
         return res.status(500).send("Product details already exist in the table order detail");
     }
-        //   await deleteProductDetail(id);
-        res.status(200).send("delete product detail successfully");
-
-
+    await deleteProductDetail(id);
+    res.status(200).send("delete product detail successfully");
 });
 
 // Product_promotion
@@ -170,11 +184,11 @@ productRouter.post('/promotion', upload.single('image'), async (req, res) => {
     const image = path.join('uploads', req.file.filename);
     const checkId = await getProductById(idProduct);
     if (!checkId) {
-        res.status(500).send("Product does not exist");
+        res.status(501).send("Product does not exist");
     }
     const promotion = await addPromotion({ idProduct, gift, image });
     if (!promotion) {
-        res.status(500).send("can't create product promotion");
+        res.status(502).send("can't create product promotion");
     }
     res.status(200).send(promotion);
 });
@@ -192,17 +206,15 @@ productRouter.put('/promotion/:id', upload.single('image'), async (req, res) => 
     }
     res.status(200).send(productDetail);
 });
-productRouter.delete('detail/:id', async (req, res) => {
+
+productRouter.delete('/promotion/:id', async (req, res) => {
     const { id } = req.params;
-    const checkId = await getProductDetailById(id);
-    if (!checkId) {
-        res.status(500).send("Product detail does not exist");
-    };
-    const productDetail = await deleteProductDetail(id);
-    if (!productDetail) {
-        res.status(500).send("can't delete product detail");
+    const checkId = await findIdProductPromotionInOrderDetail(id);
+    if (checkId) {
+        return res.status(500).send("Product Promotion already exist in the table order detail");
     }
-    res.status(200).send(productDetail);
+    await deletePromotion(id);
+    res.status(200).send("delete successfuly");
 });
 
 module.exports = productRouter;
