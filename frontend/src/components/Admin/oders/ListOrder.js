@@ -1329,7 +1329,8 @@ export default function ListOrder() {
                             </button>
                           </NavLink>
                           <button
-                            className="hover:text-primary"
+                            
+                            className={`${item.status}`==="đã_hủy" ? "hidden" : 'block'}
                             onClick={() => handleChangeEdit(item)}
                           >
                             <svg

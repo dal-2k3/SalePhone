@@ -225,12 +225,12 @@ export default function ListCategoris() {
                           as="h1"
                           className=" text-center font-semibold leading-6 text-2xl p-7 text-cyan-900"
                         >
-                          Add Category
+                          Thêm danh mục
                         </Dialog.Title>
                         <div className=" ">
                           <form className="w-full" onSubmit={handleSubmit}>
                             <label className="block mb-4 text-sm font-bold">
-                              Category Name:
+                              Tên danh mục:
                             </label>
                             <input
                               type="text"
@@ -242,7 +242,7 @@ export default function ListCategoris() {
                             />
 
                             <label className="block mb-2 text-sm font-bold">
-                              Logo Image:
+                              Ảnh danh mục:
                             </label>
                             <input
                               type="file"
@@ -254,7 +254,7 @@ export default function ListCategoris() {
                             />
 
                             <label className="block mb-2 text-sm font-bold">
-                              Note:
+                              Ghi chú:
                             </label>
                             <textarea
                               name="note"
@@ -270,13 +270,13 @@ export default function ListCategoris() {
                                                              shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 
                                                              sm:mt-0 sm:w-auto"
                             >
-                              Close
+                              Dóng
                             </button>
                             <button
                               type="submit"
                               className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
                             >
-                              Add Category
+                             Thêm
                             </button>
                           </form>
                         </div>

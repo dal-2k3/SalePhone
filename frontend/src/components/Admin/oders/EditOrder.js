@@ -130,7 +130,7 @@ export default function EditOrder({ order, onSave, onCancel }) {
 
                                                             <div className='col-span-2'>
                                                                 <label className="block mb-2 text-sm font-bold">
-                                                                    trạng thái
+                                                                    Trạng thái
                                                                 </label>
                                                                 <select
                                                                     id="statusSelect"
@@ -139,11 +139,15 @@ export default function EditOrder({ order, onSave, onCancel }) {
                                                                     value={editedOrder.status}
                                                                     onChange={handleChange}
                                                                 >
-                                                                    {Object.keys(statusColors).map((status) => (
+                                                                    <option className={`${editedOrder.status}` === "đã_giao" || `${editedOrder.status}` === "đã_xử_lý"  ? 'hidden' : 'block'} value="chờ_xử_lý">Chờ xử lí</option>
+                                                                    <option className={`${editedOrder.status}` === "đã_giao" ? 'hidden' : 'block'} value="đã_xử_lý">Đã xử lí</option>
+                                                                    <option   value="đã_giao">Đã giao</option>
+                                                                    <option   value="đã_hủy">Hủy</option>
+                                                                    {/* {Object.keys(statusColors).map((status) => (
                                                                         <option key={status} value={status}>
                                                                             {status}
                                                                         </option>
-                                                                    ))}
+                                                                    ))} */}
                                                                 </select>
                                                             </div>
 

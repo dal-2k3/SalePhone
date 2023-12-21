@@ -14,7 +14,9 @@ import { listCategories } from "../../../services/categories/categories";
 import EditProduct from "./EditProduct";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import * as yup from "yup";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 export default function ListProducts() {
   const [products, setProducts] = useState([0]);
   const [reload, setReload] = useState(false);
@@ -35,6 +37,30 @@ export default function ListProducts() {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const schema = yup.object().shape({
+    quantity: yup
+    .number()
+    .typeError("Số lượng không hợp lệ")
+    .min(0, "Số lượng phải lớn hơn hoặc bằng 0")
+    .required("Số lượng không được để trống"),
+    price: yup
+    .number()
+    .typeError("Giá không hợp lệ")
+    .min(0, "Giá phải lớn hơn hoặc bằng 0")
+    .required("Giá không được để trống"),
+    discount: yup
+    .number()
+    .typeError("Giá gốc không hợp lệ")
+    .min(0, "Giá gốc phải lớn hơn hoặc bằng 0")
+
+  });
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
   const itemsPerPage = 10;
   useEffect(() => {
     const fetchCategories = async () => {
@@ -147,8 +173,10 @@ export default function ListProducts() {
       promotions: newPromotions,
     });
   };
-  const handleSave = async (e) => {
+  console.log(product);
+  const onSubmit = async (e) => {
     // e.preventDefault();
+    console.log('hihhihi',e);
     try {
       const formData = new FormData();
       formData.append("idCategory", product.idCategory);
@@ -274,61 +302,7 @@ export default function ListProducts() {
   console.log("products", products);
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
-      <div className="max-w-full overflow-x-auto">
-        <div className="mb-20">
-          <div className="flex justify-between items-center mb-3">
-            <div className="text-xl font-bold">Tất cả sản phẩm</div>
-            <div className="flex py-2">
-              <div className="pr-5">
-                <div class="relative ">
-                  <input
-                    type="text"
-                    onChange={(e) => {
-                      setSearch(e.target.value);
-                    }}
-                    //   style={{ background: "#eae9ee" }}
-                    class="border border-solid rounded-2xl p-4 w-full py-2 pl-4 pr-4  focus:outline-none focus:border-blue-500"
-                    placeholder="Tìm kiếm sản phẩm"
-                  />
-                  <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                    <svg
-                      height="32px"
-                      version="1.1"
-                      viewBox="0 0 32 32"
-                      width="32px"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <title />
-                      <desc />
-                      <defs />
-                      <g
-                        fill="none"
-                        fill-rule="evenodd"
-                        id="Page-1"
-                        stroke="none"
-                        stroke-width="1"
-                      >
-                        <g fill="#929292" id="icon-111-search">
-                          <path
-                            d="M19.4271164,21.4271164 C18.0372495,22.4174803 16.3366522,23 14.5,23 C9.80557939,23 6,19.1944206 6,14.5 C6,9.80557939 9.80557939,6 14.5,6 C19.1944206,6 23,9.80557939 23,14.5 C23,16.3366522 22.4174803,18.0372495 21.4271164,19.4271164 L27.0119176,25.0119176 C27.5621186,25.5621186 27.5575313,26.4424687 27.0117185,26.9882815 L26.9882815,27.0117185 C26.4438648,27.5561352 25.5576204,27.5576204 25.0119176,27.0119176 L19.4271164,21.4271164 L19.4271164,21.4271164 Z M14.5,21 C18.0898511,21 21,18.0898511 21,14.5 C21,10.9101489 18.0898511,8 14.5,8 C10.9101489,8 8,10.9101489 8,14.5 C8,18.0898511 10.9101489,21 14.5,21 L14.5,21 Z"
-                            id="search"
-                          />
-                        </g>
-                      </g>
-                    </svg>
-                  </div>
-                </div>
-              </div>
-              <button
-                onClick={() => setOpenAdd(true)}
-                className=" bg-green-600 text-white py-1 px-2 mr-2 rounded transition duration-150 ease-in-out ..."
-              >
-                Thêm sản phẩm
-              </button>
-            </div>
-          </div>
-          <hr className="border-1 border-solid mb-4" />
-          <Transition.Root show={openAdd} as={Fragment}>
+    <Transition.Root show={openAdd} as={Fragment}>
             <Dialog
               as="div"
               className=" relative z-50"
@@ -367,11 +341,11 @@ export default function ListProducts() {
                       >
                         X
                       </button>{" "}
-                      <form>
+                      <form onSubmit={handleSubmit(onSubmit)} >
                         <div className="w-5/5  mx-auto p-8 bg-white ">
                           <div className="flex sm:items-center">
                             <h1 className="  text-teal-700 text-2xl font-bold pl-5">
-                              Add product
+                             Thêm sản phẩm
                             </h1>
                           </div>
                           <hr className=" border-solid border-[1.5px] my-5" />
@@ -384,7 +358,7 @@ export default function ListProducts() {
                                   className="block text-lg font-bold mb-2 "
                                   htmlFor="category"
                                 >
-                                  Category:
+                                  Danh mục:
                                 </label>
                                 <select
                                   id="idCategory"
@@ -411,7 +385,7 @@ export default function ListProducts() {
                                   className="block text-lg font-semibold mb-2"
                                   htmlFor="name"
                                 >
-                                  Product name:
+                                 Tên sản phẩm:
                                 </label>
                                 <input
                                   type="text"
@@ -431,7 +405,7 @@ export default function ListProducts() {
                                   className="block text-lg font-semibold mb-2"
                                   htmlFor="capacity"
                                 >
-                                  Capacity:
+                                  Dung lượng:
                                 </label>
                                 <input
                                   type="text"
@@ -450,7 +424,7 @@ export default function ListProducts() {
                                   className="block text-lg font-semibold mb-2"
                                   htmlFor="parameter"
                                 >
-                                  Parameter:
+                                  Mô tả:
                                 </label>
                                 <ReactQuill
                                   name="parameter"
@@ -615,28 +589,59 @@ export default function ListProducts() {
                                   >
                                     Số lượng:
                                   </label>
-                                  <input
-                                    type="number"
+                                  <Controller
                                     name="quantity"
-                                    id={`quantity-${index}`}
-                                    value={detail.quantity}
-                                    onChange={(event) =>
-                                      handleDetailChange(
+                                    control={control}
+                                    render={({ field }) => (
+                                      <input
+                                        type="number"
+                                        value={detail.quantity}
+                                        onChange={(event) => {
+                                          field.onChange(event);
+                                          handleDetailChange(
                                         index,
                                         "quantity",
                                         event
                                       )
-                                    }
-                                    required
-                                    className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
+                                        }}
+                                        className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2 w-full"
+                                        placeholder="Nhập số lượng"
+                                      />
+                                    )}
                                   />
+                                  <p className="text-red-500">
+                                    {errors.quantity?.message}
+                                  </p>
                                   <label
                                     className="block text-lg font-semibold mb-2"
                                     htmlFor={`price-${index}`}
                                   >
                                     Giá:
                                   </label>
-                                  <input
+                                  <Controller
+                                    name="price"
+                                    control={control}
+                                    render={({ field }) => (
+                                      <input
+                                        type="text"
+                                        value={detail.price}
+                                        onChange={(event) => {
+                                          field.onChange(event);
+                                          handleDetailChange(
+                                        index,
+                                        "price",
+                                        event
+                                      )
+                                        }}
+                                        className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2 w-full"
+                                        placeholder="Nhập giá"
+                                      />
+                                    )}
+                                  />
+                                  <p className="text-red-500">
+                                    {errors.price?.message}
+                                  </p>
+                                  {/* <input
                                     type="number"
                                     name="price"
                                     id={`price-${index}`}
@@ -646,28 +651,36 @@ export default function ListProducts() {
                                     }
                                     required
                                     className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
-                                  />
+                                  /> */}
                                   <label
                                     className="block text-lg font-semibold mb-2"
                                     htmlFor={`discount-${index}`}
                                   >
-                                    Giảm Giá:
+                                   Giá gốc:
                                   </label>
-                                  <input
-                                    type="number"
+                                  <Controller
                                     name="discount"
-                                    id={`discount-${index}`}
-                                    value={detail.discount}
-                                    onChange={(event) =>
-                                      handleDetailChange(
+                                    control={control}
+                                    render={({ field }) => (
+                                      <input
+                                        type="text"
+                                        value={detail.discount}
+                                        onChange={(event) => {
+                                          field.onChange(event);
+                                          handleDetailChange(
                                         index,
                                         "discount",
                                         event
                                       )
-                                    }
-                                    required
-                                    className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
+                                        }}
+                                        className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2 w-full"
+                                        placeholder="Nhập giá gốc"
+                                      />
+                                    )}
                                   />
+                                  <p className="text-red-500">
+                                    {errors.discount?.message}
+                                  </p>
                                   <label
                                     className="block text-lg font-semibold mb-2"
                                     htmlFor={`image-${index}`}
@@ -707,11 +720,10 @@ export default function ListProducts() {
                             </div>
                           </div>
                           <button
-                            type="button"
-                            onClick={handleSave}
+                           type="submit"    
                             className="bg-green-400 rounded-md  text-white py-2 px-4 w-full mb-4"
                           >
-                            Add product
+                           Thêm sản phẩm
                           </button>
                         </div>
                       </form>
@@ -721,28 +733,83 @@ export default function ListProducts() {
               </div>
             </Dialog>
           </Transition.Root>
+      <div className="max-w-full overflow-x-auto">
+        <div className="mb-20">
+          <div className="flex justify-between items-center mb-3">
+            <div className="text-xl font-bold">Tất cả sản phẩm</div>
+            <div className="flex py-2">
+              <div className="pr-5">
+                <div class="relative ">
+                  <input
+                    type="text"
+                    onChange={(e) => {
+                      setSearch(e.target.value);
+                    }}
+                    //   style={{ background: "#eae9ee" }}
+                    class="border border-solid rounded-2xl p-4 w-full py-2 pl-4 pr-4  focus:outline-none focus:border-blue-500"
+                    placeholder="Tìm kiếm sản phẩm"
+                  />
+                  <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <svg
+                      height="32px"
+                      version="1.1"
+                      viewBox="0 0 32 32"
+                      width="32px"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <title />
+                      <desc />
+                      <defs />
+                      <g
+                        fill="none"
+                        fill-rule="evenodd"
+                        id="Page-1"
+                        stroke="none"
+                        stroke-width="1"
+                      >
+                        <g fill="#929292" id="icon-111-search">
+                          <path
+                            d="M19.4271164,21.4271164 C18.0372495,22.4174803 16.3366522,23 14.5,23 C9.80557939,23 6,19.1944206 6,14.5 C6,9.80557939 9.80557939,6 14.5,6 C19.1944206,6 23,9.80557939 23,14.5 C23,16.3366522 22.4174803,18.0372495 21.4271164,19.4271164 L27.0119176,25.0119176 C27.5621186,25.5621186 27.5575313,26.4424687 27.0117185,26.9882815 L26.9882815,27.0117185 C26.4438648,27.5561352 25.5576204,27.5576204 25.0119176,27.0119176 L19.4271164,21.4271164 L19.4271164,21.4271164 Z M14.5,21 C18.0898511,21 21,18.0898511 21,14.5 C21,10.9101489 18.0898511,8 14.5,8 C10.9101489,8 8,10.9101489 8,14.5 C8,18.0898511 10.9101489,21 14.5,21 L14.5,21 Z"
+                            id="search"
+                          />
+                        </g>
+                      </g>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={() => setOpenAdd(true)}
+                className=" bg-green-600 text-white py-1 px-2 mr-2 rounded transition duration-150 ease-in-out ..."
+              >
+                Thêm sản phẩm
+              </button>
+            </div>
+          </div>
+          <hr className="border-1 border-solid mb-4" />
+          
 
           <table className="w-full table-auto">
             <thead>
               <tr className="bg-gray-100 text-left dark:bg-meta-4">
                 <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                  Name
+                  Tên
                 </th>
                 <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
-                  Category
+                  Danh mục
                 </th>
 
                 <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
-                  Capacity
+                  Dung lượng
                 </th>
                 <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
-                  Promotion
+                  Quà tặng
                 </th>
                 <th className="py-4 px-4 font-medium text-black dark:text-white">
-                  Status
+                  Trạng thái
                 </th>
                 <th className="py-4 px-4 font-medium text-black dark:text-white">
-                  Action
+                  Thao tác
                 </th>
               </tr>
             </thead>

@@ -200,7 +200,7 @@ export default function Header({ align }) {
               </svg>
             </div>
             <div className=" mx-3 w-10 h-10 leading-12 text-center rounded-full  border-2 border-gray-300 text-gray-700 text-lg cursor-pointer flex items-center justify-center">
-              <svg
+            <NavLink to="/cart"><svg
                 width="25px"
                 height="25px"
                 viewBox="0 0 24 24"
@@ -223,7 +223,8 @@ export default function Header({ align }) {
                     stroke-linejoin="round"
                   ></path>{" "}
                 </g>
-              </svg>
+              </svg></NavLink>
+              
             </div>
 
             {hasToken && (
@@ -302,7 +303,7 @@ export default function Header({ align }) {
             )}
 
             <a
-              href=""
+              href="/checkOrder"
               style={{ background: "#eae9ee" }}
               className="text-black  focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 sm:mr-2 lg:mr-0  focus:outline-none "
             >
@@ -381,8 +382,8 @@ export default function Header({ align }) {
                 </a>
                 <ul className="w-auto absolute bg-white shadow-2xl text-black z-50 hidden dropdown-category  py-1 rounded-md mt-1">
                   {categories.map((item, index) => (
-                    <li className="block py-1  pl-2 pr-10 hover:bg-gray-200">
-                      <a href="#" className="">
+                    <li className="block py-1  pl-2 pr-20 hover:bg-gray-200">
+                      <a href={`listproducts/${item.id}`} className="">
                         {item.name}
                       </a>
                     </li>

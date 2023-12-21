@@ -68,11 +68,11 @@ export default function EditCategory({ category, onSave, onCancel }) {
                                     <div className="sm:flex sm:items-start">
                                         <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full">
                                             <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-900">
-                                                Edit Category
+                                               Cập nhật danh mục
                                             </Dialog.Title>
                                             <div className="mt-2">
                                                 <form onSubmit={handleSave}>
-                                                    <label className="block mb-4 text-sm font-bold">Category Name:</label>
+                                                    <label className="block mb-4 text-sm font-bold">Tên danh mục:</label>
                                                     <input
                                                         type="text"
                                                         name="name"
@@ -82,7 +82,7 @@ export default function EditCategory({ category, onSave, onCancel }) {
                                                         required
                                                     />
 
-                                                    <label className="block mb-2 text-sm font-bold">Logo Image:</label>
+                                                    <label className="block mb-2 text-sm font-bold">Ảnh danh mục:</label>
                                                     <input
                                                         type="file"
                                                         name="logo"
@@ -92,7 +92,7 @@ export default function EditCategory({ category, onSave, onCancel }) {
                                                         required
                                                     />
 
-                                                    <label className="block mb-2 text-sm font-bold">Note:</label>
+                                                    <label className="block mb-2 text-sm font-bold">Ghi chú:</label>
                                                     <textarea
                                                         name="note"
                                                         value={editedCategory.note}
@@ -105,13 +105,13 @@ export default function EditCategory({ category, onSave, onCancel }) {
                                                             onClick={onCancel}
                                                             className="flex-1 p-2 text-center rounded-md bg-gray-300 text-gray-700 hover:bg-gray-400"
                                                         >
-                                                            Close
+                                                            Đóng
                                                         </button>
                                                         <button
                                                             type="submit"
                                                             className="flex-1 p-2 text-white text-center rounded-md bg-red-600 hover:bg-red-500"
                                                         >
-                                                            Edit Category
+                                                           Cập nhật
                                                         </button>
                                                     </div>
                                                 </form>
