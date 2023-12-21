@@ -114,31 +114,31 @@ export default function ListProducts() {
   //     return total + product.price * (product.quantity || 1);
   //   }, 0);
   // };
-  // let container = document.getElementById("container");
+  let container = document.getElementById("container");
 
-  // if (container) {
-  //   let count = 30;
+  if (container) {
+    let count = 30;
 
-  //   for (var i = 0; i < count; i++) {
-  //     let leftSnow = Math.floor(Math.random() * container.clientWidth);
-  //     let topSnow = Math.floor(Math.random() * container.clientHeight);
-  //     let widthSnow = Math.floor(Math.random() * 30);
-  //     let timeSnow = Math.floor(Math.random() * 5 + 5);
-  //     let blurSnow = Math.floor(Math.random() * 10);
-  //     // console.log(leftSnow);
-  //     let div = document.createElement("div");
-  //     div.classList.add("snow");
-  //     div.style.left = leftSnow + "px";
-  //     div.style.top = topSnow + "px";
-  //     div.style.width = widthSnow + "px";
-  //     div.style.height = widthSnow + "px";
-  //     div.style.animationDuration = timeSnow + "s";
-  //     div.style.filter = "blur(" + blurSnow + "px)";
-  //     container.appendChild(div);
-  //   }
-  // } else {
-  //   console.error("Không tìm thấy phần tử 'container'");
-  // }
+    for (var i = 0; i < count; i++) {
+      let leftSnow = Math.floor(Math.random() * container.clientWidth);
+      let topSnow = Math.floor(Math.random() * container.clientHeight);
+      let widthSnow = Math.floor(Math.random() * 30);
+      let timeSnow = Math.floor(Math.random() * 5 + 5);
+      let blurSnow = Math.floor(Math.random() * 10);
+      // console.log(leftSnow);
+      let div = document.createElement("div");
+      div.classList.add("snow");
+      div.style.left = leftSnow + "px";
+      div.style.top = topSnow + "px";
+      div.style.width = widthSnow + "px";
+      div.style.height = widthSnow + "px";
+      div.style.animationDuration = timeSnow + "s";
+      div.style.filter = "blur(" + blurSnow + "px)";
+      container.appendChild(div);
+    }
+  } else {
+    console.error("Không tìm thấy phần tử 'container'");
+  }
   return (
     <div className="py-20 bg-gray-100">
       <div className="grid max-w-[95%]  px-4 pb-8 mx-auto ">
@@ -318,9 +318,8 @@ export default function ListProducts() {
               <div className="flex items-end justify-center mt-10">
                 <div className=" pagination">
                   <button
-                    className={`mr-2 flex items-center text-cyan-500 ${
-                      currentPage === 1 ? "hidden" : "block"
-                    }`}
+                    className={`mr-2 flex items-center text-cyan-500 ${currentPage === 1 ? "hidden" : "block"
+                      }`}
                     disabled={currentPage === 1}
                     onClick={() => setCurrentPage((prev) => prev - 1)}
                   >
@@ -349,9 +348,8 @@ export default function ListProducts() {
                   {/* {currentPage} / {totalPages} */}
                   {numbers.map((n, i) => (
                     <li
-                      className={`page-item cursor-pointer mx-2 ${
-                        currentPage === n ? "active" : ""
-                      } `}
+                      className={`page-item cursor-pointer mx-2 ${currentPage === n ? "active" : ""
+                        } `}
                       key={i}
                     >
                       <a className="page-link" onClick={() => changePage(n)}>
@@ -361,11 +359,10 @@ export default function ListProducts() {
                   ))}
 
                   <button
-                    className={`flex items-center ml-2 ${
-                      currentPage === totalPages
+                    className={`flex items-center ml-2 ${currentPage === totalPages
                         ? "text-gray-500 hidden"
                         : "text-cyan-500 block"
-                    }`}
+                      }`}
                     disabled={currentPage === totalPages}
                     onClick={() => setCurrentPage((prev) => prev + 1)}
                   >
@@ -377,9 +374,8 @@ export default function ListProducts() {
                       data-name="Layer 1"
                       id="Layer_1"
                       xmlns="http://www.w3.org/2000/svg"
-                      fill={`${
-                        currentPage === totalPages ? "#6B7280" : "#1640D6"
-                      }`}
+                      fill={`${currentPage === totalPages ? "#6B7280" : "#1640D6"
+                        }`}
                     >
                       <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                       <g

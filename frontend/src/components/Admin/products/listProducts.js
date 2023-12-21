@@ -384,7 +384,7 @@ export default function ListProducts() {
                                   className="block text-lg font-bold mb-2 "
                                   htmlFor="category"
                                 >
-                                  Category:
+                                  Danh mục:
                                 </label>
                                 <select
                                   id="idCategory"
@@ -411,7 +411,7 @@ export default function ListProducts() {
                                   className="block text-lg font-semibold mb-2"
                                   htmlFor="name"
                                 >
-                                  Product name:
+                                  Tên sản phẩm :
                                 </label>
                                 <input
                                   type="text"
@@ -431,7 +431,7 @@ export default function ListProducts() {
                                   className="block text-lg font-semibold mb-2"
                                   htmlFor="capacity"
                                 >
-                                  Capacity:
+                                  Dung lượng:
                                 </label>
                                 <input
                                   type="text"
@@ -450,7 +450,7 @@ export default function ListProducts() {
                                   className="block text-lg font-semibold mb-2"
                                   htmlFor="parameter"
                                 >
-                                  Parameter:
+                                  Mô tả:
                                 </label>
                                 <ReactQuill
                                   name="parameter"
@@ -617,6 +617,7 @@ export default function ListProducts() {
                                   </label>
                                   <input
                                     type="number"
+                                    min="0"
                                     name="quantity"
                                     id={`quantity-${index}`}
                                     value={detail.quantity}
@@ -634,9 +635,10 @@ export default function ListProducts() {
                                     className="block text-lg font-semibold mb-2"
                                     htmlFor={`price-${index}`}
                                   >
-                                    Giá:
+                                    Giá bán ra:
                                   </label>
                                   <input
+                                    min="0"
                                     type="number"
                                     name="price"
                                     id={`price-${index}`}
@@ -651,9 +653,10 @@ export default function ListProducts() {
                                     className="block text-lg font-semibold mb-2"
                                     htmlFor={`discount-${index}`}
                                   >
-                                    Giảm Giá:
+                                    Giá gốc:
                                   </label>
                                   <input
+                                    min="0"
                                     type="number"
                                     name="discount"
                                     id={`discount-${index}`}
@@ -709,7 +712,7 @@ export default function ListProducts() {
                           <button
                             type="button"
                             onClick={handleSave}
-                            className="bg-green-400 rounded-md  text-white py-2 px-4 w-full mb-4"
+                            className="bg-green-600 rounded-md  text-white py-2 px-4 w-full mb-4"
                           >
                             Add product
                           </button>
@@ -748,10 +751,10 @@ export default function ListProducts() {
             </thead>
             <tbody>
               {products.filter((item) => {
-                      return search.toLowerCase() === ""
-                        ? item
-                        : item.name.toLowerCase().includes(search);
-                    }).map((item) => (
+                return search.toLowerCase() === ""
+                  ? item
+                  : item.name.toLowerCase().includes(search);
+              }).map((item) => (
                 <tr key={item.id}>
                   {item.product_detail &&
                     item.product_detail.map((detail, index) => (
@@ -796,7 +799,7 @@ export default function ListProducts() {
                   </td>
 
                   {!item.product_promotion ||
-                  item.product_promotion.length === 0 ? (
+                    item.product_promotion.length === 0 ? (
                     <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
                       <p className="inline-flex rounded-full bg-red-300 bg-opacity-0 py-1 px-3 text-sm font-medium text-orange-600">
                         Không có quà tặng nha..
@@ -914,9 +917,8 @@ export default function ListProducts() {
           <div className="flex items-end justify-center mt-10">
             <div className=" pagination">
               <button
-                className={`mr-2 flex items-center text-cyan-500 ${
-                  currentPage === 1 ? "hidden" : "block"
-                }`}
+                className={`mr-2 flex items-center text-cyan-500 ${currentPage === 1 ? "hidden" : "block"
+                  }`}
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage((prev) => prev - 1)}
               >
@@ -945,9 +947,8 @@ export default function ListProducts() {
               {/* {currentPage} / {totalPages} */}
               {numbers.map((n, i) => (
                 <li
-                  className={`page-item cursor-pointer mx-2 ${
-                    currentPage === n ? "active" : ""
-                  } `}
+                  className={`page-item cursor-pointer mx-2 ${currentPage === n ? "active" : ""
+                    } `}
                   key={i}
                 >
                   <a className="page-link" onClick={() => changePage(n)}>
@@ -957,11 +958,10 @@ export default function ListProducts() {
               ))}
 
               <button
-                className={`flex items-center ml-2 ${
-                  currentPage === totalPages
-                    ? "text-gray-500 hidden"
-                    : "text-cyan-500 block"
-                }`}
+                className={`flex items-center ml-2 ${currentPage === totalPages
+                  ? "text-gray-500 hidden"
+                  : "text-cyan-500 block"
+                  }`}
                 disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage((prev) => prev + 1)}
               >

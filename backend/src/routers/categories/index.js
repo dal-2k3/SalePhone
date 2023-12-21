@@ -44,7 +44,6 @@ categoriesRouter.post('/', upload.single('logo'), async (req, res) => {
         if (!category) {
             return res.status(502).send("Can't create category");
         }
-
         res.status(200).send(category);
         const idProduct = category.id;
         console.log(idProduct);
@@ -65,8 +64,8 @@ categoriesRouter.delete('/:id', async (req, res) => {
     const { id } = req.params;
     const idcategoryExistProducts = await getIdCategory(id);
     if (idcategoryExistProducts) {
-        return res.status(500).send(`This category has products available`);
-    }
+        return res.status(501).send("This category has products available");
+    };
     await deleteCategory(id);
     res.status(200).send(`delete Category id successfully`);
 });
