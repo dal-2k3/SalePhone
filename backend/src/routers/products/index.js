@@ -136,10 +136,11 @@ productRouter.delete('/:id', async (req, res) => {
     const idproduct = await findIdProductInOrderDetail(id);
     if (idproduct) {
         return res.status(500).send("Product already exist in the table order detail");
-    }
+    };
     await deleteProduct(id);
     res.status(200).send("delete product successfully")
 });
+
 // Product_detail
 productRouter.post('/detail', upload.single('image'), async (req, res) => {
     const { idProduct, color, discount, price, quantity } = req.body;

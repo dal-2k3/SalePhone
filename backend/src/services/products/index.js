@@ -107,12 +107,21 @@ const updateProduct = async (id, data) => {
 };
 const deleteProduct = async (id) => {
     try {
-        const product = await Product.destroy({
+        await Product.destroy({
             where: {
                 id
             }
-        })
-        return product;
+        });
+        await Product_detail.destroy({
+            where: {
+                idProduct: id,
+            }
+        });
+        await Promotion.destroy({
+            where: {
+                idProduct: id,
+            }
+        });
     } catch (err) {
         console.log(err)
     }

@@ -1,12 +1,13 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import {
   NavLink,
-  unstable_HistoryRouter,
   useNavigate,
   useParams,
 } from "react-router-dom";
 import { Dialog, Transition } from "@headlessui/react";
 import moment from "moment";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {
   getProductDetail,
   getProductsByCategory,
@@ -120,6 +121,16 @@ export default function ProductDetail() {
         const productsDetailsData = await getProductDetail(productId);
         console.log("product", productsDetailsData);
 
+        const allDetail = productsDetailsData.reduce(
+          (acc, curr) => [
+            ...acc,
+            ...curr.product_detail.map((detail) => detail),
+          ],
+          []
+        );
+        setProductDetail(allDetail);
+        console.log("detail", allDetail);
+
         if (productsDetailsData && productsDetailsData.length > 0) {
           const productDetails = productsDetailsData[0];
 
@@ -135,21 +146,11 @@ export default function ProductDetail() {
             discount: productDetails.product_detail[0]?.discount || null,
           });
         }
-
-        const allDetail = productsDetailsData.reduce(
-          (acc, curr) => [
-            ...acc,
-            ...curr.product_detail.map((detail) => detail),
-          ],
-          []
-        );
-        setProductDetail(allDetail);
-        console.log("detail", allDetail);
-
+        // Chọn phần tử đầu tiên cho capacity
         const capacitydefault = productsDetailsData.map(
           (item) => item.capacity
         );
-        setSelectedOption(capacitydefault[0]); // Chọn phần tử đầu tiên
+        setSelectedOption(capacitydefault[0]);
 
         const productByCategory = await getProductsByCategory(
           productsDetailsData.map((item) => item.idCategory)
@@ -166,6 +167,7 @@ export default function ProductDetail() {
       }
     };
     fetchProductsDetails();
+    // Comment
     const fetchComments = async () => {
       const listcomments = await getComments(productId);
       setComments(listcomments);
@@ -226,7 +228,7 @@ export default function ProductDetail() {
   console.log("dung luong", selectedOption);
   console.log(isActivePhone);
 
-  console.log("local", selectedProduct);
+  console.log("localstorege", selectedProduct);
   console.log("review", review);
 
   const navigate = useNavigate();
@@ -352,7 +354,7 @@ export default function ProductDetail() {
                               )}
                             </div>
                             <p className="font-medium text-xl text-center">
-                              Iphone 15 Pro Max 512G
+                              {item.name}{item.category}
                             </p>
                             <div className="text-2xl text-center">
                               {[1, 2, 3, 4, 5].map((star) => (
@@ -526,7 +528,8 @@ export default function ProductDetail() {
                       key={index}
                       src={`${DOMAIN}${detail.image}`}
                       alt={`Thumbnail ${index + 1}`}
-                      className={`w-12 h-12 rounded-md cursor-pointer ${isActivePhone.id === detail.id
+                      className={`w-12 h-12 rounded-md cursor-pointer 
+                      ${isActivePhone.id === detail.id
                           ? "border-2 border-blue-500"
                           : ""
                         }`}
@@ -690,8 +693,8 @@ export default function ProductDetail() {
                       >
                         <div
                           className={`w-14 h-14 rounded-lg ${isActivePhone.id === detail.id
-                              ? "border-2 border-red-300"
-                              : ""
+                            ? "border-2 border-red-300"
+                            : ""
                             }`}
                           style={{ backgroundColor: detail.color }}
                         >
@@ -980,8 +983,8 @@ export default function ProductDetail() {
                                 <svg
                                   key={index}
                                   className={`w-6 h-6  ${index < comment.rating
-                                      ? "text-yellow-500"
-                                      : "text-gray-400"
+                                    ? "text-yellow-500"
+                                    : "text-gray-400"
                                     } me-1`}
                                   aria-hidden="true"
                                   xmlns="http://www.w3.org/2000/svg"
