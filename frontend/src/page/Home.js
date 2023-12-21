@@ -153,13 +153,13 @@ export default function Home() {
   const [productsToShow, setProductsToShow] = useState([]);
   useEffect(() => {
     const getProductsToShow = () => {
-      const endIndex = (startIndex + 5) % products2.length;
+      const endIndex = (startIndex + 5) % products.length;
       if (endIndex >= startIndex) {
-        return products2.slice(startIndex, endIndex);
+        return products.slice(startIndex, endIndex);
       } else {
         return [
-          ...products2.slice(startIndex, products2.length),
-          ...products2.slice(0, endIndex),
+          ...products.slice(startIndex, products.length),
+          ...products.slice(0, endIndex),
         ];
       }
     };
@@ -179,9 +179,10 @@ export default function Home() {
   function formatPrice(price) {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
+  console.log("adsa", productsToShow);
   return (
-    <section className="mt-5 ">
-      <div className="lg:grid max-w-[95%] lg:grid-cols-3 mx-auto lg:gap-4 sm:grid sm:grid-flow-row sm:grid-row-3 sm:pt-12 pt-20 ">
+    <section className="sm:mt-5">
+      <div className="lg:grid max-w-[95%] lg:grid-cols-3 mx-auto lg:gap-4 sm:grid sm:grid-flow-row sm:grid-row-3 sm:pt-12 md:pt-24 lg:pt-12 pt-32 ">
         <div className="lg:col-span-2">
           <div
             id="indicators-carousel"
@@ -381,11 +382,14 @@ export default function Home() {
       <div className="bg-gray-100 mt-4  ">
         <div className="grid   px-4  mx-auto">
           <div>
-            <h1 style={{ color: "#008e49" }} className="text-3xl font-bold py-2 my-7 underline
+            <h1 style={{ color: "#EE0000" }} className="text-3xl py-5 font-bold	text-center ">
+            Danh mục
+            </h1>
+            {/* <h1 style={{ color: "#008e49" }} className="text-3xl font-bold py-2 my-7 underline
             underline-offset-2 
             ">
-              Danh mục thịnh hành
-            </h1>
+              Danh mục
+            </h1> */}
           </div>
           <div className="flex flex-wrap mx-auto items-center w-full justify-between pb-5 ">
             {categories.map((item) => (
@@ -393,7 +397,7 @@ export default function Home() {
                 className=" px-4 flex-1 flex-col drop-shadow-[0_35px_35px_rgba(0,0,0,0.25)]"
                 to={`/listproducts/${item.id}`}
               >
-                <div className="p-4 bg-white h-[100px] rounded-lg ">
+                <div className="p-4 bg-white h-[90px] rounded-lg ">
                   <img
                     src={`${DOMAIN}${item.logo}`}
                     alt=""
@@ -411,25 +415,22 @@ export default function Home() {
       {/* có gì mới */}
       <div className="bg-gray-100 ">
         <div>
-          <h1 className="text-3xl py-5 font-bold	text-center text-red-500">
+          <h1 style={{ color: "#EE0000" }} className="text-3xl py-5 font-bold	text-center ">
             Có gì mới
           </h1>
         </div>
         <div className=" max-w-[95%]  sm:px-4   mx-auto lg:pb-4">
           <div className="grid grid-flow-row grid-row-2 sm:grid sm:grid-cols-2 gap-4">
-            <div className="sm:row-span-1 mb-2 sm:h-full h-48 border rounded-2xl bg-[url('https://scontent.fhan5-10.fna.fbcdn.net/v/t1.15752-9/367975501_896566588753771_871931902031188617_n.png?_nc_cat=111&ccb=1-7&_nc_sid=8cd0a2&_nc_ohc=aIv05RlaqiAAX-pjYO-&_nc_ht=scontent.fhan5-10.fna&oh=03_AdRr4xtaaCgX0Au0bhgq4bFOsc2Zi6tqIW8K8H4UOGdVyg&oe=6594C166')] bg-center ">
-
-            </div>
+            <div className="sm:row-span-1 mb-2 sm:h-full h-48 border rounded-2xl bg-[url('https://scontent.fhan5-10.fna.fbcdn.net/v/t1.15752-9/367975501_896566588753771_871931902031188617_n.png?_nc_cat=111&ccb=1-7&_nc_sid=8cd0a2&_nc_ohc=aIv05RlaqiAAX-pjYO-&_nc_ht=scontent.fhan5-10.fna&oh=03_AdRr4xtaaCgX0Au0bhgq4bFOsc2Zi6tqIW8K8H4UOGdVyg&oe=6594C166')] bg-center "></div>
             <div className="col-span-1 grid grid-cols-2  gap-2 pb-3 sm:pb-0">
-              
-              {filteredArrayIphone.slice(0, 4).map((item) => (
+              {products.slice(0, 4).map((item) => (
                 <div className="row-span-1 border bg-white  relative rounded-3xl overflow-hidden group duration-1000">
                   {item.product_detail &&
                     item.product_detail.map((detail, index) => (
                       <div className="flex flex-col items-center pt-5 pb-14  px-5  ">
-
                         <div className="absolute inline-block top-[18px] left-[16px] z-600 ">
-                          <span style={{ background: "#008e49" }}
+                          <span
+                            style={{ background: "#008e49" }}
                             className=" hover:bg-red-700 text-white font-bold py-1 px-2 rounded-b-2xl rounded-s-xl 
                             shadow-lg hover:text-yellow-300 shadow-white transform transition-all duration-500
                              ease-in-out hover:scale-110 hover:brightness-110 hover:animate-pulse active:animate-bounce"
@@ -466,109 +467,6 @@ export default function Home() {
                     ))}
                 </div>
               ))}
-
-              {/* <div className="row-span-1 border bg-white  relative rounded-3xl overflow-hidden group duration-1000">
-                <div className="flex flex-col items-center pt-5 pb-14  px-5  ">
-                  <div className="absolute inline-block top-[24px] left-[24px] z-600 ">
-                    <span
-                      style={{ backgroundColor: "#c9d8a1", color: "#a81817" }}
-                      className=" h-20 px-3 py-2 rounded-full text-xs leading-4 font-semibold text-black  shadow-text-white animate-badge-appear"
-                    >
-                      Mới
-                    </span>
-                  </div>
-                  <a href="" className="block">
-                    <div className=" inline-block h-full w-full">
-                      <img
-                        className="max-h-[200px] object-cover"
-                        src="http://localhost:8000/uploads/1701342216128-iphone-12-xanh-la-new-2-200x200.jpg"
-                        alt=""
-                      />
-                    </div>
-                  </a>
-                  <div class="absolute bottom-5 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 translate-y-1 transition duration-[1500ms]">
-                    <button
-                      style={{ backgroundColor: "#c56058", color: "#fff" }}
-                      className="bg-green-500 text-white py-2 px-4 rounded-full"
-                    >
-                      Mua ngay
-                    </button>
-                  </div>
-                  <div className=" text-center ">
-                    <span className="font-bold texl-2xl ">
-                    Iphone 15 Pro Max (512G) - Chính hãng VN/A
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className="row-span-1 border bg-white  relative rounded-3xl overflow-hidden group duration-1000">
-                <div className="flex flex-col items-center pt-5 pb-14  px-5  ">
-                  <div className="absolute inline-block top-[24px] left-[24px] z-600 ">
-                    <span
-                      style={{ backgroundColor: "#c9d8a1", color: "#a81817" }}
-                      className=" h-20 px-3 py-2 rounded-full text-xs leading-4 font-semibold text-black  shadow-text-white animate-badge-appear"
-                    >
-                      Mới
-                    </span>
-                  </div>
-                  <a href="" className="block">
-                    <div className=" inline-block h-full w-full">
-                      <img
-                        className="max-h-[200px] object-cover"
-                        src="http://localhost:8000/uploads/1701341887621-samsung-galaxy-z-flip5-xanh-mint-thumb-200x200.jpg"
-                        alt=""
-                      />
-                    </div>
-                  </a>
-                  <div class="absolute bottom-5 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 translate-y-1 transition duration-[1500ms]">
-                    <button
-                      style={{ backgroundColor: "#c56058", color: "#fff" }}
-                      className="bg-green-500 text-white py-2 px-4 rounded-full"
-                    >
-                      Mua ngay
-                    </button>
-                  </div>
-                  <div className=" text-center ">
-                    <span className="font-bold texl-2xl ">
-                    Samsung Galaxy Z Flip5 5G (512G) - Chính hãng VN/A
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className="row-span-1 border bg-white  relative rounded-3xl overflow-hidden group duration-1000">
-                <div className="flex flex-col items-center pt-5 pb-14  px-5  ">
-                  <div className="absolute inline-block top-[24px] left-[24px] z-600 ">
-                    <span
-                      style={{ backgroundColor: "#c9d8a1", color: "#a81817" }}
-                      className=" h-20 px-3 py-2 rounded-full text-xs leading-4 font-semibold text-black  shadow-text-white animate-badge-appear"
-                    >
-                      Mới
-                    </span>
-                  </div>
-                  <a href="" className="block">
-                    <div className=" inline-block h-full w-full">
-                      <img
-                        className="max-h-[200px] object-cover"
-                        src="http://localhost:8000/uploads/1701341236087-iphone-12-den-new-2-200x200.jpg"
-                        alt=""
-                      />
-                    </div>
-                  </a>
-                  <div class="absolute bottom-5 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 translate-y-1 transition duration-[1500ms]">
-                    <button
-                      style={{ backgroundColor: "#c56058", color: "#fff" }}
-                      className="bg-green-500 text-white py-2 px-4 rounded-full"
-                    >
-                      Mua ngay
-                    </button>
-                  </div>
-                  <div className=" text-center ">
-                    <span className="font-bold texl-2xl ">
-                    Iphone 15 Pro (128G) - Chính hãng VN/A
-                    </span>
-                  </div>
-                </div>
-              </div> */}
             </div>
             {/* <div class="row-span-2 col-span-2 bg-cyan-300">03</div> */}
           </div>
@@ -577,7 +475,7 @@ export default function Home() {
 
       {/* samsung */}
       <div className="bg-gray-100">
-        <div className=" grid max-w-[100%]  mx-auto lg:gap-8  lg:pt-10">
+        <div className=" grid max-w-[100%]  mx-auto lg:gap-8  lg:pt-5">
           <div className="relative">
             <img
               src="https://news.khangz.com/wp-content/uploads/2021/11/Main-2-ki%CC%81ch-thu%CC%9Bo%CC%9B%CC%81c_81104282330112023.png"
@@ -593,7 +491,6 @@ export default function Home() {
               </a>
             </div> */}
           </div>
-
         </div>
       </div>
       <div className="bg-gray-100">
@@ -666,12 +563,12 @@ export default function Home() {
                           </g>
                         </svg>
                         <p className=" px-1 py-1  text-white text-xs">
-                          Giảm
+                          Giảm{" "}
                           {formatPrice(`${detail.discount - detail.price} ₫`)}
                         </p>
                       </div>
                       <div className="text-center">
-                        <div className="mb-2 px-4">
+                        <div className="mb-2 px-4 min-h-[72px] flex items-center justify-center">
                           <a
                             href={`/product_detail/${item.id}`}
                             className="font-bold text-sm"
@@ -679,7 +576,7 @@ export default function Home() {
                             {item.name} ({item.capacity}) - Chính hãng VN/A
                           </a>
                         </div>
-                        <div className="mb-2 flex-col md:flex text-center items-center justify-center ">
+                        <div className="mb-2 md:flex text-center items-center justify-center gap-1 ">
                           <p className="text-red-500 text-[18px] font-medium">
                             {formatPrice(`${detail.price} ₫`)}
                           </p>
@@ -715,9 +612,7 @@ export default function Home() {
                       href=""
                       className="font-bold text-sm"
                       style={{ visibility: "hidden" }}
-                    >
-                     
-                    </a>
+                    ></a>
                   </div>
                   <div
                     className="mb-2 text-center  "
@@ -934,7 +829,7 @@ export default function Home() {
       {/* banner */}
       <div>
         <div>
-          <h1 className="text-3xl py-5 font-bold	text-center text-red-500">
+          <h1  style={{ color: "#EE0000" }} className="text-3xl py-5 font-bold	text-center ">
             Điện thoại nào phù hợp với bạn?
           </h1>
         </div>
@@ -969,7 +864,7 @@ export default function Home() {
       {/* ưa thích */}
       <div>
         <div>
-          <h1 className="text-3xl py-5 font-bold	text-center text-red-500">
+          <h1 style={{ color: "#EE0000" }} className="text-3xl py-5 font-bold	text-center ">
             Có thể bạn sẽ thích
           </h1>
         </div>
@@ -994,86 +889,96 @@ export default function Home() {
             </svg>
           </button>
 
-          {productsToShow.map((product) => (
+          {productsToShow.map((item) => (
             <div className="flex-1 w-full border border-solid rounded-3xl bg-white z-50 shadow-lg">
-              <div key={product.id} className="">
-                
-                <div className="py-8 flex flex-col items-center lg:relative group ">
-                  <div className="mb-4 relative overflow-hidden transition-transform duration-500 ease-in-out transform-gpu group-hover:-translate-y-3">
-                    <img src={product.image} alt="" className="transform-gpu" />
-                  </div>
-                  <div className="flex items-center lg:absolute top-[200px] left-0 rounded-r-xl bg-red-600">
-                    <svg
-                      height="20px"
-                      width="20px"
-                      version="1.1"
-                      id="Layer_1"
-                      xmlns="http://www.w3.org/2000/svg"
-                      // xmlns:xlink="http://www.w3.org/1999/xlink"
-                      viewBox="0 0 512 512"
-                      // xml:space="preserve"
-                      fill="#000000"
-                    >
-                      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                      <g
-                        id="SVGRepo_tracerCarrier"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      ></g>
-                      <g id="SVGRepo_iconCarrier">
-                        {" "}
-                        <path
-                          style={{ fill: "#FF5023" }}
-                          d="M141.005,339.641H16.696c-5.788,0-11.157-3.082-14.201-7.995c-3.043-4.924-3.32-11.117-0.733-16.29 L31.42,256.02L1.761,196.695c-2.587-5.173-2.31-11.249,0.733-16.174c3.043-4.913,8.413-7.837,14.201-7.837h124.31 c5.978,0,11.5,3.114,14.473,8.299c2.979,5.173,2.962,11.513-0.049,16.677c-10.815,18.566-16.299,38.186-16.299,58.36 s5.484,39.805,16.299,58.37c3.011,5.163,3.027,11.62,0.049,16.794C152.505,336.368,146.983,339.641,141.005,339.641z"
-                        ></path>{" "}
-                        <path
-                          style={{ fill: "#CD2A00" }}
-                          d="M495.304,339.641h-124.31c-5.978,0-11.5-3.277-14.473-8.462c-2.978-5.173-2.962-11.595,0.049-16.758 c10.815-18.566,16.299-38.226,16.299-58.4s-5.484-39.826-16.299-58.39c-3.011-5.163-3.027-11.467-0.049-16.641 c2.973-5.185,8.495-8.304,14.473-8.304h124.31c5.788,0,11.157,2.918,14.201,7.831c3.043,4.924,3.32,11.036,0.733,16.209 l-29.658,59.295l29.658,59.305c2.587,5.173,2.31,11.402-0.733,16.326C506.461,336.564,501.092,339.641,495.304,339.641z"
-                        ></path>{" "}
-                        <path
-                          style={{ fill: "#FFDA44" }}
-                          d="M253.773,406.261c-82.853,0-148.033-67.402-148.033-150.261S173.147,105.739,256,105.739 S406.261,173.142,406.261,256S336.625,406.261,253.773,406.261z"
-                        ></path>{" "}
-                        <path
-                          style={{ fill: "#FFA733" }}
-                          d="M406.261,256c0-82.858-67.408-150.261-150.261-150.261l-2.227,300.521 C336.625,406.261,406.261,338.858,406.261,256z"
-                        ></path>{" "}
-                        <path
-                          style={{ fill: "#FFEB99" }}
-                          d="M300.13,333.434c-2.658,0-5.326-0.63-7.771-1.924L256,312.39l-36.359,19.12 c-5.635,2.978-12.446,2.468-17.582-1.261c-5.147-3.739-7.718-10.065-6.647-16.337l6.94-40.478l-29.413-28.684 c-4.549-4.445-6.185-11.076-4.217-17.12c1.962-6.044,7.19-10.446,13.478-11.359l40.647-5.902l18.179-36.837 c2.815-5.695,8.619-9.304,14.973-9.304c6.353,0,12.158,3.608,14.973,9.304l18.179,36.837l40.647,5.902 c6.288,0.913,11.517,5.315,13.478,11.359c1.968,6.044,0.332,12.674-4.217,17.12l-29.413,28.684l6.94,40.478 c1.071,6.272-1.5,12.597-6.647,16.337C307.032,332.358,303.591,333.434,300.13,333.434z"
-                        ></path>{" "}
-                        <path
-                          style={{ fill: "#FFDA44" }}
-                          d="M292.357,331.51c2.445,1.293,5.114,1.924,7.772,1.924c3.462,0,6.902-1.076,9.81-3.184 c5.147-3.739,7.718-10.065,6.647-16.337l-6.94-40.478l29.413-28.684c4.549-4.445,6.185-11.076,4.217-17.12 c-1.962-6.044-7.19-10.446-13.478-11.359l-40.647-5.902l-18.179-36.837c-2.815-5.695-8.294-9.304-14.973-9.304v148.162 L292.357,331.51z"
-                        ></path>{" "}
-                      </g>
-                    </svg>
-                    <p className=" px-1 py-1  text-white text-xs">
-                      Giảm 2.000.000 đ
-                    </p>
-                  </div>
-                  <div className="text-center">
-                    <div className="mb-2 px-4">
-                      <a href="" className="font-bold text-sm">
-                        {product.name}
-                      </a>
+              <div key={item.id} className="">
+                {item.product_detail &&
+                  item.product_detail.map((detail, index) => (
+                    <div className="py-8 flex flex-col items-center lg:relative group ">
+                      <div className="mb-4 relative overflow-hidden transition-transform duration-500 ease-in-out transform-gpu group-hover:-translate-y-3">
+                        <img
+                          src={`${DOMAIN}${detail.image}`}
+                          alt=""
+                          className="transform-gpu"
+                        />
+                      </div>
+                      <div className="flex items-center lg:absolute top-[200px] left-0 rounded-r-xl bg-red-600">
+                        <svg
+                          height="20px"
+                          width="20px"
+                          version="1.1"
+                          id="Layer_1"
+                          xmlns="http://www.w3.org/2000/svg"
+                          // xmlns:xlink="http://www.w3.org/1999/xlink"
+                          viewBox="0 0 512 512"
+                          // xml:space="preserve"
+                          fill="#000000"
+                        >
+                          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                          <g
+                            id="SVGRepo_tracerCarrier"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          ></g>
+                          <g id="SVGRepo_iconCarrier">
+                            {" "}
+                            <path
+                              style={{ fill: "#FF5023" }}
+                              d="M141.005,339.641H16.696c-5.788,0-11.157-3.082-14.201-7.995c-3.043-4.924-3.32-11.117-0.733-16.29 L31.42,256.02L1.761,196.695c-2.587-5.173-2.31-11.249,0.733-16.174c3.043-4.913,8.413-7.837,14.201-7.837h124.31 c5.978,0,11.5,3.114,14.473,8.299c2.979,5.173,2.962,11.513-0.049,16.677c-10.815,18.566-16.299,38.186-16.299,58.36 s5.484,39.805,16.299,58.37c3.011,5.163,3.027,11.62,0.049,16.794C152.505,336.368,146.983,339.641,141.005,339.641z"
+                            ></path>{" "}
+                            <path
+                              style={{ fill: "#CD2A00" }}
+                              d="M495.304,339.641h-124.31c-5.978,0-11.5-3.277-14.473-8.462c-2.978-5.173-2.962-11.595,0.049-16.758 c10.815-18.566,16.299-38.226,16.299-58.4s-5.484-39.826-16.299-58.39c-3.011-5.163-3.027-11.467-0.049-16.641 c2.973-5.185,8.495-8.304,14.473-8.304h124.31c5.788,0,11.157,2.918,14.201,7.831c3.043,4.924,3.32,11.036,0.733,16.209 l-29.658,59.295l29.658,59.305c2.587,5.173,2.31,11.402-0.733,16.326C506.461,336.564,501.092,339.641,495.304,339.641z"
+                            ></path>{" "}
+                            <path
+                              style={{ fill: "#FFDA44" }}
+                              d="M253.773,406.261c-82.853,0-148.033-67.402-148.033-150.261S173.147,105.739,256,105.739 S406.261,173.142,406.261,256S336.625,406.261,253.773,406.261z"
+                            ></path>{" "}
+                            <path
+                              style={{ fill: "#FFA733" }}
+                              d="M406.261,256c0-82.858-67.408-150.261-150.261-150.261l-2.227,300.521 C336.625,406.261,406.261,338.858,406.261,256z"
+                            ></path>{" "}
+                            <path
+                              style={{ fill: "#FFEB99" }}
+                              d="M300.13,333.434c-2.658,0-5.326-0.63-7.771-1.924L256,312.39l-36.359,19.12 c-5.635,2.978-12.446,2.468-17.582-1.261c-5.147-3.739-7.718-10.065-6.647-16.337l6.94-40.478l-29.413-28.684 c-4.549-4.445-6.185-11.076-4.217-17.12c1.962-6.044,7.19-10.446,13.478-11.359l40.647-5.902l18.179-36.837 c2.815-5.695,8.619-9.304,14.973-9.304c6.353,0,12.158,3.608,14.973,9.304l18.179,36.837l40.647,5.902 c6.288,0.913,11.517,5.315,13.478,11.359c1.968,6.044,0.332,12.674-4.217,17.12l-29.413,28.684l6.94,40.478 c1.071,6.272-1.5,12.597-6.647,16.337C307.032,332.358,303.591,333.434,300.13,333.434z"
+                            ></path>{" "}
+                            <path
+                              style={{ fill: "#FFDA44" }}
+                              d="M292.357,331.51c2.445,1.293,5.114,1.924,7.772,1.924c3.462,0,6.902-1.076,9.81-3.184 c5.147-3.739,7.718-10.065,6.647-16.337l-6.94-40.478l29.413-28.684c4.549-4.445,6.185-11.076,4.217-17.12 c-1.962-6.044-7.19-10.446-13.478-11.359l-40.647-5.902l-18.179-36.837c-2.815-5.695-8.294-9.304-14.973-9.304v148.162 L292.357,331.51z"
+                            ></path>{" "}
+                          </g>
+                        </svg>
+                        <p className=" px-1 py-1  text-white text-xs">
+                          Giảm{" "}
+                          {formatPrice(`${detail.discount - detail.price} ₫`)}
+                        </p>
+                      </div>
+                      <div className="text-center">
+                        <div className="mb-2 px-4">
+                          <a
+                            href={`/product_detail/${item.id}`}
+                            className="font-bold text-sm"
+                          >
+                            {item.name} ({item.capacity}) - Chính hãng VN/A
+                          </a>
+                        </div>
+                        <div className="mb-2 flex text-center items-center justify-center gap-1">
+                          <span className="text-red-500 text-[18px] font-medium">
+                            {formatPrice(`${detail.price} ₫`)}
+                          </span>
+                          <span className="text-sm text-gray-500 line-through">
+                            {formatPrice(`${detail.discount} ₫`)}
+                          </span>
+                        </div>
+                        <div className="mb-4"></div>
+                        <div>
+                          <button class="py-2 px-5 rounded-full bg-blue-400 text-white font-bold transition duration-500 transform hover:bg-blue-300 hover:scale-110 active:bg-blue-700 active:scale-98 focus:outline-none">
+                            Mua ngay
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                    <div className="mb-2 flex text-center items-center justify-center gap-1">
-                      <span className="text-red-500 text-[18px] font-medium">
-                        {product.price} đ
-                      </span>
-                      <span className="text-sm text-gray-500 line-through">
-                        {product.discount}
-                      </span>
-                    </div>
-                    <div className="mb-4"></div>
-                    <div>
-                      <button class="py-2 px-5 rounded-full bg-blue-400 text-white font-bold transition duration-500 transform hover:bg-blue-300 hover:scale-110 active:bg-blue-700 active:scale-98 focus:outline-none">
-                        Mua ngay
-                      </button>
-                    </div>
-                  </div>
-                </div>
+                  ))}
               </div>
             </div>
           ))}

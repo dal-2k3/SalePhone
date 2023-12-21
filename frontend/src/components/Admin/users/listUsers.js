@@ -63,17 +63,17 @@ export default function ListUsers() {
         <div className="container mx-auto mt-8">
 
 
-            <h1 className="text-2xl font-bold mb-4 caption-top">ListCutomers</h1>
+            <h1 className="text-2xl font-bold mb-4 caption-top">Admin</h1>
             <table className="min-w-full bg-white border-collapse border border-slate-400 ">
 
                 <thead>
                     <tr className=" text-orange-600">
                         <th className="py-2 px-6 border-b border border-slate-300">ID</th>
-                        <th className="py-2 px-4 border-b border border-slate-300">Name</th>
+                        <th className="py-2 px-4 border-b border border-slate-300">Tên</th>
                         <th className="py-2 px-4 border-b border border-slate-300">Email</th>
-                        <th className="py-2 px-4 border-b border border-slate-300">Phone</th>
-                        <th className="py-2 px-4 border-b border border-slate-300">Status</th>
-                        <th className="py-2 px-4 border-b border border-slate-300">Actions</th>
+                        <th className="py-2 px-4 border-b border border-slate-300">SĐT</th>
+                        <th className="py-2 px-4 border-b border border-slate-300">Trạng thái</th>
+                        <th className="py-2 px-4 border-b border border-slate-300">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -89,13 +89,13 @@ export default function ListUsers() {
                                     className="bg-blue-500 text-white py-1 px-2 mr-2 rounded"
                                     onClick={() => handleEdit(user)}
                                 >
-                                    Edit
+                                    Sửa
                                 </button>
                                 <button
                                     className="bg-red-500 text-white py-1 px-2 rounded"
                                     onClick={() => handleDelete(user.id)}
                                 >
-                                    Delete
+                                    Xóa
                                 </button>
                             </td>
                         </tr>

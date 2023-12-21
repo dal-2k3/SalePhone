@@ -3,7 +3,7 @@ const ItemsContainer = () => {
     <div className="grid  sm:grid-cols-3 lg:grid-cols-4 gap-6 sm:px-8 lg:px-32 py-5 justify-center">
       <div className="flex flex-col md:gap-3 items-center">
         <a className="w-[200px] h-[100px]">
-          <img src="/image/SP2.png" alt="" className="w-full h-full" />
+          <img src="/image/SP3.png" alt="" className="w-full h-full" />
         </a>
         <p className=" mx-auto px-5">
           SalePhone - Website Cửa Hàng Điện Thoại tập trung vào tối ưu hóa trải

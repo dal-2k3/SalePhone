@@ -76,7 +76,7 @@ export default function EditProduct({ product, categories, onSave, onCancel }) {
                                                                 className="block text-lg font-bold mb-2 "
                                                                 htmlFor="category"
                                                             >
-                                                                Category:
+                                                                Danh mục:
                                                             </label>
                                                             <select
                                                                 id="idCategory"
@@ -102,7 +102,7 @@ export default function EditProduct({ product, categories, onSave, onCancel }) {
                                                                 className="block text-lg font-semibold mb-2"
                                                                 htmlFor="capacity"
                                                             >
-                                                                Capacity:
+                                                                Dung lượng:
                                                             </label>
                                                             <input
                                                                 type="text"
@@ -120,7 +120,7 @@ export default function EditProduct({ product, categories, onSave, onCancel }) {
                                                                 className="block text-lg font-semibold mb-2"
                                                                 htmlFor="name"
                                                             >
-                                                                Product name:
+                                                                Tên sản phẩm:
                                                             </label>
                                                             <input
                                                                 type="text"
@@ -137,7 +137,7 @@ export default function EditProduct({ product, categories, onSave, onCancel }) {
                                                         </div>
                                                         <div className="mb-4 ">
                                                             <label className="block text-lg font-semibold mb-2"
-                                                                htmlFor="status">Status:</label>
+                                                                htmlFor="status">Trạng thái:</label>
                                                             <select
                                                                 className="w-full py-2 px-3 border rounded-md bg-gray-100 focus:outline-none focus:ring focus:border-blue-400"
                                                                 id="status"
@@ -145,9 +145,9 @@ export default function EditProduct({ product, categories, onSave, onCancel }) {
                                                                 value={editedProduct.status}
                                                                 onChange={(event) =>
                                                                     handleChange("status", event)}>
-                                                                <option value="stop Business">Stop Business</option>
-                                                                <option value="business">Business</option>
-                                                                <option value="about To Go Into Business">About to Go Into Business</option>
+                                                                <option value="stop Business">Dừng kinh doanh</option>
+                                                                <option value="business">Đang bán</option>
+                                                                <option value="about To Go Into Business">Hàng sắp về</option>
                                                             </select>
                                                         </div>
 
@@ -157,7 +157,7 @@ export default function EditProduct({ product, categories, onSave, onCancel }) {
                                                                 className="block text-lg font-semibold mb-2"
                                                                 htmlFor="parameter"
                                                             >
-                                                                Parameter:
+                                                                Mô tả:
                                                             </label>
                                                             <ReactQuill
                                                                 name="parameter"
@@ -191,13 +191,13 @@ export default function EditProduct({ product, categories, onSave, onCancel }) {
                                                             onClick={onCancel}
                                                             className="flex-1 p-2 text-center rounded-md bg-gray-300 text-gray-700 hover:bg-gray-400"
                                                         >
-                                                            Close
+                                                            Đóng
                                                         </button>
                                                         <button
                                                             type="submit"
                                                             className="flex-1 p-2 text-white text-center rounded-md bg-red-600 hover:bg-red-500"
                                                         >
-                                                            Edit Category
+                                                            Cập nhật
                                                         </button>
                                                     </div>
                                                 </form>

@@ -174,11 +174,12 @@ export default function Cart() {
       total: formatPrice(calculateTotal()),
     }));
   }, [cart]);
-
+  const [loading, setLoading] = useState(true);
   const onSubmit = async (e) => {
     // e.preventDefault();
     // alert("hihihi");
     setOpenAdd(true);
+    setLoading(true);
     console.log("tuiiiiiiiiiiiii dat hang duoc roi", e);
     try {
       const orderfinal = await createOrder(order);
@@ -189,11 +190,12 @@ export default function Cart() {
         order: orderfinal,
         orderDetail: orderfinalDetail,
       });
-
+      setLoading(false);
       setReload(!reload);
       clearLocalStorage();
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
 
@@ -358,189 +360,209 @@ export default function Cart() {
                   </div>{" "}
                   <div className="w-5/5 mx-auto p-8 bg-white ">
                     {/* <hr className=" border-solid border-[1.5px] my-5" /> */}
-                    <div className="">
-                      <div className="w-full ">
-                        <div className="flex-col flex items-center justify-center">
-                          <svg
-                            fill="#49be25"
-                            width="120px"
-                            height="120px"
-                            viewBox="0 0 36 36"
-                            version="1.1"
-                            preserveAspectRatio="xMidYMid meet"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g
-                              id="SVGRepo_tracerCarrier"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            ></g>
-                            <g id="SVGRepo_iconCarrier">
-                              {" "}
-                              <title>success-standard-line</title>{" "}
-                              <path
-                                class="clr-i-outline clr-i-outline-path-1"
-                                d="M18,2A16,16,0,1,0,34,18,16,16,0,0,0,18,2Zm0,30A14,14,0,1,1,32,18,14,14,0,0,1,18,32Z"
-                              ></path>
-                              <path
-                                class="clr-i-outline clr-i-outline-path-2"
-                                d="M28,12.1a1,1,0,0,0-1.41,0L15.49,23.15l-6-6A1,1,0,0,0,8,18.53L15.49,26,28,13.52A1,1,0,0,0,28,12.1Z"
-                              ></path>{" "}
-                              <rect
-                                x="0"
-                                y="0"
-                                width="36"
-                                height="36"
-                                fill-opacity="0"
-                              ></rect>{" "}
-                            </g>
-                          </svg>
-                          <p className="text-2xl text-red-600">
-                            Cảm ơn bạn đã đặt hàng thành công
-                          </p>
-                          <p>
-                            Nhân viên SalePhone sẽ liên hệ với quý khách trong
-                            thời gian sớm nhất
-                          </p>
-                        </div>
-                      </div>
-                      <div className="bg-gray-100 rounded-md my-2">
-                        <div className="flex p-3 max-w-full ">
-                          <div className="pr-10 min-w-[30%]">
-                            <p className="py-1">Mã đơn hàng</p>
-                            <p className="py-1">Họ và tên</p>
-                            <p className="py-1">Số điện thoại</p>
-                            <p className="py-1">Hình thức thanh toán</p>
-                            <p className="py-1">Địa chỉ</p>
 
-                            {/* <p>Nhận hàng tại nhà</p> */}
-                          </div>
-
-                          <div className="flex-1 ">
-                            <p className="py-1 ">
-                              {orderSuccess.order.id
-                                ? orderSuccess.order.id
-                                : "không"}
-                            </p>
-                            <p className="py-1">
-                              {orderSuccess.order.fullname
-                                ? orderSuccess.order.fullname
-                                : "không"}
-                            </p>
-                            <p className="py-1">
-                              {orderSuccess.order.phone
-                                ? orderSuccess.order.phone
-                                : "không"}
-                            </p>
-                            <p className="py-1">Thanh toán khi nhận hàng</p>
-                            <p className="py-1 w-full">
-                              {orderSuccess.order.address
-                                ? orderSuccess.order.address
-                                : "Nhận hàng tại nhà"}
-                            </p>
-                          </div>
+                    {loading && (
+                      <div class="animate-pulse flex flex-col items-center gap-4 w-full h-full">
+                        <div>
+                          <div class="w-48 h-6 bg-slate-400 rounded-md"></div>
+                          <div class="w-28 h-4 bg-slate-400 mx-auto mt-3 rounded-md"></div>
                         </div>
+                        <div class="h-7 bg-slate-400 w-full rounded-md"></div>
+                        <div class="h-7 bg-slate-400 w-full rounded-md"></div>
+                        <div class="h-7 bg-slate-400 w-full rounded-md"></div>
+                        <div class="h-7 bg-slate-400 w-1/2 rounded-md"></div>
                       </div>
-                      <p className="text-2xl font-medium ">
-                        Thông tin đơn hàng
-                      </p>
-                      <div className="bg-gray-50 rounded-md my-2">
-                        {orderSuccess.orderDetail &&
-                          orderSuccess.orderDetail.map((item, index) => (
-                            <div key={index}>
-                              <div className="flex p-3 gap-4">
-                                <div className="p-2 border rounded-md bg-white">
-                                  <div className="w-[100px] h-[100px]">
-                                    <img
-                                      className="w-full h-full "
-                                      src={`${DOMAIN}${item.Product_detail.image}`}
-                                      alt=""
-                                    />
-                                  </div>
-                                </div>
-                                <div className="flex-1">
-                                  <p className="text-xl font-medium pb-1">
-                                    Điện thoại {item.Product.name}{" "}
-                                    {item.Product.capacity}{" "}
-                                    {item.Product_detail.color}
-                                  </p>
-                                  <div className="flex justify-between">
-                                    <p className="text-gray-500">
-                                      Số lượng: {item.quantity}
-                                    </p>
-                                    <div>
-                                      <p className="font-medium text-red-600">
-                                        {formatPrice(`${item.totalDetail}`)}đ
+                    )}
+                    {!loading && (
+                      <div>
+                        <div className="">
+                          <div className="w-full ">
+                            <div className="flex-col flex items-center justify-center">
+                              <svg
+                                fill="#49be25"
+                                width="120px"
+                                height="120px"
+                                viewBox="0 0 36 36"
+                                version="1.1"
+                                preserveAspectRatio="xMidYMid meet"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g
+                                  id="SVGRepo_tracerCarrier"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                ></g>
+                                <g id="SVGRepo_iconCarrier">
+                                  {" "}
+                                  <title>success-standard-line</title>{" "}
+                                  <path
+                                    class="clr-i-outline clr-i-outline-path-1"
+                                    d="M18,2A16,16,0,1,0,34,18,16,16,0,0,0,18,2Zm0,30A14,14,0,1,1,32,18,14,14,0,0,1,18,32Z"
+                                  ></path>
+                                  <path
+                                    class="clr-i-outline clr-i-outline-path-2"
+                                    d="M28,12.1a1,1,0,0,0-1.41,0L15.49,23.15l-6-6A1,1,0,0,0,8,18.53L15.49,26,28,13.52A1,1,0,0,0,28,12.1Z"
+                                  ></path>{" "}
+                                  <rect
+                                    x="0"
+                                    y="0"
+                                    width="36"
+                                    height="36"
+                                    fill-opacity="0"
+                                  ></rect>{" "}
+                                </g>
+                              </svg>
+                              <p className="text-2xl text-red-600">
+                                Cảm ơn bạn đã đặt hàng thành công
+                              </p>
+                              <p>
+                                Nhân viên SalePhone sẽ liên hệ với quý khách
+                                trong thời gian sớm nhất
+                              </p>
+                            </div>
+                          </div>
+                          <div className="bg-gray-100 rounded-md my-2">
+                            <div className="flex p-3 max-w-full ">
+                              <div className="pr-10 min-w-[30%]">
+                                <p className="py-1">Mã đơn hàng</p>
+                                <p className="py-1">Họ và tên</p>
+                                <p className="py-1">Số điện thoại</p>
+                                <p className="py-1">Hình thức thanh toán</p>
+                                <p className="py-1">Địa chỉ</p>
+
+                                {/* <p>Nhận hàng tại nhà</p> */}
+                              </div>
+
+                              <div className="flex-1 ">
+                                <p className="py-1 ">
+                                  {orderSuccess.order.id
+                                    ? orderSuccess.order.id
+                                    : "không"}
+                                </p>
+                                <p className="py-1">
+                                  {orderSuccess.order.fullname
+                                    ? orderSuccess.order.fullname
+                                    : "không"}
+                                </p>
+                                <p className="py-1">
+                                  {orderSuccess.order.phone
+                                    ? orderSuccess.order.phone
+                                    : "không"}
+                                </p>
+                                <p className="py-1">Thanh toán khi nhận hàng</p>
+                                <p className="py-1 w-full">
+                                  {orderSuccess.order.address
+                                    ? orderSuccess.order.address
+                                    : "Nhận hàng tại nhà"}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                          <p className="text-2xl font-medium ">
+                            Thông tin đơn hàng
+                          </p>
+                          <div className="bg-gray-50 rounded-md my-2">
+                            {orderSuccess.orderDetail &&
+                              orderSuccess.orderDetail.map((item, index) => (
+                                <div key={index}>
+                                  <div className="flex p-3 gap-4">
+                                    <div className="p-2 border rounded-md bg-white">
+                                      <div className="w-[100px] h-[100px]">
+                                        <img
+                                          className="w-full h-full "
+                                          src={`${DOMAIN}${item.Product_detail.image}`}
+                                          alt=""
+                                        />
+                                      </div>
+                                    </div>
+                                    <div className="flex-1">
+                                      <p className="text-xl font-medium pb-1">
+                                        Điện thoại {item.Product.name}{" "}
+                                        {item.Product.capacity}{" "}
+                                        {item.Product_detail.color}
                                       </p>
-                                      <p className=" text-gray-500 line-through">
-                                        {formatPrice(
-                                          `${
-                                            item.Product_detail.discount *
-                                            (item.quantity || 1)
-                                          }`
-                                        )}
-                                        đ
+                                      <div className="flex justify-between">
+                                        <p className="text-gray-500">
+                                          Số lượng: {item.quantity}
+                                        </p>
+                                        <div>
+                                          <p className="font-medium text-red-600">
+                                            {formatPrice(`${item.totalDetail}`)}
+                                            đ
+                                          </p>
+                                          <p className=" text-gray-500 line-through">
+                                            {formatPrice(
+                                              `${
+                                                item.Product_detail.discount *
+                                                (item.quantity || 1)
+                                              }`
+                                            )}
+                                            đ
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="p-3">
+                                    <p className="text-lg font-normal">
+                                      Khuyến mãi kèm theo
+                                    </p>
+                                    <div className="border border-gray-200 rounded-lg flex items-center p-3">
+                                      <div className="rounded-full w-20 h-20  border flex items-center justify-center ">
+                                        <img
+                                          className="w-[80%] h-[80%] my-auto mx-auto"
+                                          src={`${DOMAIN}${item.Promotion.image}`}
+                                          alt=""
+                                        />
+                                      </div>
+                                      <p className="py-2 px-2 text-sm">
+                                        Tặng ngay bộ {item.Promotion.gift} giá
+                                        lên tới dưới 1 tỉ đồng
                                       </p>
                                     </div>
                                   </div>
                                 </div>
+                              ))}
+                          </div>
+                          {/* <div className="bg-gray-200 rounded-md my-2"></div> */}
+                          <div className="bg-gray-100 rounded-md my-2">
+                            <div className="p-3">
+                              <div className="flex justify-between">
+                                <p>Tổng tiền:</p>
+                                <p>{formatPrice(`${calculateTotal2()}đ`)}</p>
                               </div>
-                              <div className="p-3">
-                                <p className="text-lg font-normal">
-                                  Khuyến mãi kèm theo
+                              <div className="flex justify-between">
+                                <p>Phí giao hàng:</p>
+                                <p>0đ</p>
+                              </div>
+                              <div className="flex justify-between">
+                                <p>Giảm giá voucher:</p>
+                                <p>0đ</p>
+                              </div>
+                              <hr className=" border-dotted border-[1.5px] my-2 border-gray-400" />
+                              <div className="flex justify-between">
+                                <p className="text-xl font-medium ">
+                                  Thành tiền
                                 </p>
-                                <div className="border border-gray-200 rounded-lg flex items-center p-3">
-                                  <div className="rounded-full w-20 h-20  border flex items-center justify-center ">
-                                    <img
-                                      className="w-[80%] h-[80%] my-auto mx-auto"
-                                      src={`${DOMAIN}${item.Promotion.image}`}
-                                      alt=""
-                                    />
-                                  </div>
-                                  <p className="py-2 px-2 text-sm">
-                                    Tặng ngay bộ {item.Promotion.gift} giá lên
-                                    tới dưới 1 tỉ đồng
-                                  </p>
-                                </div>
+                                <p className="text-red-600 text-xl font-medium">
+                                  {formatPrice(`${calculateTotal2()}đ`)}
+                                </p>
                               </div>
                             </div>
-                          ))}
-                      </div>
-                      {/* <div className="bg-gray-200 rounded-md my-2"></div> */}
-                      <div className="bg-gray-100 rounded-md my-2">
-                        <div className="p-3">
-                          <div className="flex justify-between">
-                            <p>Tổng tiền:</p>
-                            <p>{formatPrice(`${calculateTotal2()}đ`)}</p>
-                          </div>
-                          <div className="flex justify-between">
-                            <p>Phí giao hàng:</p>
-                            <p>0đ</p>
-                          </div>
-                          <div className="flex justify-between">
-                            <p>Giảm giá voucher:</p>
-                            <p>0đ</p>
-                          </div>
-                          <hr className=" border-dotted border-[1.5px] my-2 border-gray-400" />
-                          <div className="flex justify-between">
-                            <p className="text-xl font-medium ">Thành tiền</p>
-                            <p className="text-red-600 text-xl font-medium">
-                              {formatPrice(`${calculateTotal2()}đ`)}
-                            </p>
                           </div>
                         </div>
+                        <div className="flex-col flex  items-center justify-center">
+                          <button
+                            type="button"
+                            // onClick={handleSave}
+                            className="bg-green-400 rounded-full  text-white py-2 px-10  mb-4 "
+                          >
+                            Về trang chủ
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex-col flex  items-center justify-center">
-                      <button
-                        type="button"
-                        // onClick={handleSave}
-                        className="bg-green-400 rounded-full  text-white py-2 px-10  mb-4 "
-                      >
-                        Về trang chủ
-                      </button>
-                    </div>
+                    )}
                   </div>
                 </Dialog.Panel>
               </Transition.Child>
@@ -549,7 +571,7 @@ export default function Cart() {
         </Dialog>
       </Transition.Root>
 
-      <div className="rounded-lg md:max-w-[900px] max-w-screen-lg  mx-auto px-4 sm:px-0">
+      <div className="rounded-lg md:max-w-[900px] max-w-screen-lg mt-4 sm:mt-0 mx-auto px-4 sm:px-0">
         <NavLink to="/">
           <div className="flex items-center text-blue-600 ">
             <svg
@@ -578,7 +600,7 @@ export default function Cart() {
                 </g>{" "}
               </g>
             </svg>
-            <p className="font-normal">Tiếp tục mua sắm</p>
+            <p  className="font-normal">Tiếp tục mua sắm</p>
           </div>
         </NavLink>
         <p className="font-semibold text-lg mt-3 ">

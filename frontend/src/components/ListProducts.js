@@ -17,7 +17,7 @@ export default function ListProducts() {
   const { id } = useParams();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const itemsPerPage = 2;
+  const itemsPerPage = 8;
   const handleGet = async (id) => {
     try {
       const product = await getProductsByCategory(id);

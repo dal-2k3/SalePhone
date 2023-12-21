@@ -200,7 +200,7 @@ export default function Header({ align }) {
               </svg>
             </div>
             <div className=" mx-3 w-10 h-10 leading-12 text-center rounded-full  border-2 border-gray-300 text-gray-700 text-lg cursor-pointer flex items-center justify-center">
-              <svg
+            <NavLink to="/cart"><svg
                 width="25px"
                 height="25px"
                 viewBox="0 0 24 24"
@@ -223,20 +223,12 @@ export default function Header({ align }) {
                     stroke-linejoin="round"
                   ></path>{" "}
                 </g>
-              </svg>
+              </svg></NavLink>
+              
             </div>
 
-
-
-            <a
-              href=""
-              style={{ background: "#eae9ee" }}
-              className="text-black focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 sm:mr-2 lg:mr-0  focus:outline-none "
-            >
-              Kiểm tra đơn hàng
-            </a>
             {hasToken && (
-              <div className="ml-3 relative inline-flex">
+              <div className="mr-3 relative inline-flex">
                 <button
                   ref={trigger}
                   className="inline-flex justify-center items-center group"
@@ -245,18 +237,26 @@ export default function Header({ align }) {
                   aria-expanded={dropdownOpen}
                 >
                   <img
-                    className="w-10 h-10 rounded-full"
-                    src="https://static.vecteezy.com/system/resources/thumbnails/006/017/842/small_2x/customer-service-icon-user-with-laptop-computer-and-headphone-illustration-free-vector.jpg"
-                    width="45"
-                    height="45"
+                    className="w-8 h-8 rounded-full"
+                    src="https://icons-for-free.com/iconfiles/png/512/business+costume+male+man+office+user+icon-1320196264882354682.png"
+                    width="32"
+                    height="32"
                     alt="User"
                   />
-
+                  <div className="flex items-center truncate">
+                    <svg
+                      className="w-3 h-3 shrink-0 ml-1 fill-current text-slate-400"
+                      viewBox="0 0 12 12"
+                    >
+                      <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z" />
+                    </svg>
+                  </div>
                 </button>
 
                 <Transition
-                  className={`origin-top-right z-10 absolute top-full min-w-44 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 py-1.5 rounded shadow-lg overflow-hidden mt-1 ${align === "right" ? "right-0" : "left-0"
-                    }`}
+                  className={`origin-top-right z-10 absolute top-full min-w-44 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 py-1.5 rounded shadow-lg overflow-hidden mt-1 ${
+                    align === "right" ? "right-0" : "left-0"
+                  }`}
                   show={dropdownOpen}
                   enter="transition ease-out duration-200 transform"
                   enterStart="opacity-0 -translate-y-2"
@@ -270,11 +270,18 @@ export default function Header({ align }) {
                     onFocus={() => setDropdownOpen(true)}
                     onBlur={() => setDropdownOpen(false)}
                   >
-
-                    <ul className="w-36">
+                    <div className="pt-0.5 pb-2 px-3 mb-1 border-b border-slate-200 dark:border-slate-700">
+                      <p className="font-medium text-slate-800  dark:text-slate-100">
+                        Quản lý
+                      </p>
+                      <div className="text-xs text-slate-500 dark:text-slate-400 italic">
+                        Administrator
+                      </div>
+                    </div>
+                    <ul>
                       <li>
                         <Link
-                          className=" font-medium text-sm text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center py-1 px-3"
+                          className="font-medium text-sm text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center py-1 px-3"
                           to="/admin"
                           onClick={() => setDropdownOpen(!dropdownOpen)}
                         >
@@ -294,6 +301,14 @@ export default function Header({ align }) {
                 </Transition>
               </div>
             )}
+
+            <a
+              href="/checkOrder"
+              style={{ background: "#eae9ee" }}
+              className="text-black  focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 sm:mr-2 lg:mr-0  focus:outline-none "
+            >
+              Kiểm tra đơn hàng
+            </a>
             <button
               data-collapse-toggle="mobile-menu-2"
               type="button"
@@ -336,7 +351,7 @@ export default function Header({ align }) {
               <li className="relative">
                 <a
                   href="/listproducts"
-                  className=" block py-2 pl-3 pr-4 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-yellow-200 lg:p-0"
+                  className="relative block py-2 pl-3 pr-4 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-yellow-200 lg:p-0"
                 >
                   <div className="flex items-center">
                     <p>Danh mục </p>
@@ -365,12 +380,10 @@ export default function Header({ align }) {
                     </svg>
                   </div>
                 </a>
-
-                <ul className="w-auto absolute bg-white shadow-2xl
-                 text-black z-50 hidden dropdown-category  py-1 rounded-md mt-1">
+                <ul className="w-auto absolute bg-white shadow-2xl text-black z-50 hidden dropdown-category  py-1 rounded-md mt-1">
                   {categories.map((item, index) => (
-                    <li className="block py-1  pl-2 pr-10 hover:bg-gray-200">
-                      <a href="#" className="">
+                    <li className="block py-1  pl-2 pr-20 hover:bg-gray-200">
+                      <a href={`listproducts/${item.id}`} className="">
                         {item.name}
                       </a>
                     </li>

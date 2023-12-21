@@ -1,13 +1,9 @@
 import { Fragment, useEffect, useRef, useState } from "react";
-import {
-  NavLink,
-  useNavigate,
-  useParams,
-} from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { Dialog, Transition } from "@headlessui/react";
 import moment from "moment";
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   getProductDetail,
   getProductsByCategory,
@@ -34,6 +30,7 @@ export default function ProductDetail() {
   const { id: productId } = useParams();
   const [reload, setReload] = useState(false);
   const [openAdd, setOpenAdd] = useState(false);
+  const [openAdd2, setOpenAdd2] = useState(false);
   const cancelButtonRef = useRef(null);
   const [selectedOption, setSelectedOption] = useState("");
   const [comments, setComments] = useState([]);
@@ -222,11 +219,10 @@ export default function ProductDetail() {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
 
-  console.log("sadv", selectedOption);
-
   console.log("product", product);
   console.log("dung luong", selectedOption);
-  console.log(isActivePhone);
+  console.log("productDetail", productDetail);
+  console.log("active", isActivePhone);
 
   console.log("localstorege", selectedProduct);
   console.log("review", review);
@@ -354,7 +350,7 @@ export default function ProductDetail() {
                               )}
                             </div>
                             <p className="font-medium text-xl text-center">
-                              {item.name}{item.category}
+                              {item.name}
                             </p>
                             <div className="text-2xl text-center">
                               {[1, 2, 3, 4, 5].map((star) => (
@@ -448,11 +444,132 @@ export default function ProductDetail() {
 
                           <button
                             type="submit"
+                            onClick={() => setOpenAdd2(true)}
                             className="bg-green-500 rounded-md  text-white py-2 px-4 w-full mb-4 mt-4"
                           >
                             Gửi đánh giá
                           </button>
                         </form>
+                      </div>
+                    </Dialog.Panel>
+                  </Transition.Child>
+                </div>
+              </div>
+            </Dialog>
+          </Transition.Root>
+
+          <Transition.Root show={openAdd2} as={Fragment}>
+            <Dialog
+              as="div"
+              className="relative z-50"
+              initialFocus={cancelButtonRef}
+              onClose={setOpenAdd}
+            >
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0"
+                enterTo="opacity-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+              >
+                <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+              </Transition.Child>
+
+              <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+                <div className="flex min-h-full my-32 sm:my-0 justify-center p-4 text-center sm:items-center sm:p-0 ">
+                  <Transition.Child
+                    as={Fragment}
+                    enter="ease-out duration-300"
+                    enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                    enterTo="opacity-100 translate-y-0 sm:scale-100"
+                    leave="ease-in duration-200"
+                    leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                    leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                  >
+                    <Dialog.Panel className="mt-0 relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-screen-sm ">
+                      <div className="  mx-auto py-3 px-3 bg-white  ">
+                        <div className="flex  sm:items-center justify-between">
+                          <h1
+                            style={{ visibility: "hidden" }}
+                            className="text-2xl font-bold pl-2"
+                          >
+                            Đánh giá sản phẩm
+                          </h1>
+                          <button
+                            type="button"
+                            onClick={() => setOpenAdd2(false)}
+                            ref={cancelButtonRef}
+                            className=""
+                          >
+                            <svg
+                              className="w-5 h-5"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                              <g
+                                id="SVGRepo_tracerCarrier"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              ></g>
+                              <g id="SVGRepo_iconCarrier">
+                                {" "}
+                                <path
+                                  d="M20.7457 3.32851C20.3552 2.93798 19.722 2.93798 19.3315 3.32851L12.0371 10.6229L4.74275 3.32851C4.35223 2.93798 3.71906 2.93798 3.32854 3.32851C2.93801 3.71903 2.93801 4.3522 3.32854 4.74272L10.6229 12.0371L3.32856 19.3314C2.93803 19.722 2.93803 20.3551 3.32856 20.7457C3.71908 21.1362 4.35225 21.1362 4.74277 20.7457L12.0371 13.4513L19.3315 20.7457C19.722 21.1362 20.3552 21.1362 20.7457 20.7457C21.1362 20.3551 21.1362 19.722 20.7457 19.3315L13.4513 12.0371L20.7457 4.74272C21.1362 4.3522 21.1362 3.71903 20.7457 3.32851Z"
+                                  fill="#0F0F0F"
+                                ></path>{" "}
+                              </g>
+                            </svg>
+                          </button>
+                        </div>
+
+                        <div className="">
+                          <div className="flex items-center justify-center h-300">
+                            <svg
+                              fill="#228B22"
+                              width="50px"
+                              height="50px"
+                              viewBox="0 0 36 36"
+                              version="1.1"
+                              preserveAspectRatio="xMidYMid meet"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                              <g
+                                id="SVGRepo_tracerCarrier"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              ></g>
+                              <g id="SVGRepo_iconCarrier">
+                                {" "}
+                                <title>success-standard-solid</title>{" "}
+                                <path
+                                  class="clr-i-solid clr-i-solid-path-1"
+                                  d="M18,2A16,16,0,1,0,34,18,16,16,0,0,0,18,2ZM28.45,12.63,15.31,25.76,7.55,18a1.4,1.4,0,0,1,2-2l5.78,5.78L26.47,10.65a1.4,1.4,0,1,1,2,2Z"
+                                ></path>{" "}
+                                <rect
+                                  x="0"
+                                  y="0"
+                                  width="36"
+                                  height="36"
+                                  fill-opacity="0"
+                                ></rect>{" "}
+                              </g>
+                            </svg>
+                          </div>
+                          <p className="font-medium text-2xl text-center">
+                            Gửi đánh giá thành công
+                          </p>
+                          <p className="text-lg text-gray-700 text-center">
+                            Cảm ơn quý khách đã chia sẻ ý kiến về sản phẩm. Đánh
+                            giá sẽ được kiểm duyệt và cập nhật sớm nhất.
+                          </p>
+
+                          <div></div>
+                        </div>
                       </div>
                     </Dialog.Panel>
                   </Transition.Child>
@@ -497,8 +614,8 @@ export default function ProductDetail() {
                     productDetail.findIndex(
                       (item) => item.id === isActivePhone.id
                     ) +
-                    1 ===
-                    productDetail.length
+                      1 ===
+                      productDetail.length
                   }
                   className="absolute top-1/2 right-4 -translate-y-1/2 p-2 bg-cyan-100 bg-opacity-50 rounded-full"
                 >
@@ -528,11 +645,11 @@ export default function ProductDetail() {
                       key={index}
                       src={`${DOMAIN}${detail.image}`}
                       alt={`Thumbnail ${index + 1}`}
-                      className={`w-12 h-12 rounded-md cursor-pointer 
-                      ${isActivePhone.id === detail.id
+                      className={`w-12 h-12 rounded-md cursor-pointer ${
+                        isActivePhone.id === detail.id
                           ? "border-2 border-blue-500"
                           : ""
-                        }`}
+                      }`}
                       onClick={() => setisActivePhone(detail)}
                     />
                   ))}
@@ -654,8 +771,9 @@ export default function ProductDetail() {
                     <NavLink
                       key={item.id}
                       to={`/product_detail/${item.id}`}
-                      className={`flex-1 px-5 hover:bg-gray-300 rounded-md py-2 ${selectedOption === item.capacity ? "bg-gray-300" : ""
-                        }`}
+                      className={`flex-1 px-5 hover:bg-gray-300 rounded-md py-2 ${
+                        selectedOption === item.capacity ? "bg-gray-300" : ""
+                      }`}
                       onClick={() => handleSelectOption(item.capacity)}
                     >
                       <div className="">
@@ -685,18 +803,13 @@ export default function ProductDetail() {
                           setisActivePhone(detail);
                         }}
                         className="items-center mx-4 cursor-pointer p-1 flex flex-col "
-                      // className={`items-center mx-4 cursor-pointer p-1 flex flex-col ${
-                      //   isActivePhone.id === detail.id
-                      //     ? "border-2 border-red-300"
-                      //     : "border"
-                      // }`}
                       >
                         <div
-                          className={`w-14 h-14 rounded-lg ${isActivePhone.id === detail.id
-                            ? "border-2 border-red-300"
-                            : ""
-                            }`}
-                          style={{ backgroundColor: detail.color }}
+                          className={`w-14 h-14 rounded-lg ${
+                            isActivePhone.id === detail.id
+                              ? "border-2 border-red-300"
+                              : ""
+                          }`}
                         >
                           <img
                             src={`${DOMAIN}${detail.image}`}
@@ -861,6 +974,7 @@ export default function ProductDetail() {
               {/* mua ngay */}
               <div>
                 <button
+                  disabled={isActivePhone && isActivePhone.quantity == 0}
                   onClick={addToCart}
                   style={{ backgroundColor: "#ea4033" }}
                   className="bg-orange-500 text-white font-semibold w-full rounded-lg mt-6 py-2 px-4"
@@ -894,15 +1008,17 @@ export default function ProductDetail() {
           <div>
             <div className="flex mt-20   justify-center ">
               <button
-                className={`py-2 px-4 font-bold text-2xl ${activeTab === 1 ? "text-cyan-600" : "text-black"
-                  }`}
+                className={`py-2 px-4 font-bold text-2xl ${
+                  activeTab === 1 ? "text-cyan-600" : "text-black"
+                }`}
                 onClick={() => changeTab(1)}
               >
                 Thông tin sản phẩm
               </button>
               <button
-                className={`py-2 px-4  font-bold text-2xl ${activeTab === 2 ? "text-cyan-600 " : "text-black"
-                  }`}
+                className={`py-2 px-4  font-bold text-2xl ${
+                  activeTab === 2 ? "text-cyan-600 " : "text-black"
+                }`}
                 onClick={() => changeTab(2)}
               >
                 Đánh giá sản phẩm
@@ -982,10 +1098,11 @@ export default function ProductDetail() {
                               {Array.from({ length: 5 }).map((_, index) => (
                                 <svg
                                   key={index}
-                                  className={`w-6 h-6  ${index < comment.rating
-                                    ? "text-yellow-500"
-                                    : "text-gray-400"
-                                    } me-1`}
+                                  className={`w-6 h-6  ${
+                                    index < comment.rating
+                                      ? "text-yellow-500"
+                                      : "text-gray-400"
+                                  } me-1`}
                                   aria-hidden="true"
                                   xmlns="http://www.w3.org/2000/svg"
                                   fill="currentColor"
@@ -1114,7 +1231,7 @@ export default function ProductDetail() {
                             </g>
                           </svg>
                           <p className=" px-1 py-1  text-white text-xs">
-                            Giảm
+                            Giảm{" "}
                             {formatPrice(`${detail.discount - detail.price} ₫`)}
                           </p>
                         </div>
