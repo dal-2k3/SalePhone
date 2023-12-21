@@ -13,7 +13,6 @@ orderRouter.post('/', async (req, res) => {
         }
 
         const newOrder = await createOrder({ fullname, phone, email, address, total });
-
         if (!newOrder) {
             return res.status(500).send("Can't create order");
         }

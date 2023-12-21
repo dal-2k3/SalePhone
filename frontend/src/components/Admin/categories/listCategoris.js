@@ -111,14 +111,23 @@ export default function ListCategoris() {
       toast.success('xóa danh mục thành công');
     } catch (error) {
       console.log(error);
-      const statusCode = error.response.status;
-      if (statusCode === 500) {
-        toast.error('danh mục đã tồn tại sản phẩm !');
+      if (error.response) {
+        // Nếu có response từ server
+        const statusCode = error.response.status;
+        if (statusCode === 501) {
+          // Xử lý lỗi 500, 501 và hiển thị thông báo
+          toast.error("danh mục này đã tồn tại trong Products");
+        } else {
+          // Xử lý các lỗi khác và hiển thị thông báo
+          const errorMessage =
+            error.response.data.message || "Đã xảy ra lỗi khi xóa danh mục.";
+          toast.error(errorMessage);
+        }
+      } else {
+        // Nếu không có response từ server (ví dụ: không thể kết nối đến server)
+        toast.error("Unable to connect to the server. Please try again later.");
       }
     }
-    console.log(id);
-    await deleteCategory(id);
-    setReload(!reload);
   };
   // get list
   useEffect(() => {
@@ -182,7 +191,7 @@ export default function ListCategoris() {
             onClick={() => setOpenAdd(true)}
             className=" bg-yellow-600 text-white py-1 px-2 mr-2 rounded transition duration-150 ease-in-out ..."
           >
-           Thêm danh mục
+            Thêm danh mục
           </button>
         </div>
       </div>
@@ -311,10 +320,10 @@ export default function ListCategoris() {
             </thead>
             <tbody>
               {categories.filter((item) => {
-                  return search.toLowerCase() === ""
-                    ? item
-                    : item.name.toLowerCase().includes(search);
-                }).map((item) => (
+                return search.toLowerCase() === ""
+                  ? item
+                  : item.name.toLowerCase().includes(search);
+              }).map((item) => (
                 <tr key={item.id}>
                   <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-center">

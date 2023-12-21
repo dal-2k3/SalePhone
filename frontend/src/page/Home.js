@@ -415,7 +415,7 @@ export default function Home() {
       {/* có gì mới */}
       <div className="bg-gray-100 ">
         <div>
-          <h1 className="text-3xl py-5 font-bold	text-center text-red-500">
+          <h1 style={{ color: "#EE0000" }} className="text-3xl py-5 font-bold	text-center ">
             Có gì mới
           </h1>
         </div>
@@ -829,7 +829,7 @@ export default function Home() {
       {/* banner */}
       <div>
         <div>
-          <h1 className="text-3xl py-5 font-bold	text-center text-red-500">
+          <h1  style={{ color: "#EE0000" }} className="text-3xl py-5 font-bold	text-center ">
             Điện thoại nào phù hợp với bạn?
           </h1>
         </div>
@@ -864,7 +864,7 @@ export default function Home() {
       {/* ưa thích */}
       <div>
         <div>
-          <h1 className="text-3xl py-5 font-bold	text-center text-red-500">
+          <h1 style={{ color: "#EE0000" }} className="text-3xl py-5 font-bold	text-center ">
             Có thể bạn sẽ thích
           </h1>
         </div>

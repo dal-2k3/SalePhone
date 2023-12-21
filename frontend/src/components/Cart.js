@@ -212,6 +212,7 @@ export default function Cart() {
   const [ward, setWard] = useState("");
 
   const [reset, setReset] = useState(false);
+  
   const closeModal = () => {
     setOpenAdd(false);
 
