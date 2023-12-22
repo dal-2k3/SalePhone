@@ -44,6 +44,11 @@ export default function Header({ align }) {
       window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
+  //
+  const handleChange = (value) => {
+    setInput(value);
+    fetchProducts(value);
+  };
   const fetchProducts = async (value) => {
     try {
       const productsData = await listProducts();
@@ -69,10 +74,7 @@ export default function Header({ align }) {
   //   fetchProducts();
   // }, []);
   console.log(products);
-  const handleChange = (value) => {
-    setInput(value);
-    fetchProducts(value);
-  };
+
   const resetValue = () => {
     setInput("");
     setResult("");
@@ -200,31 +202,32 @@ export default function Header({ align }) {
               </svg>
             </div>
             <div className=" mx-3 w-10 h-10 leading-12 text-center rounded-full  border-2 border-gray-300 text-gray-700 text-lg cursor-pointer flex items-center justify-center">
-            <NavLink to="/cart"><svg
-                width="25px"
-                height="25px"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                <g
-                  id="SVGRepo_tracerCarrier"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                ></g>
-                <g id="SVGRepo_iconCarrier">
-                  {" "}
-                  <path
-                    d="M6.29977 5H21L19 12H7.37671M20 16H8L6 3H3M9 20C9 20.5523 8.55228 21 8 21C7.44772 21 7 20.5523 7 20C7 19.4477 7.44772 19 8 19C8.55228 19 9 19.4477 9 20ZM20 20C20 20.5523 19.5523 21 19 21C18.4477 21 18 20.5523 18 20C18 19.4477 18.4477 19 19 19C19.5523 19 20 19.4477 20 20Z"
-                    stroke="#fff"
-                    stroke-width="2"
+              <NavLink to="/cart">
+                <svg
+                  width="25px"
+                  height="25px"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                  <g
+                    id="SVGRepo_tracerCarrier"
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                  ></path>{" "}
-                </g>
-              </svg></NavLink>
-              
+                  ></g>
+                  <g id="SVGRepo_iconCarrier">
+                    {" "}
+                    <path
+                      d="M6.29977 5H21L19 12H7.37671M20 16H8L6 3H3M9 20C9 20.5523 8.55228 21 8 21C7.44772 21 7 20.5523 7 20C7 19.4477 7.44772 19 8 19C8.55228 19 9 19.4477 9 20ZM20 20C20 20.5523 19.5523 21 19 21C18.4477 21 18 20.5523 18 20C18 19.4477 18.4477 19 19 19C19.5523 19 20 19.4477 20 20Z"
+                      stroke="#fff"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    ></path>{" "}
+                  </g>
+                </svg>
+              </NavLink>
             </div>
 
             {hasToken && (
@@ -237,20 +240,12 @@ export default function Header({ align }) {
                   aria-expanded={dropdownOpen}
                 >
                   <img
-                    className="w-8 h-8 rounded-full"
+                    className="w-[40px] h-[40px] rounded-full"
                     src="https://icons-for-free.com/iconfiles/png/512/business+costume+male+man+office+user+icon-1320196264882354682.png"
                     width="32"
                     height="32"
                     alt="User"
                   />
-                  <div className="flex items-center truncate">
-                    <svg
-                      className="w-3 h-3 shrink-0 ml-1 fill-current text-slate-400"
-                      viewBox="0 0 12 12"
-                    >
-                      <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z" />
-                    </svg>
-                  </div>
                 </button>
 
                 <Transition

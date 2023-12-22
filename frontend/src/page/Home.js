@@ -182,7 +182,7 @@ export default function Home() {
   console.log("adsa", productsToShow);
   return (
     <section className="sm:mt-5">
-      <div className="lg:grid max-w-[95%] lg:grid-cols-3 mx-auto lg:gap-4 sm:grid sm:grid-flow-row sm:grid-row-3 sm:pt-12 md:pt-24 lg:pt-12 pt-32 ">
+      <div className="lg:grid max-w-[95%] lg:grid-cols-3 mx-auto lg:gap-4 sm:grid sm:grid-flow-row sm:grid-row-3 sm:pt-12 md:pt-24 lg:pt-12 pt-28 ">
         <div className="lg:col-span-2">
           <div
             id="indicators-carousel"
