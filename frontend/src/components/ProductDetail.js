@@ -90,7 +90,6 @@ export default function ProductDetail() {
 
   const [productDetail, setProductDetail] = useState([]);
   const [isActivePhone, setisActivePhone] = useState();
-
   const [activeTab, setActiveTab] = useState(1);
 
   const changeTab = (tabNumber) => {
@@ -229,7 +228,10 @@ export default function ProductDetail() {
 
   const navigate = useNavigate();
   const addToCart = () => {
-    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+    if(isActivePhone && isActivePhone.quantity ==0 ) {
+      toast.warn("Hết hàng");
+    } else {
+      const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     const existingIndex = storedCart.findIndex(
       (product) =>
         product.name === selectedProduct.name &&
@@ -258,6 +260,8 @@ export default function ProductDetail() {
 
     navigate("/cart");
     console.log("local", selectedProduct);
+    }
+    
   };
 
   useEffect(() => {
@@ -974,10 +978,14 @@ export default function ProductDetail() {
               {/* mua ngay */}
               <div>
                 <button
-                  disabled={isActivePhone && isActivePhone.quantity == 0}
+                  // disabled={isActivePhone && isActivePhone.quantity == 0}
                   onClick={addToCart}
                   style={{ backgroundColor: "#ea4033" }}
-                  className="bg-orange-500 text-white font-semibold w-full rounded-lg mt-6 py-2 px-4"
+                  className={` text-white font-semibold w-full rounded-lg mt-6 py-2 px-4 ${
+                    isActivePhone && isActivePhone.quantity === 0
+                      ? "bg-gray-400"
+                      : "bg-orange-500"
+                  }`}
                 >
                   Mua Ngay
                 </button>

@@ -116,29 +116,29 @@ export default function ListProducts() {
   // };
   let container = document.getElementById("container");
 
-  if (container) {
-    let count = 30;
+  // if (container) {
+  //   let count = 15;
 
-    for (var i = 0; i < count; i++) {
-      let leftSnow = Math.floor(Math.random() * container.clientWidth);
-      let topSnow = Math.floor(Math.random() * container.clientHeight);
-      let widthSnow = Math.floor(Math.random() * 30);
-      let timeSnow = Math.floor(Math.random() * 5 + 5);
-      let blurSnow = Math.floor(Math.random() * 10);
-      // console.log(leftSnow);
-      let div = document.createElement("div");
-      div.classList.add("snow");
-      div.style.left = leftSnow + "px";
-      div.style.top = topSnow + "px";
-      div.style.width = widthSnow + "px";
-      div.style.height = widthSnow + "px";
-      div.style.animationDuration = timeSnow + "s";
-      div.style.filter = "blur(" + blurSnow + "px)";
-      container.appendChild(div);
-    }
-  } else {
-    console.error("Không tìm thấy phần tử 'container'");
-  }
+  //   for (var i = 0; i < count; i++) {
+  //     let leftSnow = Math.floor(Math.random() * container.clientWidth);
+  //     let topSnow = Math.floor(Math.random() * container.clientHeight);
+  //     let widthSnow = Math.floor(Math.random() * 30);
+  //     let timeSnow = Math.floor(Math.random() * 5 + 5);
+  //     let blurSnow = Math.floor(Math.random() * 10);
+  //     // console.log(leftSnow);
+  //     let div = document.createElement("div");
+  //     div.classList.add("snow");
+  //     div.style.left = leftSnow + "px";
+  //     div.style.top = topSnow + "px";
+  //     div.style.width = widthSnow + "px";
+  //     div.style.height = widthSnow + "px";
+  //     div.style.animationDuration = timeSnow + "s";
+  //     div.style.filter = "blur(" + blurSnow + "px)";
+  //     container.appendChild(div);
+  //   }
+  // } else {
+  //   console.error("Không tìm thấy phần tử 'container'");
+  // }
   return (
     <div className="py-20 bg-gray-100">
       <div className="grid max-w-[95%]  px-4 pb-8 mx-auto ">

@@ -56,33 +56,18 @@ export default function Cart() {
   });
 
   const [soNha, setSoNha] = useState("");
-  // const handleChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setOrder((prevOrder) => ({
-  //     ...prevOrder,
-  //     [name]: value,
-  //   }));
-  // };
   const handleChangeSoNha = (e) => {
     const diaChi = e.target.value;
     setSoNha(diaChi);
   };
   console.log("dia chi:", soNha);
-
-  //   setOrder((prevOrder) => ({
-  //     ...prevOrder,
-  //     total: formatPrice(calculateTotal() + 20000),
-  //   }));
-  // };
-
   const [cart, setCart] = useState([]);
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     updateOrderDetails(storedCart);
-    // setOrder({ ...order, order_details: updatedOrderDetails, });
     setCart(storedCart);
   }, [reload]);
-
+console.log('cart', cart);
   const updateOrderDetails = (cart) => {
     const updatedOrderDetails = cart.map((product, index) => ({
       ...cart[index],
@@ -108,7 +93,7 @@ export default function Cart() {
   };
   const increaseQuantity = (index) => {
     const updatedCart = [...cart];
-    const productId = updatedCart[index].idProduct;
+    const productId = updatedCart[index].id_Product;
     const maxQuantity = parseInt(updatedCart[index].quantityDB, 10); // Lấy giá trị quantityDB và chuyển về kiểu số nguyên
 
     const newQuantity = Math.min(
@@ -117,17 +102,13 @@ export default function Cart() {
     );
     console.log("quantityDB:", maxQuantity);
     console.log("newQuantity:", newQuantity);
-    //   if (newQuantity >= maxQuantity) {
-    //     // Hiển thị thông báo hoặc thực hiện các hành động khác khi vượt quá giới hạn
-    //     console.log("Tối đa số lượng trong kho");
-
-    // }
+  
     if (newQuantity >= maxQuantity) {
       // Show max quantity message
       setShowMaxQuantityMessage(productId);
       setTimeout(() => {
         setShowMaxQuantityMessage(null);
-      }, 2000); // Adjust timeout as needed
+      }, 2000); 
     }
     updatedCart[index].quantity = newQuantity;
     setCart(updatedCart);
@@ -154,7 +135,7 @@ export default function Cart() {
       return total + product.price * (product.quantity || 1);
     }, 0);
   };
-  const calculateTotal2 = () => {
+  const calculateTotalSuccess = () => {
     return orderSuccess && orderSuccess.orderDetail
       ? orderSuccess.orderDetail.reduce((total, product) => {
           // Chuyển đổi chuỗi thành số và thêm vào tổng
@@ -176,8 +157,6 @@ export default function Cart() {
   }, [cart]);
   const [loading, setLoading] = useState(true);
   const onSubmit = async (e) => {
-    // e.preventDefault();
-    // alert("hihihi");
     setOpenAdd(true);
     setLoading(true);
     console.log("tuiiiiiiiiiiiii dat hang duoc roi", e);
@@ -530,7 +509,7 @@ export default function Cart() {
                             <div className="p-3">
                               <div className="flex justify-between">
                                 <p>Tổng tiền:</p>
-                                <p>{formatPrice(`${calculateTotal2()}đ`)}</p>
+                                <p>{formatPrice(`${calculateTotalSuccess()}đ`)}</p>
                               </div>
                               <div className="flex justify-between">
                                 <p>Phí giao hàng:</p>
@@ -546,7 +525,7 @@ export default function Cart() {
                                   Thành tiền
                                 </p>
                                 <p className="text-red-600 text-xl font-medium">
-                                  {formatPrice(`${calculateTotal2()}đ`)}
+                                  {formatPrice(`${calculateTotalSuccess()}đ`)}
                                 </p>
                               </div>
                             </div>
@@ -776,7 +755,7 @@ export default function Cart() {
                             </button>
                           </div>
                         </div>
-                        {showMaxQuantityMessage === product.idProduct && (
+                        {showMaxQuantityMessage === product.id_Product && (
                           <p className="text-red-500">
                             Tối đa số lượng trong kho
                           </p>
@@ -955,16 +934,6 @@ export default function Cart() {
                         )}
                       />
                       <p className="text-red-500">{errors.phone?.message}</p>
-                      {/* <input
->>>>>>> ddbfb9f7952d0758c366f1af2046e9503ceda781
-                        name="phone"
-                        value={order.phone}
-                        onChange={handleChange}
-                        type="text"
-                        className="border rounded-lg xl:h-[50px] sm:h-[30px] px-2 w-full"
-                        placeholder="Nhập số điện thoại"
-                      
-                      /> */}
                     </div>
                     <div className="col-span-2">
                       <label className="block">Email:</label>
